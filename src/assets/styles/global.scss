@@ -1,0 +1,17 @@
+@import-normalize;
+
+@import './fonts';
+
+@import './colors';
+
+@import './mixins';
+
+body {
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body * {
+  font-family: $font-primary;
+}
