@@ -62,7 +62,7 @@ export default function EditorPage() {
         <PinturaEditor
           onProcess={handleProcess}
           {...{ ...EDITOR_CONFIG }}
-          src={editorSrc}
+          src={`${editorSrc}?nocache=${new Date().getTime()}`}
           onClose={handleEditorHide}
           onDestroy={handleEditorHide}
         />
