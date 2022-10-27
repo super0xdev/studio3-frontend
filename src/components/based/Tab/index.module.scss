@@ -1,0 +1,19 @@
+body {
+  .tab {
+    color: $gray-50;
+    & * {
+      font-family: $font-primary;
+      font-weight: 300;
+    }
+    text-transform: uppercase;
+
+    &:global(.Mui-selected) {
+      color: $white;
+    }
+
+    &:global(.Mui-disabled) {
+      color: $gray-50;
+      opacity: 0.2;
+    }
+  }
+}

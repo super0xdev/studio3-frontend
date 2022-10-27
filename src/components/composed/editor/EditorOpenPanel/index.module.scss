@@ -1,0 +1,110 @@
+.mask {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+
+  .panel {
+    width: 80%;
+    height: 80%;
+    background: $dark-100;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    padding: 40px;
+    column-gap: 40px;
+    max-width: 900px;
+    min-width: 700px;
+
+    .file {
+      display: none;
+      opacity: 0;
+    }
+
+    section {
+      width: 50%;
+      height: 100%;
+      box-sizing: border-box;
+
+      &.recent {
+        border-right: 1px solid $dark-200;
+        padding-right: 40px;
+        padding-bottom: 40px;
+
+        .designs {
+          list-style: none;
+          padding: 0;
+          width: 100%;
+          flex-grow: 1;
+          background: $dark-150;
+          margin: 0;
+          box-sizing: border-box;
+
+          .button {
+            width: 100%;
+            justify-content: flex-start;
+            box-sizing: border-box;
+            border-bottom: 1px solid $dark-200;
+
+            svg {
+              margin-right: 10px;
+            }
+
+            &:last-child {
+              border-bottom: none;
+            }
+          }
+        }
+      }
+
+      &.new {
+        .actions {
+          display: flex;
+          flex-direction: row;
+          column-gap: 20px;
+
+          .action {
+            font-size: 14px;
+            color: $dark-50 !important;
+            background: $gray-200;
+            width: 100px;
+            height: 100px;
+            display: flex;
+            font-family: $font-primary;
+            flex-direction: column;
+            position: relative;
+            border: 1px solid $gray-200;
+
+            &:global(.Mui-disabled) {
+              background: rgba($gray-200, 0.2);
+              color: rgba($dark-50, 0.5) !important;
+              border-color: rgba($gray-200, 0.2);
+            }
+
+            svg {
+              font-size: 50px;
+            }
+
+            small {
+              position: absolute;
+              top: 0;
+              right: 0;
+              background: $dark-100;
+              color: $gray-200;
+              padding: 2px 5px;
+              font-size: 10px;
+            }
+          }
+        }
+      }
+
+      .title {
+        font-family: $font-primary;
+        font-size: 22px;
+        text-transform: uppercase;
+        margin-bottom: 20px;
+      }
+    }
+  }
+}
