@@ -1,4 +1,5 @@
 const CracoAlias = require('craco-alias');
+const webpack = require('webpack');
 
 module.exports = {
   plugins: [
@@ -25,12 +26,20 @@ module.exports = {
   },
   webpack: {
     alias: {},
-    plugins: {},
+    plugins: {
+      add: [
+        new webpack.ProvidePlugin({
+          process: 'process/browser',
+          Buffer: ['buffer', 'Buffer'],
+        }),
+      ],
+    },
     configure: {
       resolve: {
         fallback: {
           stream: require.resolve('stream-browserify'),
           crypto: require.resolve('crypto-browserify'),
+          buffer: require.resolve('buffer'),
           fs: false,
           path: false,
           os: false,

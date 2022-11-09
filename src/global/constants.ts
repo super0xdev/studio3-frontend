@@ -7,8 +7,7 @@ export const TOKEN_LIST = [
   'DUSTawucrTsGU8hcqRdHDCbuYhCPADMLM2VcCb8VnFnQ', // DUST
 ];
 
-export const APP_API_URL =
-  'https://j0624ut64a.execute-api.us-east-1.amazonaws.com';
+export const APP_API_URL = 'https://api.studio3-dev.com';
 
 export const APP_ASSET_URL =
   'https://d3-studio-assets-1660843754077.s3.us-west-1.amazonaws.com/';

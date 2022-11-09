@@ -27,10 +27,14 @@ export const useUpdateDisplayedAssets = () => {
 
   const handleUpdateDisplayedAssets = () => {
     updateIsLoading(true);
-    fetchAPI(`${APP_API_URL}/list_assets`, 'POST')
-      .then((res) => {
-        dispatch(updateDisplayedAssets(res.data));
-        updateOpenedAssets(res.data);
+    Promise.all([
+      fetchAPI(`${APP_API_URL}/list_assets`, 'POST'),
+      fetchAPI(`${APP_API_URL}/list_template_assets`, 'POST'),
+    ])
+      .then(([listedAssets, templateAssets]) => {
+        const assets = [...listedAssets.data, ...templateAssets.data];
+        dispatch(updateDisplayedAssets(assets));
+        updateOpenedAssets(assets);
         updateIsLoading(false);
       })
       .catch(() => {

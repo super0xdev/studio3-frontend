@@ -34,7 +34,6 @@ const EditorOpenPanel: FC<IEditorOpenPanel> = ({ onChange }) => {
   const handleInputChange = () => {
     // Exit if no files selected
     if (!fileInputRef?.current?.files?.length) return;
-
     onChange(fileInputRef.current.files[0]);
   };
 

@@ -9,7 +9,8 @@ import {
   FileDownloadSharp,
   DeleteSharp,
   InfoSharp,
-  // FileCopySharp,
+  ShoppingCartSharp,
+  FileCopySharp,
   // ShareSharp,
 } from '@mui/icons-material';
 import { filesize } from 'filesize';
@@ -32,6 +33,7 @@ import {
   useAppendOpenedAsset,
   useRemoveOpenedAsset,
 } from '@/state/application/hooks';
+import usePurchaseAsset from '@/hooks/usePurchaseAsset';
 
 interface IItemPreviewDrawer {
   id?: string;
@@ -46,6 +48,7 @@ const ItemPreviewDrawer: FC<IItemPreviewDrawer> = ({ open, onClose }) => {
   const handleUpdateDisplayedAssets = useUpdateDisplayedAssets();
   const appendOpenedAsset = useAppendOpenedAsset();
   const removeOpenedAsset = useRemoveOpenedAsset();
+  const purchaseAsset = usePurchaseAsset();
   const [editModalOpend, setEditModalOpened] = useState(false);
 
   const handleEdit = () => {
@@ -87,6 +90,24 @@ const ItemPreviewDrawer: FC<IItemPreviewDrawer> = ({ open, onClose }) => {
       false
     ).then((res) => {
       saveAs(res, asset.file_name);
+    });
+  };
+
+  const handlePurchase = async () => {
+    const tx = await purchaseAsset();
+    console.log(tx);
+  };
+
+  const handleDuplicate = () => {
+    if (!asset) return;
+    fetchAPI(`${APP_API_URL}/duplicate_asset`, 'POST', {
+      asset_uid: asset.uid,
+    }).then((res) => {
+      if (res.success) {
+        toast.success('Duplicated successfully!');
+        handleUpdateDisplayedAssets();
+        onClose();
+      }
     });
   };
 
@@ -150,6 +171,12 @@ const ItemPreviewDrawer: FC<IItemPreviewDrawer> = ({ open, onClose }) => {
         </div> */}
       </section>
       <section className={styles.actions}>
+        <div className={styles.button} onClick={handlePurchase}>
+          <IconButton>
+            <ShoppingCartSharp />
+          </IconButton>
+          Purchase
+        </div>
         <div className={styles.button} onClick={() => setEditModalOpened(true)}>
           <IconButton>
             <InfoSharp />
@@ -162,12 +189,12 @@ const ItemPreviewDrawer: FC<IItemPreviewDrawer> = ({ open, onClose }) => {
           </IconButton>
           Edit
         </div>
-        {/* <div className={styles.button}>
+        <div className={styles.button} onClick={handleDuplicate}>
           <IconButton>
             <FileCopySharp />
           </IconButton>
-          Dupplicate
-        </div> */}
+          Duplicate
+        </div>
         <div className={styles.button} onClick={handleDownload}>
           <IconButton>
             <FileDownloadSharp />
