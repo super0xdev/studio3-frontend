@@ -11,3 +11,6 @@ export const APP_API_URL = 'https://api.studio3-dev.com';
 
 export const APP_ASSET_URL =
   'https://d3-studio-assets-1660843754077.s3.us-west-1.amazonaws.com/';
+
+// TODO: this is likely not the best way to check if a design is a template - this UID may change
+export const TEMPLATE_USER_ID = 7948267324865664000;

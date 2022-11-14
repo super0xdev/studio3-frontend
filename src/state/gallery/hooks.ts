@@ -5,6 +5,7 @@ import { useUpdateOpenedAssets } from '../application/hooks';
 
 import {
   updateDisplayedAssets,
+  updateTemplateAssets,
   updateIsLoading,
   updatePreviewSelectedId,
 } from './index';
@@ -19,22 +20,45 @@ import useFetchAPI from '@/hooks/useFetchAPI';
 export const useDisplayedAssets = () =>
   useAppSelector((state) => state.gallery.displayedAssets) as AssetInfoType[];
 
+export const useTemplateAssets = () =>
+  useAppSelector((state) => state.gallery.templateAssets) as AssetInfoType[];
+
 export const useUpdateDisplayedAssets = () => {
   const dispatch = useDispatch();
   const fetchAPI = useFetchAPI();
   const updateOpenedAssets = useUpdateOpenedAssets();
   const updateIsLoading = useUpdateIsLoading();
 
-  const handleUpdateDisplayedAssets = () => {
+  const handleUpdateTemplateAssets = () => {
     updateIsLoading(true);
-    Promise.all([
-      fetchAPI(`${APP_API_URL}/list_assets`, 'POST'),
-      fetchAPI(`${APP_API_URL}/list_template_assets`, 'POST'),
-    ])
-      .then(([listedAssets, templateAssets]) => {
-        const assets = [...listedAssets.data, ...templateAssets.data];
+    fetchAPI(`${APP_API_URL}/list_assets`, 'POST')
+      .then((listedAssets) => {
+        const assets = [...listedAssets.data];
         dispatch(updateDisplayedAssets(assets));
         updateOpenedAssets(assets);
+        updateIsLoading(false);
+      })
+      .catch(() => {
+        updateIsLoading(false);
+      });
+  };
+
+  return handleUpdateTemplateAssets;
+};
+
+export const useUpdateTemplateAssets = () => {
+  const dispatch = useDispatch();
+  const fetchAPI = useFetchAPI();
+  // const updateOpenedAssets = useUpdateOpenedAssets();
+  const updateIsLoading = useUpdateIsLoading();
+
+  const handleUpdateDisplayedAssets = () => {
+    updateIsLoading(true);
+    fetchAPI(`${APP_API_URL}/list_template_assets`, 'POST')
+      .then((templateAssets) => {
+        const assets = [...templateAssets.data];
+        dispatch(updateTemplateAssets(assets));
+        // updateOpenedAssets(assets);
         updateIsLoading(false);
       })
       .catch(() => {
@@ -66,9 +90,11 @@ export const useUpdatePreviewSelectedId = () => {
 export const usePreviewSelectedAsset = () => {
   const previewSelectedId = usePreviewSelectedId();
   const displayedAssets = useDisplayedAssets();
+  const templateAssets = useTemplateAssets();
+  const allAssets = [...displayedAssets, ...templateAssets];
 
   if (!previewSelectedId) return null;
-  return displayedAssets.filter((asset) => asset.uid === previewSelectedId)[0];
+  return allAssets.filter((asset) => asset.uid === previewSelectedId)[0];
 };
 
 // === isLoading ===

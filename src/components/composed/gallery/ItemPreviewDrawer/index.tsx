@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useMemo, useState } from 'react';
 import clsx from 'clsx';
 import { saveAs } from 'file-saver';
 import CloseSharpIcon from '@mui/icons-material/CloseSharp';
@@ -9,7 +9,7 @@ import {
   FileDownloadSharp,
   DeleteSharp,
   InfoSharp,
-  ShoppingCartSharp,
+  // ShoppingCartSharp,
   FileCopySharp,
   // ShareSharp,
 } from '@mui/icons-material';
@@ -27,7 +27,11 @@ import {
   usePreviewSelectedAsset,
   useUpdateDisplayedAssets,
 } from '@/state/gallery/hooks';
-import { APP_API_URL, APP_ASSET_URL } from '@/global/constants';
+import {
+  APP_API_URL,
+  APP_ASSET_URL,
+  TEMPLATE_USER_ID,
+} from '@/global/constants';
 import useFetchAPI from '@/hooks/useFetchAPI';
 import {
   useAppendOpenedAsset,
@@ -50,6 +54,10 @@ const ItemPreviewDrawer: FC<IItemPreviewDrawer> = ({ open, onClose }) => {
   const removeOpenedAsset = useRemoveOpenedAsset();
   const purchaseAsset = usePurchaseAsset();
   const [editModalOpend, setEditModalOpened] = useState(false);
+
+  const isTemplateAsset = useMemo(() => {
+    return asset?.user_uid === TEMPLATE_USER_ID;
+  }, [asset]);
 
   const handleEdit = () => {
     if (asset) {
@@ -93,10 +101,10 @@ const ItemPreviewDrawer: FC<IItemPreviewDrawer> = ({ open, onClose }) => {
     });
   };
 
-  const handlePurchase = async () => {
-    const tx = await purchaseAsset();
-    console.log(tx);
-  };
+  // const handlePurchase = async () => {
+  //   const tx = await purchaseAsset();
+  //   console.log(tx);
+  // };
 
   const handleDuplicate = () => {
     if (!asset) return;
@@ -104,7 +112,12 @@ const ItemPreviewDrawer: FC<IItemPreviewDrawer> = ({ open, onClose }) => {
       asset_uid: asset.uid,
     }).then((res) => {
       if (res.success) {
-        toast.success('Duplicated successfully!');
+        toast.success(
+          isTemplateAsset
+            ? 'Added Template to Projects!'
+            : 'Duplicated successfully!'
+        );
+        if (isTemplateAsset) navigate('/gallery');
         handleUpdateDisplayedAssets();
         onClose();
       }
@@ -145,7 +158,8 @@ const ItemPreviewDrawer: FC<IItemPreviewDrawer> = ({ open, onClose }) => {
             <b>{new Date(asset.creation_timestamp * 1000).toLocaleString()}</b>
           )}
         </div>
-        <div className={styles.row}>
+        {/* The user doesn't need this info */}
+        {/* <div className={styles.row}>
           Confirmed:{' '}
           {!!asset && (
             <b>
@@ -154,10 +168,10 @@ const ItemPreviewDrawer: FC<IItemPreviewDrawer> = ({ open, onClose }) => {
                 : '-'}
             </b>
           )}
-        </div>
+        </div> */}
         <div className={styles.row}>
           Creator:{' '}
-          {!!asset && (
+          {!!asset && !isTemplateAsset && (
             <b>
               {asset.user_uid}{' '}
               <IconButton size="small" className={styles.openInNew}>
@@ -165,48 +179,61 @@ const ItemPreviewDrawer: FC<IItemPreviewDrawer> = ({ open, onClose }) => {
               </IconButton>
             </b>
           )}
+          {!!asset && isTemplateAsset && <b>studio³</b>}
         </div>
         {/* <div className={styles.row}>
           Tags: <b>Hello, World, Solana</b>
         </div> */}
       </section>
       <section className={styles.actions}>
-        <div className={styles.button} onClick={handlePurchase}>
+        {/* This will go in the export modal when it's ready */}
+        {/* <div className={styles.button} onClick={handlePurchase}>
           <IconButton>
             <ShoppingCartSharp />
           </IconButton>
           Purchase
-        </div>
-        <div className={styles.button} onClick={() => setEditModalOpened(true)}>
-          <IconButton>
-            <InfoSharp />
-          </IconButton>
-          Info
-        </div>
-        <div className={styles.button} onClick={handleEdit}>
-          <IconButton>
-            <EditSharp />
-          </IconButton>
-          Edit
-        </div>
+        </div> */}
+        {!isTemplateAsset && (
+          <div className={styles.button} onClick={handleEdit}>
+            <IconButton>
+              <EditSharp />
+            </IconButton>
+            Edit
+          </div>
+        )}
+        {!isTemplateAsset && (
+          <div className={styles.button} onClick={handleDownload}>
+            <IconButton>
+              <FileDownloadSharp />
+            </IconButton>
+            Download
+          </div>
+        )}
         <div className={styles.button} onClick={handleDuplicate}>
           <IconButton>
             <FileCopySharp />
           </IconButton>
-          Duplicate
+          {isTemplateAsset ? 'Add to Projects' : 'Duplicate'}
         </div>
-        <div className={styles.button} onClick={handleDownload}>
-          <IconButton>
-            <FileDownloadSharp />
-          </IconButton>
-          Download
-        </div>
-        <div className={styles.button} onClick={handleDelete}>
-          <IconButton>
-            <DeleteSharp />
-          </IconButton>
-          Delete
-        </div>
+        {!isTemplateAsset && (
+          <div
+            className={styles.button}
+            onClick={() => setEditModalOpened(true)}
+          >
+            <IconButton>
+              <InfoSharp />
+            </IconButton>
+            Info
+          </div>
+        )}
+        {!isTemplateAsset && (
+          <div className={styles.button} onClick={handleDelete}>
+            <IconButton>
+              <DeleteSharp />
+            </IconButton>
+            Delete
+          </div>
+        )}
       </section>
     </div>
   );

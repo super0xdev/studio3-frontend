@@ -15,27 +15,37 @@ import ItemPreviewDrawer from '@/components/composed/gallery/ItemPreviewDrawer';
 import ExportModal from '@/components/composed/gallery/ExportModal';
 import {
   useDisplayedAssets,
+  useTemplateAssets,
   useIsLoading,
   usePreviewSelectedId,
   useUpdateDisplayedAssets,
+  useUpdateTemplateAssets,
   useUpdatePreviewSelectedId,
 } from '@/state/gallery/hooks';
 import { useAuthToken } from '@/state/application/hooks';
 import Button from '@/components/based/Button';
 
-export default function GalleryPage() {
+export default function GalleryPage({
+  isTemplates = false,
+}: {
+  isTemplates: boolean;
+}) {
   const authToken = useAuthToken();
   const isLoading = useIsLoading();
   const previewSelectedId = usePreviewSelectedId();
   const updatePreviewSelectedId = useUpdatePreviewSelectedId();
-  const displayedAssets = useDisplayedAssets();
+  const userAssets = useDisplayedAssets();
+  const templateAssets = useTemplateAssets();
+  const displayedAssets = isTemplates ? templateAssets : userAssets;
   const navigate = useNavigate();
   const [exportModalOpened, setExportModalOpened] = useState<boolean>(false);
 
   const handleUpdateDisplayedAssets = useUpdateDisplayedAssets();
+  const handleUpdateTemplateAssets = useUpdateTemplateAssets();
 
   useEffect(() => {
     handleUpdateDisplayedAssets();
+    handleUpdateTemplateAssets();
   }, [authToken]);
 
   const handleCreate = () => {

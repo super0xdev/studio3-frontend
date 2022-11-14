@@ -1,7 +1,6 @@
 import { getEditorDefaults } from '@pqina/pintura';
 
-export const EDITOR_CONFIG = getEditorDefaults({
-  stickers: ['🚀', '😄', '👍', '👎', '🪙', '💰'],
+const editorSettings = getEditorDefaults({
   cropSelectPresetOptions: [
     [undefined, 'Custom'],
     [1, 'Square'],
@@ -21,3 +20,19 @@ export const EDITOR_CONFIG = getEditorDefaults({
     [9 / 16, '9:16'],
   ],
 });
+
+// reorganize utils and remove the ones we don't want
+const fixedUtils = [
+  'annotate',
+  // 'decorate', // this is the same as annoatate really. Leaving it here in case we would want it back
+  'finetune',
+  'redact',
+  'crop',
+  'resize',
+  'filter',
+  'frame',
+];
+
+editorSettings.utils = fixedUtils;
+
+export const EDITOR_CONFIG = editorSettings;

@@ -11,7 +11,7 @@ import EditorPage from '@/pages/Editor';
 export const APP_ROUTES: RouteType[] = [
   {
     path: '/gallery',
-    component: <GalleryPage />,
+    component: <GalleryPage isTemplates={false} />,
     title: 'Projects',
     Icon: CollectionsSharpIcon,
     isMenuLinked: true,
@@ -19,7 +19,7 @@ export const APP_ROUTES: RouteType[] = [
   },
   {
     path: '/gallery#Dashboard',
-    component: <GalleryPage />,
+    component: <GalleryPage isTemplates={false} />,
     title: 'Dashboard',
     Icon: DashboardSharpIcon,
     isMenuLinked: true,
@@ -34,8 +34,16 @@ export const APP_ROUTES: RouteType[] = [
     isDisabled: false,
   },
   {
+    path: '/templates',
+    component: <GalleryPage isTemplates />,
+    title: 'Templates',
+    Icon: DashboardSharpIcon,
+    isMenuLinked: true,
+    isDisabled: false,
+  },
+  {
     path: '/gallery#Support',
-    component: <GalleryPage />,
+    component: <GalleryPage isTemplates={false} />,
     title: 'Support',
     Icon: HelpSharpIcon,
     isMenuLinked: true,

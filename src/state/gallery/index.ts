@@ -4,12 +4,14 @@ import { AssetInfoType } from '@/global/types';
 
 export interface IGalleryState {
   readonly displayedAssets: AssetInfoType[];
+  readonly templateAssets: AssetInfoType[];
   readonly previewSelectedId: number | null;
   readonly isLoading: boolean;
 }
 
 const initialState: IGalleryState = {
   displayedAssets: [],
+  templateAssets: [],
   previewSelectedId: null,
   isLoading: false,
 };
@@ -24,6 +26,9 @@ const GallerySlice = createSlice({
     updateDisplayedAssets(state, action: PayloadAction<AssetInfoType[]>) {
       state.displayedAssets = action.payload;
     },
+    updateTemplateAssets(state, action: PayloadAction<AssetInfoType[]>) {
+      state.templateAssets = action.payload;
+    },
     updateIsLoading(state, action: PayloadAction<boolean>) {
       state.isLoading = action.payload;
     },
@@ -33,6 +38,7 @@ const GallerySlice = createSlice({
 export const {
   updatePreviewSelectedId,
   updateDisplayedAssets,
+  updateTemplateAssets,
   updateIsLoading,
 } = GallerySlice.actions;
 
