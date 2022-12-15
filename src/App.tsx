@@ -2,6 +2,8 @@ import React, { useEffect, useMemo } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useWallet } from '@solana/wallet-adapter-react';
 
+import { updateAuthWallet } from './state/application';
+
 import { LockedStatus } from '@/global/types';
 import { APP_ROUTES, DEFAULT_ROUTE } from '@/config/routes';
 import PageLayout from '@/components/navigation/PageLayout';
@@ -20,17 +22,21 @@ import 'react-lazy-load-image-component/src/effects/blur.css';
 export default function App() {
   const authToken = useAuthToken();
   const authWallet = useAuthWallet();
-  const { publicKey } = useWallet();
+  const { publicKey, wallet } = useWallet();
   const updateAuthToken = useUpdateAuthToken();
 
   const lockedStatus: LockedStatus = useMemo(() => {
-    if (!publicKey) return 'WALLET_REQUIRED';
+    if (!wallet) return 'WALLET_REQUIRED';
     if (!authToken) return 'AUTH_REQUIRED';
     return 'LOGGED_IN';
-  }, [authToken, publicKey]);
+  }, [authToken, wallet]);
 
   useEffect(() => {
-    if (publicKey && authWallet !== publicKey.toBase58()) updateAuthToken(null);
+    if (publicKey && authWallet !== publicKey.toBase58() && authToken) {
+      window.location.reload();
+      updateAuthToken(null);
+      updateAuthWallet(publicKey.toBase58());
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [publicKey, authWallet]);
 

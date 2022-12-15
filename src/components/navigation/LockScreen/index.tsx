@@ -8,12 +8,11 @@ import styles from './index.module.scss';
 
 import { LockedStatus } from '@/global/types';
 import {
-  useIsAuthLoading,
   useUpdateWalletModal,
   useWalletModalOpened,
 } from '@/state/solana/hooks';
 import useLogin from '@/hooks/useLogin';
-import { useAuthToken, useAuthWallet } from '@/state/application/hooks';
+import { useAuthWallet } from '@/state/application/hooks';
 import Button from '@/components/based/Button';
 
 interface ILockScreen {
@@ -24,10 +23,8 @@ const LockScreen: FC<ILockScreen> = ({ status }) => {
   const { publicKey } = useWallet();
   const walletModalOpened = useWalletModalOpened();
   const updateWalletModal = useUpdateWalletModal();
-  const authToken = useAuthToken();
   const authWallet = useAuthWallet();
   const login = useLogin();
-  const isAuthLoading = useIsAuthLoading();
 
   useEffect(() => {
     if (
@@ -42,9 +39,7 @@ const LockScreen: FC<ILockScreen> = ({ status }) => {
   }, [status, publicKey, authWallet, walletModalOpened]);
 
   const handleVerify = () => {
-    if (status === 'AUTH_REQUIRED' && !authToken && !isAuthLoading) {
-      login();
-    }
+    login();
   };
 
   return (
