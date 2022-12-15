@@ -14,6 +14,7 @@ import {
 } from '@/state/solana/hooks';
 import useLogin from '@/hooks/useLogin';
 import { useAuthToken, useAuthWallet } from '@/state/application/hooks';
+import Button from '@/components/based/Button';
 
 interface ILockScreen {
   status: LockedStatus;
@@ -40,21 +41,23 @@ const LockScreen: FC<ILockScreen> = ({ status }) => {
     }
   }, [status, publicKey, authWallet, walletModalOpened]);
 
-  useEffect(() => {
+  const handleVerify = () => {
     if (status === 'AUTH_REQUIRED' && !authToken && !isAuthLoading) {
       login();
     }
-  }, [status, authToken, isAuthLoading]);
+  };
 
   return (
     <div
       className={clsx(styles.screen, {
         [styles.locked]: status !== 'LOGGED_IN',
       })}
-      onClick={login}
     >
       <PuffLoader color="#fff" />
       Authenticating ...
+      <Button className={styles.verify} onClick={handleVerify}>
+        Verify login
+      </Button>
     </div>
   );
 };

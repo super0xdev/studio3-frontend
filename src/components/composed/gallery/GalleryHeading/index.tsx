@@ -1,11 +1,15 @@
-import React from 'react';
+import React, { FC } from 'react';
 
 import styles from './index.module.scss';
 
-const GalleryHeading = () => {
+interface IGalleryHeading {
+  title: string;
+}
+
+const GalleryHeading: FC<IGalleryHeading> = ({ title }) => {
   return (
     <div className={styles.inner}>
-      <div className={styles.title}>Projects</div>
+      <div className={styles.title}>{title}</div>
     </div>
   );
 };

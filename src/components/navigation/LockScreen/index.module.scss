@@ -20,4 +20,15 @@
     opacity: 1;
     pointer-events: initial;
   }
+
+  .verify {
+    background: rgba($white, 0.1);
+    border-radius: 20px;
+    padding: 10px 20px;
+    backdrop-filter: blur(10px);
+
+    &:hover {
+      background: rgba($white, 0.1);
+    }
+  }
 }

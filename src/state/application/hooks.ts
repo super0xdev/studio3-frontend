@@ -83,6 +83,14 @@ export const useOpenedAssets = () => {
     .sort((a, b) => b.timestamp - a.timestamp);
 };
 
+export const useClearOpenedAssets = () => {
+  const dispatch = useDispatch();
+
+  return () => {
+    dispatch(updateOpenedAssets([]));
+  };
+};
+
 export const useUpdateOpenedAssets = () => {
   const dispatch = useDispatch();
   const { publicKey } = useWallet();
@@ -99,6 +107,8 @@ export const useUpdateOpenedAssets = () => {
             uid: asset.uid,
             file_name: assets[assetIdxs[idx]].file_name,
             file_path: assets[assetIdxs[idx]].file_path,
+            thumbnail_file_path: assets[assetIdxs[idx]].thumbnail_file_path,
+            meta_file_path: assets[assetIdxs[idx]].meta_file_path,
             timestamp: asset.timestamp,
             wallet: publicKey?.toBase58() ?? null,
           }))
@@ -120,6 +130,8 @@ export const useAppendOpenedAsset = () => {
           uid: openedAssets[0].uid,
           file_name: openedAssets[0].file_name,
           file_path: openedAssets[0].file_path,
+          thumbnail_file_path: openedAssets[0].thumbnail_file_path,
+          meta_file_path: openedAssets[0].meta_file_path,
           timestamp: new Date().getTime(),
           wallet: publicKey?.toBase58() ?? null,
         })

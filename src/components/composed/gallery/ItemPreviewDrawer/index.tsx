@@ -22,22 +22,20 @@ import EditModal from '../EditModal';
 
 import styles from './index.module.scss';
 
+import CircularProgress from '@/components/based/CircularProgress';
 import IconButton from '@/components/based/IconButton';
 import {
   usePreviewSelectedAsset,
   useUpdateDisplayedAssets,
 } from '@/state/gallery/hooks';
-import {
-  APP_API_URL,
-  APP_ASSET_URL,
-  TEMPLATE_USER_ID,
-} from '@/global/constants';
+import { APP_API_URL, TEMPLATE_USER_ID } from '@/global/constants';
 import useFetchAPI from '@/hooks/useFetchAPI';
 import {
   useAppendOpenedAsset,
   useRemoveOpenedAsset,
 } from '@/state/application/hooks';
-import usePurchaseAsset from '@/hooks/usePurchaseAsset';
+import useProcessImage from '@/hooks/useProcessImage';
+// import usePurchaseAsset from '@/hooks/usePurchaseAsset';
 
 interface IItemPreviewDrawer {
   id?: string;
@@ -52,8 +50,10 @@ const ItemPreviewDrawer: FC<IItemPreviewDrawer> = ({ open, onClose }) => {
   const handleUpdateDisplayedAssets = useUpdateDisplayedAssets();
   const appendOpenedAsset = useAppendOpenedAsset();
   const removeOpenedAsset = useRemoveOpenedAsset();
-  const purchaseAsset = usePurchaseAsset();
+  // const purchaseAsset = usePurchaseAsset();
   const [editModalOpend, setEditModalOpened] = useState(false);
+  const { url: processedImageUrl, content: processedImageContent } =
+    useProcessImage(asset);
 
   const isTemplateAsset = useMemo(() => {
     return asset?.user_uid === TEMPLATE_USER_ID;
@@ -87,18 +87,16 @@ const ItemPreviewDrawer: FC<IItemPreviewDrawer> = ({ open, onClose }) => {
   };
 
   const handleDownload = () => {
-    if (!asset) return;
-    fetchAPI(
-      `${APP_API_URL}/download_asset`,
-      'POST',
-      {
-        file_path: `${asset.file_path}`,
-      },
-      true,
-      false
-    ).then((res) => {
-      saveAs(res, asset.file_name);
-    });
+    if (!processedImageContent || !asset) return;
+    const data = new FormData();
+
+    data.append('image', processedImageContent, asset.file_name);
+
+    fetchAPI(`${APP_API_URL}/export_asset`, 'POST', data, false, false).then(
+      (res) => {
+        saveAs(res, asset.file_name);
+      }
+    );
   };
 
   // const handlePurchase = async () => {
@@ -108,7 +106,7 @@ const ItemPreviewDrawer: FC<IItemPreviewDrawer> = ({ open, onClose }) => {
 
   const handleDuplicate = () => {
     if (!asset) return;
-    fetchAPI(`${APP_API_URL}/duplicate_asset`, 'POST', {
+    fetchAPI(`${APP_API_URL}/duplicate_multi_asset`, 'POST', {
       asset_uid: asset.uid,
     }).then((res) => {
       if (res.success) {
@@ -138,11 +136,10 @@ const ItemPreviewDrawer: FC<IItemPreviewDrawer> = ({ open, onClose }) => {
       </section>
       <section className={styles.content}>
         <div className={styles.imageWrapper}>
-          {!!asset && (
-            <LazyLoadImage
-              src={`${APP_ASSET_URL}${asset.file_path}`}
-              effect="blur"
-            />
+          {processedImageUrl ? (
+            <LazyLoadImage src={processedImageUrl} effect="blur" />
+          ) : (
+            <CircularProgress />
           )}
         </div>
         <div className={styles.title}>{!!asset && asset.file_name}</div>
@@ -209,6 +206,7 @@ const ItemPreviewDrawer: FC<IItemPreviewDrawer> = ({ open, onClose }) => {
             Download
           </div>
         )}
+
         <div className={styles.button} onClick={handleDuplicate}>
           <IconButton>
             <FileCopySharp />

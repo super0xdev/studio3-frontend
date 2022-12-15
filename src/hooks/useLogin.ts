@@ -42,7 +42,6 @@ export default function useLogin() {
       );
     } catch (error) {
       updateIsAuthLoading(false);
-      login();
       return;
     }
     const address = publicKey.toBase58();

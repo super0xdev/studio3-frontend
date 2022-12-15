@@ -31,13 +31,23 @@
         border-right: 1px solid $dark-200;
         padding-right: 40px;
         padding-bottom: 40px;
+        position: relative;
+
+        .clear {
+          position: absolute;
+          right: 40px;
+          bottom: -10px;
+          column-gap: 8px;
+          font-family: $font-primary;
+        }
 
         .designs {
           list-style: none;
           padding: 0;
           width: 100%;
+          height: calc(100% - 40px);
+          overflow: auto;
           flex-grow: 1;
-          background: $dark-150;
           margin: 0;
           box-sizing: border-box;
 
@@ -45,7 +55,18 @@
             width: 100%;
             justify-content: flex-start;
             box-sizing: border-box;
-            border-bottom: 1px solid $dark-200;
+            border-bottom: 1px dotted $dark-200;
+
+            .filename {
+              white-space: nowrap;
+              text-overflow: ellipsis;
+              overflow: hidden;
+              min-width: 0;
+            }
+
+            &:hover {
+              background: $dark-150;
+            }
 
             svg {
               margin-right: 10px;

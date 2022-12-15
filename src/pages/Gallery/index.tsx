@@ -54,7 +54,9 @@ export default function GalleryPage({
 
   return (
     <PageContainer
-      heading={<GalleryHeading />}
+      heading={
+        <GalleryHeading title={isTemplates ? 'Templates' : 'Projects'} />
+      }
       variant={clsx(styles.gallery, { [styles.opened]: !!previewSelectedId })}
     >
       <ExportModal

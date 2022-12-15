@@ -29,7 +29,7 @@ export function getHeaderInfo(authToken: string | null, isJSON: boolean) {
   const headerInfo: { [key: string]: string } = {
     ...(isJSON
       ? {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json;charset=utf-8',
           Accept: 'application/vnd.api+json',
         }
       : {}),

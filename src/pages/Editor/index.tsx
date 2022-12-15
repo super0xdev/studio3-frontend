@@ -21,6 +21,7 @@ import {
 import useFetchAPI from '@/hooks/useFetchAPI';
 import PageContainer from '@/components/navigation/PageContainer';
 import EditorOpenPanel from '@/components/composed/editor/EditorOpenPanel';
+import { loadJSON, strToBuffer } from '@/global/utils';
 // import WatermarkImage from '@/assets/images/watermark.png';
 
 export default function EditorPage() {
@@ -35,18 +36,26 @@ export default function EditorPage() {
 
   const handleProcess = async (detail: PinturaDefaultImageWriterResult) => {
     const data = new FormData();
-    data.append('image', detail.dest, (detail.src as File).name);
     if (detail.dest.size >= 10 * 1024 * 1024) {
       toast.error('The maximum upload image size is 10 MB!');
       return;
     }
+    data.append('image', detail.src as Blob, (detail.src as File).name);
     if (selectedAsset) {
       data.append('asset_uid', selectedAsset.uid.toString());
       data.append('file_key', selectedAsset.file_path);
     }
+    data.append(
+      'meta',
+      new Blob([
+        strToBuffer(JSON.stringify(editorRef.current?.editor.imageState)),
+      ])
+    );
 
     fetchAPI(
-      `${APP_API_URL}/${selectedAsset ? 'overwrite_asset' : 'upload_asset'}`,
+      `${APP_API_URL}/${
+        selectedAsset ? 'overwrite_multi_asset' : 'upload_multi_asset'
+      }`,
       'POST',
       data,
       false
@@ -127,6 +136,7 @@ export default function EditorPage() {
       ...(editorRef.current.editor.imageDecoration ?? []),
       ...(editorRef.current.editor.imageRedaction ?? []),
     ];
+
     const selectedShape = shapesList.find(
       (shape) => shape.id === selectedShapeId
     );
@@ -209,6 +219,9 @@ export default function EditorPage() {
           src={editorFileSrc}
           onClose={handleEditorHide}
           onDestroy={handleEditorHide}
+          imageState={loadJSON(
+            `${APP_ASSET_URL}${selectedAsset?.meta_file_path}`
+          )}
           enableDropImage
           enablePasteImage
           stickerEnableButtonFlipVertical
@@ -216,7 +229,6 @@ export default function EditorPage() {
           willRenderToolbar={(toolbar: any /* env: any, redraw: any */) => {
             // call redraw to trigger a redraw of the editor state
             // attachSelectPhoto(toolbar);
-            console.log({ toolbar });
             // TODO: this is where we can modify the "Done" button and add our own buttons
 
             return [...toolbar];

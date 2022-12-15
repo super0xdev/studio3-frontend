@@ -8,7 +8,8 @@ import AccountCircleSharpIcon from '@mui/icons-material/AccountCircleSharp';
 import styles from './index.module.scss';
 
 import { AssetInfoType } from '@/global/types';
-import { APP_ASSET_URL } from '@/global/constants';
+import CircularProgress from '@/components/based/CircularProgress';
+import useProcessImage from '@/hooks/useProcessImage';
 
 interface IItemWidget {
   title?: string;
@@ -24,6 +25,8 @@ const ItemWidget: FC<IItemWidget> = ({
   onClick,
   onDoubleClick,
 }) => {
+  const { url: processedImage } = useProcessImage(asset);
+
   return (
     <Card
       className={clsx(styles.widget, { [styles.selected]: selected })}
@@ -31,10 +34,11 @@ const ItemWidget: FC<IItemWidget> = ({
       onDoubleClick={onDoubleClick}
     >
       <div className={styles.imageWrapper}>
-        <LazyLoadImage
-          src={`${APP_ASSET_URL}${asset.file_path}`}
-          effect="blur"
-        />
+        {processedImage ? (
+          <LazyLoadImage src={processedImage} effect="blur" />
+        ) : (
+          <CircularProgress />
+        )}
       </div>
       <div className={styles.title}>{asset.file_name}</div>
       <div className={styles.info}>

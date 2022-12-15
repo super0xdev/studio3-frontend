@@ -122,6 +122,8 @@
     flex-grow: 1;
 
     .button {
+      color: $white;
+      text-decoration: none;
       display: flex;
       row-gap: 10px;
       flex-direction: column;

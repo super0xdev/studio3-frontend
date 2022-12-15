@@ -7,10 +7,10 @@ export const TOKEN_LIST = [
   'DUSTawucrTsGU8hcqRdHDCbuYhCPADMLM2VcCb8VnFnQ', // DUST
 ];
 
-export const APP_API_URL = 'https://api.studio3-dev.com';
+export const APP_API_URL = 'https://dev.studio3-dev.com/';
 
 export const APP_ASSET_URL =
-  'https://d3-studio-assets-1660843754077.s3.us-west-1.amazonaws.com/';
+  'https://d3-studio-assets.s3.us-east-2.amazonaws.com/';
 
 // TODO: this is likely not the best way to check if a design is a template - this UID may change
-export const TEMPLATE_USER_ID = 7948267324865664000;
+export const TEMPLATE_USER_ID = 5574987670839803000;

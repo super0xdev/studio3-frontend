@@ -3,12 +3,14 @@ import FolderOpenSharpIcon from '@mui/icons-material/FolderOpenSharp';
 import DescriptionSharpIcon from '@mui/icons-material/DescriptionSharp';
 import InsertDriveFileSharpIcon from '@mui/icons-material/InsertDriveFileSharp';
 import AddPhotoAlternateSharpIcon from '@mui/icons-material/AddPhotoAlternateSharp';
+import AutoDeleteOutlinedIcon from '@mui/icons-material/AutoDeleteOutlined';
 
 import styles from './index.module.scss';
 
 import Button from '@/components/based/Button';
 import {
   useAppendOpenedAsset,
+  useClearOpenedAssets,
   useOpenedAssets,
 } from '@/state/application/hooks';
 import { useUpdatePreviewSelectedId } from '@/state/gallery/hooks';
@@ -23,6 +25,7 @@ const EditorOpenPanel: FC<IEditorOpenPanel> = ({ onChange }) => {
   const opendAssets = useOpenedAssets();
   const updatePreviewSelectedId = useUpdatePreviewSelectedId();
   const appendOpenedAsset = useAppendOpenedAsset();
+  const clearOpenedAssets = useClearOpenedAssets();
   const fileInputRef = useRef<any>(null);
 
   const handleRecentlyOpened = (idx: number) => {
@@ -50,6 +53,9 @@ const EditorOpenPanel: FC<IEditorOpenPanel> = ({ onChange }) => {
       <div className={styles.panel}>
         <section className={styles.recent}>
           <div className={styles.title}>Recent</div>
+          <Button className={styles.clear} onClick={clearOpenedAssets}>
+            <AutoDeleteOutlinedIcon /> Clear history
+          </Button>
           <div className={styles.designs}>
             {opendAssets.map((asset, idx) => (
               <Button
@@ -58,7 +64,7 @@ const EditorOpenPanel: FC<IEditorOpenPanel> = ({ onChange }) => {
                 onClick={() => handleRecentlyOpened(idx)}
               >
                 <InsertDriveFileSharpIcon />
-                {asset.file_name}
+                <span className={styles.filename}>{asset.file_name}</span>
               </Button>
             ))}
           </div>
