@@ -1,6 +1,7 @@
 export type APIRequestMethodType = 'GET' | 'POST' | 'UPDATE';
 
 export type AssetInfoType = {
+  update_timestamp: number;
   confirmation_attempts: number;
   confirmation_timestamp: number;
   confirmed: number;

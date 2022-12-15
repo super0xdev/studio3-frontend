@@ -143,16 +143,22 @@ const ItemPreviewDrawer: FC<IItemPreviewDrawer> = ({ open, onClose }) => {
           )}
         </div>
         <div className={styles.title}>{!!asset && asset.file_name}</div>
-        <div className={styles.meta}>
+        {/* <div className={styles.meta}>
           {!!asset && filesize(asset.file_size_bytes).toString()}
-        </div>
+        </div> */}
       </section>
       <section className={styles.details}>
         <div className={styles.label}>Information</div>
         <div className={styles.row}>
-          Created:{' '}
+          Date Created:{' '}
           {!!asset && (
             <b>{new Date(asset.creation_timestamp * 1000).toLocaleString()}</b>
+          )}
+        </div>
+        <div className={styles.row}>
+          Last Modified:{' '}
+          {!!asset && (
+            <b>{new Date(asset.update_timestamp * 1000).toLocaleString()}</b>
           )}
         </div>
         {/* The user doesn't need this info */}
@@ -166,7 +172,7 @@ const ItemPreviewDrawer: FC<IItemPreviewDrawer> = ({ open, onClose }) => {
             </b>
           )}
         </div> */}
-        <div className={styles.row}>
+        {/* <div className={styles.row}>
           Creator:{' '}
           {!!asset && !isTemplateAsset && (
             <b>
@@ -177,6 +183,13 @@ const ItemPreviewDrawer: FC<IItemPreviewDrawer> = ({ open, onClose }) => {
             </b>
           )}
           {!!asset && isTemplateAsset && <b>studio³</b>}
+        </div> */}
+        <div className={styles.row}>
+          File Size:{' '}
+          {!!asset && <b>{filesize(asset.file_size_bytes).toString()}</b>}
+        </div>
+        <div className={styles.row}>
+          File Type: {!!asset && <b>{asset.file_type.toUpperCase()}</b>}
         </div>
         {/* <div className={styles.row}>
           Tags: <b>Hello, World, Solana</b>
@@ -206,7 +219,6 @@ const ItemPreviewDrawer: FC<IItemPreviewDrawer> = ({ open, onClose }) => {
             Download
           </div>
         )}
-
         <div className={styles.button} onClick={handleDuplicate}>
           <IconButton>
             <FileCopySharp />

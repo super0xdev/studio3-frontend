@@ -8,7 +8,8 @@
   .panel {
     width: 80%;
     height: 80%;
-    background: $dark-100;
+    background: $dark-75;
+    border: 1px solid $gray-50;
     display: flex;
     align-items: center;
     box-sizing: border-box;
@@ -16,6 +17,7 @@
     column-gap: 40px;
     max-width: 900px;
     min-width: 700px;
+    border-radius: 8px;
 
     .file {
       display: none;
@@ -50,6 +52,7 @@
           flex-grow: 1;
           margin: 0;
           box-sizing: border-box;
+          border-radius: 8px;
 
           .button {
             width: 100%;
@@ -96,6 +99,7 @@
             flex-direction: column;
             position: relative;
             border: 1px solid $gray-200;
+            border-radius: 8px;
 
             &:global(.Mui-disabled) {
               background: rgba($gray-200, 0.2);
@@ -115,6 +119,7 @@
               color: $gray-200;
               padding: 2px 5px;
               font-size: 10px;
+              border-radius: 8px;
             }
           }
         }

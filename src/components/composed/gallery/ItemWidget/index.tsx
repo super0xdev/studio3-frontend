@@ -40,19 +40,17 @@ const ItemWidget: FC<IItemWidget> = ({
           <CircularProgress />
         )}
       </div>
-      <div className={styles.title}>{asset.file_name}</div>
-      <div className={styles.info}>
-        <div className={styles.meta}>
-          <div className={styles.row}>
-            <b>Date modified:</b>
-            {` ${new Date(asset.creation_timestamp * 1000).toLocaleString()}`}
+      <div className={styles.infoContainer}>
+        <div className={styles.title}>{asset.file_name}</div>
+        {/* <div className={styles.info}>
+          <div className={styles.meta}>
+            <div className={styles.row}>
+              <b>Date modified:</b>
+              {` ${new Date(asset.creation_timestamp * 1000).toLocaleString()}`}
+            </div>
           </div>
-          <div className={styles.row}>
-            <b>File size:</b>
-            {` ${filesize(asset.file_size_bytes).toString()}`}
-          </div>
-        </div>
-        <AccountCircleSharpIcon className={styles.avatar} />
+          <AccountCircleSharpIcon className={styles.avatar} />
+        </div> */}
       </div>
     </Card>
   );

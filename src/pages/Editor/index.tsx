@@ -7,6 +7,8 @@ import {
   appendNode,
   openDefaultEditor,
   PinturaNode,
+  createMarkupEditorShapeStyleControls,
+  createDefaultFontFamilyOptions,
   // insertNodeAfter,
 } from '@pqina/pintura';
 
@@ -52,6 +54,8 @@ export default function EditorPage() {
       ])
     );
 
+    const toastLoadingID = toast.loading('Saving...');
+
     fetchAPI(
       `${APP_API_URL}/${
         selectedAsset ? 'overwrite_multi_asset' : 'upload_multi_asset'
@@ -60,6 +64,8 @@ export default function EditorPage() {
       data,
       false
     ).then((res) => {
+      toast.dismiss(toastLoadingID);
+
       if (res.success) {
         toast.success('Saved successfully!');
         updateDisplayedAssets();
@@ -136,7 +142,6 @@ export default function EditorPage() {
       ...(editorRef.current.editor.imageDecoration ?? []),
       ...(editorRef.current.editor.imageRedaction ?? []),
     ];
-
     const selectedShape = shapesList.find(
       (shape) => shape.id === selectedShapeId
     );
@@ -184,7 +189,7 @@ export default function EditorPage() {
       createNode('Button', 'to-back', {
         disabled: isAtBackOfShapes,
         label: 'Move back',
-        icon: '<g fill="none" fill-rule="evenodd"><rect fill="currentColor" x="11" y="13" width="8" height="2" rx="1"/><rect fill="currentColor" x="9" y="17" width="10" height="2" rx="1"/><path d="M11.364 8H10a5 5 0 000 10M12 6.5L14.5 8 12 9.5z" stroke="currentColor" stroke-width=".125em" stroke-linecap="round"/></g>',
+        icon: '<g fill="none" fill-rule="evenodd"><rect transform="translate(24), scale(-1, 1)" fill="currentColor" x="11" y="13" width="8" height="2" rx="1"/><rect transform="translate(24), scale(-1, 1)" fill="currentColor" x="9" y="17" width="10" height="2" rx="1"/><path transform="translate(24), scale(-1, 1)" d="M11.364 8H10a5 5 0 000 10M12 6.5L14.5 8 12 9.5z" stroke="currentColor" stroke-width=".125em" stroke-linecap="round"/></g>',
         hideLabel: true,
         onclick: async () => {
           // don't do anything if it's already at the back
@@ -219,6 +224,8 @@ export default function EditorPage() {
           src={editorFileSrc}
           onClose={handleEditorHide}
           onDestroy={handleEditorHide}
+          annotateActiveTool="text"
+          annotateEnableButtonFlipVertical
           imageState={loadJSON(
             `${APP_ASSET_URL}${selectedAsset?.meta_file_path}`
           )}
@@ -229,6 +236,7 @@ export default function EditorPage() {
           willRenderToolbar={(toolbar: any /* env: any, redraw: any */) => {
             // call redraw to trigger a redraw of the editor state
             // attachSelectPhoto(toolbar);
+            // console.log({ toolbar });
             // TODO: this is where we can modify the "Done" button and add our own buttons
 
             return [...toolbar];
@@ -244,9 +252,22 @@ export default function EditorPage() {
 
             return customControls ?? [];
           }}
-          // modifies the `Stickers` options under `Decorate`
+          // modifies the `Stickers` options under `Annotate`
           willRenderShapePresetToolbar={(nodes: any, addPreset: any) => {
-            const stickers = ['🚀', '😄', '👍', '👎', '🪙', '💰'];
+            const stickers = [
+              '🚀',
+              '😄',
+              '👍',
+              '👎',
+              '💰',
+              '😍',
+              '💵',
+              '🤡',
+              '🎉',
+              '🤑',
+              '❤️',
+              '💔',
+            ];
 
             stickers.forEach((sticker) => {
               const button = createNode('Button', `${sticker}-button`, {
@@ -260,6 +281,28 @@ export default function EditorPage() {
             // return the new node tree
             return nodes;
           }}
+          markupEditorShapeStyleControls={createMarkupEditorShapeStyleControls({
+            fontFamilyOptions: [
+              // Add our custom fonts
+              ['Impact', 'Impact'],
+              ['Arial', 'Arial'],
+              ['Helvetica', 'Helvetica'],
+              ['Montserrat', 'Montserrat'],
+              ['Comic Sans MS', 'Comic Sans MS'],
+
+              // Add the default options
+              ...createDefaultFontFamilyOptions(),
+            ],
+            // Set absolute font size values
+            fontSizeOptions: [
+              4, 8, 16, 18, 20, 24, 30, 36, 48, 64, 72, 96, 144,
+            ],
+
+            // Set absolute line height values
+            lineHeightOptions: [
+              4, 8, 16, 18, 20, 24, 30, 36, 48, 64, 72, 96, 144,
+            ],
+          })}
         />
       ) : (
         <EditorOpenPanel onChange={handleAssetChange} />

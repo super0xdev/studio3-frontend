@@ -1,4 +1,5 @@
 import React, { FC, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import FolderOpenSharpIcon from '@mui/icons-material/FolderOpenSharp';
 import DescriptionSharpIcon from '@mui/icons-material/DescriptionSharp';
 import InsertDriveFileSharpIcon from '@mui/icons-material/InsertDriveFileSharp';
@@ -22,6 +23,7 @@ interface IEditorOpenPanel {
 }
 
 const EditorOpenPanel: FC<IEditorOpenPanel> = ({ onChange }) => {
+  const navigate = useNavigate();
   const opendAssets = useOpenedAssets();
   const updatePreviewSelectedId = useUpdatePreviewSelectedId();
   const appendOpenedAsset = useAppendOpenedAsset();
@@ -87,10 +89,12 @@ const EditorOpenPanel: FC<IEditorOpenPanel> = ({ onChange }) => {
               <FolderOpenSharpIcon />
               Open
             </Button>
-            <Button className={styles.action} disabled>
+            <Button
+              className={styles.action}
+              onClick={() => navigate('/templates')}
+            >
               <DescriptionSharpIcon />
-              Template
-              <small>Coming</small>
+              Templates
             </Button>
           </div>
         </section>

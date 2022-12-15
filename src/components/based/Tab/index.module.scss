@@ -1,12 +1,15 @@
 body {
   .tab {
     color: $gray-50;
+    transition: 0.2s all;
+    text-transform: uppercase;
+
     & * {
       font-family: $font-primary;
       font-weight: 300;
     }
-    text-transform: uppercase;
 
+    &:hover,
     &:global(.Mui-selected) {
       color: $white;
     }

@@ -1,24 +1,26 @@
 body {
   .widget {
-    padding: 24px;
+    // padding: 24px;
     background: $dark-50;
     border: 1px solid $dark-100;
     color: $white;
     border-radius: 0;
     font-family: $font-tertiary;
     font-weight: 300;
-    width: 300px;
+    width: 320px;
     height: 300px;
     color: $gray-50;
     transition: all 0.3s;
     display: flex;
     flex-direction: column;
-    row-gap: 20px;
+    // row-gap: 20px;
     cursor: pointer;
+    border-radius: 8px;
+    box-shadow: none;
 
     &.selected {
       border: 1px solid $gray-100;
-      box-shadow: $widget-shadow;
+      // box-shadow: $widget-shadow;
 
       .meta {
         color: $gray-150;
@@ -39,13 +41,18 @@ body {
       display: flex;
       align-items: center;
       justify-content: center;
-      padding-bottom: 10px;
+      // padding-bottom: 10px;
 
       img {
         width: 100%;
         max-height: 200px;
-        border: 1px solid $dark-150;
+        // border: 1px solid $dark-150;
       }
+    }
+
+    .infoContainer {
+      padding: 24px;
+      // margin-top: auto;
     }
 
     .title {
