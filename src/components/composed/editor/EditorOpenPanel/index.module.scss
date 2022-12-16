@@ -52,12 +52,13 @@
           flex-grow: 1;
           margin: 0;
           box-sizing: border-box;
-          border-radius: 8px;
+          border-radius: 0;
 
           .button {
             width: 100%;
             justify-content: flex-start;
             box-sizing: border-box;
+            border-radius: 0;
             border-bottom: 1px dotted $dark-200;
 
             .filename {

@@ -1,6 +1,7 @@
 body {
   .widget {
-    // padding: 24px;
+    padding: 12px;
+    padding-bottom: 0;
     background: $dark-50;
     border: 1px solid $dark-100;
     color: $white;
@@ -8,7 +9,7 @@ body {
     font-family: $font-tertiary;
     font-weight: 300;
     width: 320px;
-    height: 300px;
+    height: 264px;
     color: $gray-50;
     transition: all 0.3s;
     display: flex;
@@ -51,13 +52,18 @@ body {
     }
 
     .infoContainer {
-      padding: 24px;
+      padding: 12px;
+      padding-top: 24px;
       // margin-top: auto;
-    }
 
-    .title {
-      transition: all 0.3s;
-      font-family: $font-secondary;
+      .title {
+        transition: all 0.3s;
+        font-family: $font-secondary;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        min-width: 0;
+      }
     }
 
     .info {

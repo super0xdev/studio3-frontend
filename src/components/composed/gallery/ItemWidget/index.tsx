@@ -1,9 +1,9 @@
 import React, { FC } from 'react';
 import clsx from 'clsx';
 import { Card } from '@mui/material';
-import { filesize } from 'filesize';
+// import { filesize } from 'filesize';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
-import AccountCircleSharpIcon from '@mui/icons-material/AccountCircleSharp';
+// import AccountCircleSharpIcon from '@mui/icons-material/AccountCircleSharp';
 
 import styles from './index.module.scss';
 

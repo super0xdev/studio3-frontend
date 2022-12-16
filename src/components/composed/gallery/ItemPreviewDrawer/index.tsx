@@ -3,7 +3,8 @@ import clsx from 'clsx';
 import { saveAs } from 'file-saver';
 import CloseSharpIcon from '@mui/icons-material/CloseSharp';
 import ArticleSharpIcon from '@mui/icons-material/ArticleSharp';
-import OpenInNewSharpIcon from '@mui/icons-material/OpenInNewSharp';
+import NoteAltOutlinedIcon from '@mui/icons-material/NoteAltOutlined';
+// import OpenInNewSharpIcon from '@mui/icons-material/OpenInNewSharp';
 import {
   EditSharp,
   FileDownloadSharp,
@@ -221,7 +222,7 @@ const ItemPreviewDrawer: FC<IItemPreviewDrawer> = ({ open, onClose }) => {
         )}
         <div className={styles.button} onClick={handleDuplicate}>
           <IconButton>
-            <FileCopySharp />
+            {isTemplateAsset ? <NoteAltOutlinedIcon /> : <FileCopySharp />}
           </IconButton>
           {isTemplateAsset ? 'Add to Projects' : 'Duplicate'}
         </div>
