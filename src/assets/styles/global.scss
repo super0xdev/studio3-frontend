@@ -43,6 +43,7 @@ body {
 
 body * {
   font-family: $font-primary;
+  box-sizing: border-box;
 }
 
 $sidebar-width: 120px;
