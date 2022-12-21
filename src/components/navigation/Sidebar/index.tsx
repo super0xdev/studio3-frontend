@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import styles from './index.module.scss';
 
 import { APP_ROUTES } from '@/config/routes';
-import LogoImage from '@/assets/images/logo.png';
+import LogoImage from '@/assets/images/logo-svg.svg';
 import Tabs from '@/components/based/Tabs';
 import Tab from '@/components/based/Tab';
 import AccountIndicator from '@/components/navigation/AccountIndicator';

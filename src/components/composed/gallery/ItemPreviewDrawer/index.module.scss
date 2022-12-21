@@ -11,8 +11,6 @@
   background: $dark-50;
   // This is so the left border doesn't fade as it hits the top and bottom
   border-left: 1px solid $dark-150;
-  border-top: 1px solid $dark-150;
-  border-bottom: 1px solid $dark-150;
   z-index: 99;
   box-sizing: border-box;
   transition: all 0.3s;

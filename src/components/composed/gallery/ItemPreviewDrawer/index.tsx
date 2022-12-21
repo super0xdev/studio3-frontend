@@ -150,18 +150,26 @@ const ItemPreviewDrawer: FC<IItemPreviewDrawer> = ({ open, onClose }) => {
       </section>
       <section className={styles.details}>
         <div className={styles.label}>Information</div>
-        <div className={styles.row}>
-          Date Created:{' '}
-          {!!asset && (
-            <b>{new Date(asset.creation_timestamp * 1000).toLocaleString()}</b>
-          )}
-        </div>
-        <div className={styles.row}>
-          Last Modified:{' '}
-          {!!asset && (
-            <b>{new Date(asset.update_timestamp * 1000).toLocaleString()}</b>
-          )}
-        </div>
+        {!isTemplateAsset && (
+          <>
+            <div className={styles.row}>
+              Date Created:{' '}
+              {!!asset && (
+                <b>
+                  {new Date(asset.creation_timestamp * 1000).toLocaleString()}
+                </b>
+              )}
+            </div>
+            <div className={styles.row}>
+              Last Modified:{' '}
+              {!!asset && (
+                <b>
+                  {new Date(asset.update_timestamp * 1000).toLocaleString()}
+                </b>
+              )}
+            </div>
+          </>
+        )}
         {/* The user doesn't need this info */}
         {/* <div className={styles.row}>
           Confirmed:{' '}
@@ -173,6 +181,11 @@ const ItemPreviewDrawer: FC<IItemPreviewDrawer> = ({ open, onClose }) => {
             </b>
           )}
         </div> */}
+        {isTemplateAsset && (
+          <div className={styles.row}>
+            Creator: <b>studio³</b>
+          </div>
+        )}
         {/* <div className={styles.row}>
           Creator:{' '}
           {!!asset && !isTemplateAsset && (
