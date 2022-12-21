@@ -44,8 +44,11 @@ const EditModal: FC<IEditModal> = ({ open, onClose }) => {
     if (!selectedAsset) return;
     if (!signMessage) return;
 
+    const timestamp = new Date().getTime().toString();
     const signature = await signMessage(
-      new TextEncoder().encode(new Date().getTime().toString())
+      new TextEncoder().encode(
+        `Please sign this message to make updates to this design\n\nTimestamp: ${timestamp}`
+      )
     );
 
     fetchAPI(`${APP_API_URL}/update_asset_metadata`, 'POST', {
