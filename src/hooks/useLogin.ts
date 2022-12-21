@@ -38,9 +38,7 @@ export default function useLogin() {
     let signature;
     try {
       signature = await signMessage(
-        new TextEncoder().encode(
-          `Please sign this message to login to Studio 3\n\nTimestamp: ${timestamp.toString()}`
-        )
+        new TextEncoder().encode(`${timestamp.toString()}`)
       );
     } catch (error) {
       updateIsAuthLoading(false);
