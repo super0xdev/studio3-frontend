@@ -23,7 +23,7 @@ import {
 import useFetchAPI from '@/hooks/useFetchAPI';
 import PageContainer from '@/components/navigation/PageContainer';
 import EditorOpenPanel from '@/components/composed/editor/EditorOpenPanel';
-import { loadJSON, strToBuffer } from '@/global/utils';
+import { blobToBase64, loadJSON, strToBuffer } from '@/global/utils';
 // import WatermarkImage from '@/assets/images/watermark.png';
 
 export default function EditorPage() {
@@ -47,6 +47,23 @@ export default function EditorPage() {
       data.append('asset_uid', selectedAsset.uid.toString());
       data.append('file_key', selectedAsset.file_path);
     }
+
+    const imageState = { ...detail.imageState };
+
+    imageState.annotation = await Promise.all(
+      imageState.annotation.map(async (shape: any) => {
+        // this is not a text shape so skip
+        if (
+          !shape.backgroundImage ||
+          !shape.backgroundImage.startsWith('blob:')
+        )
+          return shape;
+
+        shape.backgroundImage = await blobToBase64(shape.backgroundImage);
+        return shape;
+      })
+    );
+
     data.append(
       'meta',
       new Blob([
