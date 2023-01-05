@@ -20,6 +20,7 @@ import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
 import EditModal from '../EditModal';
+import ConfirmModal from '../ConfirmModal';
 
 import styles from './index.module.scss';
 
@@ -29,7 +30,11 @@ import {
   usePreviewSelectedAsset,
   useUpdateDisplayedAssets,
 } from '@/state/gallery/hooks';
-import { APP_API_URL, TEMPLATE_USER_ID } from '@/global/constants';
+import {
+  APP_API_URL,
+  CONFIRM_MODAL_INFO,
+  TEMPLATE_USER_ID,
+} from '@/global/constants';
 import useFetchAPI from '@/hooks/useFetchAPI';
 import {
   useAppendOpenedAsset,
@@ -53,6 +58,11 @@ const ItemPreviewDrawer: FC<IItemPreviewDrawer> = ({ open, onClose }) => {
   const removeOpenedAsset = useRemoveOpenedAsset();
   // const purchaseAsset = usePurchaseAsset();
   const [editModalOpend, setEditModalOpened] = useState(false);
+  const [confirmModalOpened, setConfirmModalOpened] = useState(false);
+  const [confirmModalTitle, setConfirmModalTitle] = useState('');
+  const [confirmModalContent, setConfirmModalContent] = useState('');
+  const [confirmModalSubmitText, setConfirmModalSubmitText] = useState('');
+
   const { url: processedImageUrl, content: processedImageContent } =
     useProcessImage(asset);
 
@@ -68,6 +78,33 @@ const ItemPreviewDrawer: FC<IItemPreviewDrawer> = ({ open, onClose }) => {
   };
 
   const handleDelete = () => {
+    setConfirmModalTitle(CONFIRM_MODAL_INFO.DELETE.title);
+    setConfirmModalContent(CONFIRM_MODAL_INFO.DELETE.content);
+    setConfirmModalSubmitText(CONFIRM_MODAL_INFO.DELETE.submit);
+    setConfirmModalOpened(true);
+  };
+
+  const handleDuplicate = () => {
+    setConfirmModalTitle(CONFIRM_MODAL_INFO.DUPLICATE.title);
+    setConfirmModalContent(CONFIRM_MODAL_INFO.DUPLICATE.content);
+    setConfirmModalSubmitText(CONFIRM_MODAL_INFO.DUPLICATE.submit);
+    setConfirmModalOpened(true);
+  };
+
+  const handleConfirm = () => {
+    switch (confirmModalTitle) {
+      case CONFIRM_MODAL_INFO.DELETE.title:
+        handleProcessDelete();
+        break;
+      case CONFIRM_MODAL_INFO.DUPLICATE.title:
+        handleProcessDuplicate();
+        break;
+      default:
+    }
+    setConfirmModalOpened(false);
+  };
+
+  const handleProcessDelete = () => {
     if (!asset) return;
     fetchAPI(
       `${APP_API_URL}/delete_asset`,
@@ -105,7 +142,7 @@ const ItemPreviewDrawer: FC<IItemPreviewDrawer> = ({ open, onClose }) => {
   //   console.log(tx);
   // };
 
-  const handleDuplicate = () => {
+  const handleProcessDuplicate = () => {
     if (!asset) return;
     fetchAPI(`${APP_API_URL}/duplicate_multi_asset`, 'POST', {
       asset_uid: asset.uid,
@@ -123,6 +160,10 @@ const ItemPreviewDrawer: FC<IItemPreviewDrawer> = ({ open, onClose }) => {
     });
   };
 
+  const handleConfirmClose = () => {
+    setConfirmModalOpened(false);
+  };
+
   return (
     <div className={clsx(styles.drawer, { [styles.opened]: open })}>
       <IconButton size="small" className={styles.close} onClick={onClose}>
@@ -131,6 +172,14 @@ const ItemPreviewDrawer: FC<IItemPreviewDrawer> = ({ open, onClose }) => {
       <EditModal
         open={editModalOpend}
         onClose={() => setEditModalOpened(false)}
+      />
+      <ConfirmModal
+        title={confirmModalTitle}
+        content={confirmModalContent}
+        open={confirmModalOpened}
+        submitText={confirmModalSubmitText}
+        onClose={handleConfirmClose}
+        onConfirm={handleConfirm}
       />
       <section className={styles.heading}>
         <ArticleSharpIcon /> Design Preview

@@ -29,7 +29,7 @@ const Dialog: FC<IDialog> = ({
           <IconButton
             size="small"
             className={styles.close}
-            onClick={() => onClose({}, 'backdropClick')}
+            onClick={() => onClose({}, 'escapeKeyDown')}
           >
             <CloseSharpIcon />
           </IconButton>

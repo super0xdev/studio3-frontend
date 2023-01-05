@@ -7,10 +7,25 @@ export const TOKEN_LIST = [
   'DUSTawucrTsGU8hcqRdHDCbuYhCPADMLM2VcCb8VnFnQ', // DUST
 ];
 
-export const APP_API_URL = 'https://dev.studio3-dev.com/';
+export const APP_API_URL = 'https://api.studio-3.xyz';
 
 export const APP_ASSET_URL =
   'https://d3-studio-assets.s3.us-east-2.amazonaws.com/';
 
 // TODO: this is likely not the best way to check if a design is a template - this UID may change
 export const TEMPLATE_USER_ID = 5574987670839803000;
+
+export const CONFIRM_MODAL_INFO = {
+  DELETE: {
+    title: 'Design Deletion Confirmation',
+    content:
+      'Are you sure you want to delete this design? This action cannot be undone.',
+    submit: 'Delete',
+  },
+  DUPLICATE: {
+    title: 'Design Duplication Confirmation',
+    content:
+      'Are you sure you want to duplicate this design? This will create a new file in your library with the exact same design.',
+    submit: 'Duplicate',
+  },
+};
