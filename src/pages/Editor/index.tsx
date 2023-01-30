@@ -247,8 +247,8 @@ export default function EditorPage() {
             `${APP_ASSET_URL}${selectedAsset?.meta_file_path}`
           )}
           enableDropImage
-          enableMoveTool
           enablePasteImage
+          enableMoveTool
           stickerEnableButtonFlipVertical
           // modifies the controls shown when clicking on a shape
           willRenderToolbar={(toolbar: any /* env: any, redraw: any */) => {
