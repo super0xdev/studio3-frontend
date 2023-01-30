@@ -369,7 +369,7 @@ const ItemPreviewDrawer: FC<IItemPreviewDrawer> = ({ open, onClose }) => {
           )}
         </div>
         <div className={styles.title}>
-          {!!asset && splitFileName(asset.file_name)[0]}
+          {!!asset && (splitFileName(asset.file_name)[0] || asset.file_name)}
         </div>
         {/* <div className={styles.meta}>
           {!!asset && filesize(asset.file_size_bytes).toString()}
