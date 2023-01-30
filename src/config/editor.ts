@@ -24,7 +24,7 @@ const editorSettings = getEditorDefaults({
 // reorganize utils and remove the ones we don't want
 const fixedUtils = [
   'annotate',
-  'decorate', // this is the same as annoatate really. Leaving it here in case we would want it back
+  // 'decorate', // this is the same as annoatate really. Leaving it here in case we would want it back
   'finetune',
   'redact',
   'crop',
