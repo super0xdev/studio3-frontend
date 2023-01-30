@@ -24,6 +24,7 @@ import {
 } from '@/state/gallery/hooks';
 import { useAuthToken } from '@/state/application/hooks';
 import Button from '@/components/based/Button';
+import { AssetInfoType } from '@/global/types';
 
 export default function GalleryPage({
   isTemplates = false,
@@ -39,7 +40,10 @@ export default function GalleryPage({
   const displayedAssets = isTemplates ? templateAssets : userAssets;
   const navigate = useNavigate();
   const [exportModalOpened, setExportModalOpened] = useState<boolean>(false);
-
+  const [userImages, setUserImages] = useState<AssetInfoType[]>([]);
+  const [templateImages, setTemplateImages] = useState<AssetInfoType[]>([]);
+  const [userLoading, setUserLoading] = useState<boolean>(false);
+  const [templateLoading, setTemplateLoading] = useState<boolean>(false);
   const handleUpdateDisplayedAssets = useUpdateDisplayedAssets();
   const handleUpdateTemplateAssets = useUpdateTemplateAssets();
 
@@ -51,6 +55,43 @@ export default function GalleryPage({
   const handleCreate = () => {
     navigate('/editor');
   };
+
+  function sleep(ms: number) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
+  useEffect(() => {
+    if (templateLoading) return;
+    if (!isTemplates) return;
+    const loadImages = async () => {
+      for (const item of templateAssets) {
+        if (!isTemplates) break;
+        await sleep(200);
+        setTemplateImages((p) => [...p, item]);
+      }
+    };
+    setTemplateLoading(true);
+    loadImages();
+    setTemplateLoading(false);
+    return () => setTemplateImages([]);
+  }, [isTemplates, templateAssets]);
+
+  useEffect(() => {
+    if (userLoading) return;
+    setUserImages([]);
+    if (!!isTemplates) return;
+    const loadImages = async () => {
+      for (const item of userAssets) {
+        if (!!isTemplates) break;
+        await sleep(200);
+        setUserImages((p) => [...p, item]);
+      }
+    };
+    setUserLoading(true);
+    loadImages();
+    setUserLoading(false);
+    return () => setUserImages([]);
+  }, [isTemplates, userAssets]);
 
   return (
     <PageContainer
@@ -70,14 +111,25 @@ export default function GalleryPage({
         }
       />
       {displayedAssets && displayedAssets.length ? (
-        displayedAssets.map((asset) => (
-          <ItemWidget
-            key={asset.uid}
-            asset={asset}
-            selected={previewSelectedId === asset.uid}
-            onClick={() => updatePreviewSelectedId(asset.uid)}
-          />
-        ))
+        isTemplates ? (
+          templateImages.map((asset) => (
+            <ItemWidget
+              key={asset.uid}
+              asset={asset}
+              selected={previewSelectedId === asset.uid}
+              onClick={() => updatePreviewSelectedId(asset.uid)}
+            />
+          ))
+        ) : (
+          userImages.map((asset) => (
+            <ItemWidget
+              key={asset.uid}
+              asset={asset}
+              selected={previewSelectedId === asset.uid}
+              onClick={() => updatePreviewSelectedId(asset.uid)}
+            />
+          ))
+        )
       ) : isLoading ? (
         <PropagateLoader color="#ffffff55" />
       ) : (

@@ -36,14 +36,18 @@ module.exports = {
     },
     configure: {
       resolve: {
-        fallback: {
-          stream: require.resolve('stream-browserify'),
-          crypto: require.resolve('crypto-browserify'),
-          buffer: require.resolve('buffer'),
-          fs: false,
-          path: false,
-          os: false,
-        },
+        fallback: Object.assign({}, {
+          "assert": require.resolve("assert"),
+          "crypto": require.resolve("crypto-browserify"),
+          "http": require.resolve("stream-http"),
+          "https": require.resolve("https-browserify"),
+          "os": require.resolve("os-browserify"),
+          "path": require.resolve("path-browserify"),
+          'process/browser': require.resolve('process/browser'),
+          "stream": require.resolve("stream-browserify"),
+          "url": require.resolve("url"),
+          "zlib": require.resolve("browserify-zlib")
+        })
       },
       ignoreWarnings: [
         // Ignore warnings raised by source-map-loader.
@@ -63,10 +67,19 @@ module.exports = {
           );
         },
       ],
+
       /* Any webpack configuration options: https://webpack.js.org/configuration */
     },
     // configure: (webpackConfig, { env, paths }) => {
     //   return webpackConfig;
     // },
   },
+  module: {
+    rules: [
+      {
+        test: /node_modules[\\\/]https-proxy-agent[\\\/]/,
+        use: 'null-loader',
+      }
+    ]
+  }
 };

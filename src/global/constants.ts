@@ -28,4 +28,9 @@ export const CONFIRM_MODAL_INFO = {
       'Are you sure you want to duplicate this design? This will create a new file in your library with the exact same design.',
     submit: 'Duplicate',
   },
+  DOWNLOAD: {
+    title: 'Select Download Type',
+    content: 'Please select method to download this image',
+    submit: 'OK',
+  },
 };

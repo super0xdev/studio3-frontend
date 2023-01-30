@@ -18,9 +18,12 @@ export const emojiToUni = (str: string) => {
 };
 
 export const uniToEmoji = (str: string) => {
-  return str.replace(/\[e-([0-9a-fA-F]+)\]/g, (match, hex) =>
-    String.fromCodePoint(Number.parseInt(hex, 16))
-  );
+  // return str.replace(/\[e-([0-9a-fA-F]+)\]/g, (match, hex) =>
+  //   String.fromCodePoint(Number.parseInt(hex, 16))
+  // );
+  return str.replace(/\\u[\dA-F]{4}/gi, function (match) {
+    return String.fromCharCode(parseInt(match.replace(/\\u/g, ''), 16));
+  });
 };
 
 export const strToBuffer = (str: string) => {
@@ -58,7 +61,8 @@ export function loadJSON(filePath: string) {
   // Load json file;
   const json = loadTextFileAjaxSync(filePath, 'application/json;charset=UTF-8');
   // Parse json
-  return json ? JSON.parse(uniToEmoji(json)) : {};
+  return json ? JSON.parse(uniToEmoji(json)) : {}; // Here is error
+  // return {};
 }
 
 export const blobToBase64 = (url: string) => {

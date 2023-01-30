@@ -25,8 +25,8 @@ const ItemWidget: FC<IItemWidget> = ({
   onClick,
   onDoubleClick,
 }) => {
-  const { url: processedImage } = useProcessImage(asset);
-
+  const { url: processedImg } = useProcessImage(asset);
+  console.log(processedImg);
   return (
     <Card
       className={clsx(styles.widget, { [styles.selected]: selected })}
@@ -34,8 +34,8 @@ const ItemWidget: FC<IItemWidget> = ({
       onDoubleClick={onDoubleClick}
     >
       <div className={styles.imageWrapper}>
-        {processedImage ? (
-          <LazyLoadImage src={processedImage} effect="blur" />
+        {processedImg ? (
+          <LazyLoadImage src={processedImg} effect="blur" />
         ) : (
           <CircularProgress />
         )}
