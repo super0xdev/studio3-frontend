@@ -8,6 +8,7 @@ import { LazyLoadImage } from 'react-lazy-load-image-component';
 import styles from './index.module.scss';
 
 import { AssetInfoType } from '@/global/types';
+import { splitFileName } from '@/global/utils';
 import CircularProgress from '@/components/based/CircularProgress';
 import useProcessImage from '@/hooks/useProcessImage';
 
@@ -41,7 +42,9 @@ const ItemWidget: FC<IItemWidget> = ({
         )}
       </div>
       <div className={styles.infoContainer}>
-        <div className={styles.title}>{asset.file_name}</div>
+        <div className={styles.title}>
+          {splitFileName(asset.file_name)[0] || asset.file_name}
+        </div>
         {/* <div className={styles.info}>
           <div className={styles.meta}>
             <div className={styles.row}>
