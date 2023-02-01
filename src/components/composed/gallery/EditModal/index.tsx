@@ -80,7 +80,7 @@ const EditModal: FC<IEditModal> = ({ open, onClose }) => {
         <div className={styles.controls}>
           <TextField
             className={styles.input}
-            defaultValue={fileNameInfo}
+            defaultValue={!!fileNameInfo && fileNameInfo[0] + fileNameInfo[1]}
             onChange={handleInputChange}
           />
         </div>

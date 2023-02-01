@@ -262,7 +262,7 @@ const ItemPreviewDrawer: FC<IItemPreviewDrawer> = ({ open, onClose }) => {
             const creator = metadata.creator;
             if (!name || !symbol || !description || !royalty || !creator) {
               alert('Please fill all fields');
-              throw 'Please fill all fields';
+              // throw 'Please fill all fields';
             }
             try {
               const creators = [
@@ -284,15 +284,17 @@ const ItemPreviewDrawer: FC<IItemPreviewDrawer> = ({ open, onClose }) => {
               );
               console.log(mint);
               toast.success(`Minted to ${mint}`);
+              handleDownloadClose();
             } catch (err) {
               console.log(err);
               toast.error('Mint failed');
+              handleDownloadClose();
             }
           } else {
             toast.error('Payment failed');
+            handleDownloadClose();
           }
         });
-        handleDownloadClose();
         break;
       default:
         handleDownloadClose();

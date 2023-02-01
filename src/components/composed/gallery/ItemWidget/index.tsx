@@ -10,7 +10,7 @@ import styles from './index.module.scss';
 import { AssetInfoType } from '@/global/types';
 import { splitFileName } from '@/global/utils';
 import CircularProgress from '@/components/based/CircularProgress';
-import useProcessImage from '@/hooks/useProcessImage';
+import useProcessThumbnail from '@/hooks/useProcessThumbnail';
 
 interface IItemWidget {
   title?: string;
@@ -26,8 +26,7 @@ const ItemWidget: FC<IItemWidget> = ({
   onClick,
   onDoubleClick,
 }) => {
-  const { url: processedImg } = useProcessImage(asset);
-  console.log(processedImg);
+  const { url: processedImg } = useProcessThumbnail(asset);
   return (
     <Card
       className={clsx(styles.widget, { [styles.selected]: selected })}
