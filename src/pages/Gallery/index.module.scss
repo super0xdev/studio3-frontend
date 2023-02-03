@@ -1,3 +1,30 @@
+.search {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+
+  .input {
+    width: 300px;
+    padding: 8px;
+    border-radius: 6px;
+  }
+
+  .submit {
+    background: $gray-200;
+    color: $dark-50 !important;
+
+    &:disabled {
+      cursor: not-allowed;
+    }
+  }
+}
+
+.tags {
+  margin-bottom: 24px;
+}
+
 .gallery {
   display: flex;
   flex-direction: row;

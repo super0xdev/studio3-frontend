@@ -84,3 +84,10 @@ export const blobToBase64 = (url: string) => {
     };
   });
 };
+
+export const filterByName = (keyword: string, images: any[]) => {
+  if (keyword === '') return images;
+  return images.filter((image) =>
+    image.file_name.toLowerCase().includes(keyword.toLowerCase())
+  );
+};
