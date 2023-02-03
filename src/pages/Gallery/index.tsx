@@ -66,12 +66,28 @@ export default function GalleryPage({
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
+  const loadImages = async (images: any[]) => {
+    let i = 0;
+    setTemplateImages([]);
+    for (const item of images) {
+      if (!isTemplates) break;
+      await sleep(200);
+      if (i < 15) {
+        setTemplateImages((p) => [...p, item]);
+      } else {
+        setTemplateImages((p) => [...p, ...images.slice(15)]);
+        break;
+      }
+      i++;
+    }
+  };
+
   function search() {
     if (!searchRef.current) return;
     const result = filterByName(searchRef.current.value, templateAssets);
     console.log(result);
     setTemplateLoading(false);
-    setTemplateImages(result);
+    loadImages(result);
   }
 
   function tagSearch(obj: any) {
@@ -80,12 +96,12 @@ export default function GalleryPage({
     const result = filterByName(tagName, templateAssets);
     console.log(result);
     setTemplateLoading(false);
-    setTemplateImages(result);
+    loadImages(result);
   }
 
   function tagAll() {
     setTemplateLoading(false);
-    setTemplateImages(templateAssets);
+    loadImages(templateAssets);
   }
 
   useEffect(() => {
