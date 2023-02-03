@@ -157,7 +157,7 @@ export default function GalleryPage({
       {!!isTemplates && (
         <>
           <div className={styles.search}>
-            <input className={styles.input} ref={searchRef} onChange={search} />
+            <input className={styles.input} ref={searchRef} />
             <Button className={styles.submit} onClick={search}>
               Search
             </Button>
