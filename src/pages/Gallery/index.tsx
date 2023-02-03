@@ -92,10 +92,17 @@ export default function GalleryPage({
     if (templateLoading) return;
     if (!isTemplates) return;
     const loadImages = async () => {
+      let i = 0;
       for (const item of templateAssets) {
         if (!isTemplates) break;
         await sleep(200);
-        setTemplateImages((p) => [...p, item]);
+        if (i < 15) {
+          setTemplateImages((p) => [...p, item]);
+        } else {
+          setTemplateImages((p) => [...p, ...templateAssets.slice(15)]);
+          break;
+        }
+        i++;
       }
     };
     setTemplateLoading(true);
@@ -110,10 +117,17 @@ export default function GalleryPage({
     setUserImages([]);
     if (!!isTemplates) return;
     const loadImages = async () => {
+      let i = 0;
       for (const item of userAssets) {
         if (!!isTemplates) break;
         await sleep(200);
-        setUserImages((p) => [...p, item]);
+        if (i < 15) {
+          setUserImages((p) => [...p, item]);
+        } else {
+          setUserImages((p) => [...p, ...userAssets.slice(15)]);
+          break;
+        }
+        i++;
       }
     };
     setUserLoading(true);
@@ -143,7 +157,7 @@ export default function GalleryPage({
       {!!isTemplates && (
         <>
           <div className={styles.search}>
-            <input className={styles.input} ref={searchRef} />
+            <input className={styles.input} ref={searchRef} onChange={search} />
             <Button className={styles.submit} onClick={search}>
               Search
             </Button>
