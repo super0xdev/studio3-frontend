@@ -228,7 +228,14 @@ const ItemPreviewDrawer: FC<IItemPreviewDrawer> = ({ open, onClose }) => {
     switch (option) {
       case '1':
         const data = new FormData();
-        data.append('image', processedImageContent, asset.file_name);
+        let file_name;
+        if (splitFileName(asset.file_name)[0] === '') {
+          file_name = asset.file_name + '.' + asset.file_type;
+        } else {
+          file_name = asset.file_name;
+        }
+        console.log(file_name);
+        data.append('image', processedImageContent, file_name);
         const res = await fetchAPI(
           `${APP_API_URL}/export_asset`,
           'POST',
@@ -242,6 +249,7 @@ const ItemPreviewDrawer: FC<IItemPreviewDrawer> = ({ open, onClose }) => {
       case '2':
         transfer(0.25).then(async (isPaid) => {
           if (isPaid) {
+            console.log(asset.file_name);
             saveAs(processedImageContent, asset.file_name);
           } else {
             toast.error('Payment failed');

@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState, useRef, useMemo } from 'react';
 import clsx from 'clsx';
+import AnimateHeight from 'react-animate-height';
 import AllInboxSharpIcon from '@mui/icons-material/AllInboxSharp';
 import AddSharpIcon from '@mui/icons-material/AddSharp';
 import { useNavigate } from 'react-router-dom';
@@ -41,6 +42,8 @@ export default function GalleryPage({
   const userAssets = useDisplayedAssets();
   const templateAssets = useTemplateAssets();
   const navigate = useNavigate();
+  const [isTagsActved, setIsTagsActved] = useState<boolean>(false);
+  const [activedTag, setActivedTag] = useState<number>(0);
   const [exportModalOpened, setExportModalOpened] = useState<boolean>(false);
   const [userImages, setUserImages] = useState<AssetInfoType[]>([]);
   const [templateImages, setTemplateImages] = useState<AssetInfoType[]>([]);
@@ -90,7 +93,8 @@ export default function GalleryPage({
     loadImages(result);
   }
 
-  function tagSearch(obj: any) {
+  function tagSwitch(obj: any, index: number) {
+    setActivedTag(index);
     const tagName = obj?.innerText;
     if (!tagName) return;
     const result = filterByName(tagName, templateAssets);
@@ -99,10 +103,10 @@ export default function GalleryPage({
     loadImages(result);
   }
 
-  function tagAll() {
-    setTemplateLoading(false);
-    loadImages(templateAssets);
-  }
+  // function tagAll() {
+  //   setTemplateLoading(false);
+  //   loadImages(templateAssets);
+  // }
 
   useEffect(() => {
     if (templateLoading) return;
@@ -171,63 +175,75 @@ export default function GalleryPage({
         }
       />
       {!!isTemplates && (
-        <>
-          <div className={styles.search}>
-            <input className={styles.input} ref={searchRef} />
-            <Button className={styles.submit} onClick={search}>
-              Search
-            </Button>
-          </div>
+        <div className={styles.search}>
+          <input className={styles.input} ref={searchRef} />
+          <Button className={styles.button} onClick={search}>
+            Search
+          </Button>
+          <Button
+            className={isTagsActved ? styles.active_button : styles.button}
+            onClick={() => setIsTagsActved((p) => !p)}
+          >
+            Filters
+          </Button>
+        </div>
+      )}
+      <div className={styles.gallery}>
+        <AnimateHeight duration={500} height={isTagsActved ? 'auto' : 0}>
           <div className={styles.tags}>
-            <Button onClick={tagAll}>All</Button>
             {TEMPLATE_TAGS.map((tag, index) => (
               <Button
                 key={index}
-                onClick={(e) => tagSearch(e.target as HTMLButtonElement)}
+                className={
+                  index === activedTag ? styles.active_button : styles.button
+                }
+                onClick={(e) => tagSwitch(e.target as HTMLButtonElement, index)}
               >
                 {tag}
               </Button>
             ))}
           </div>
-        </>
-      )}
-      <div className={styles.gallery}>
-        {displayedAssets && displayedAssets.length ? (
-          isTemplates ? (
-            templateImages.map((asset) => (
-              <ItemWidget
-                key={asset.uid}
-                asset={asset}
-                selected={previewSelectedId === asset.uid}
-                onClick={() => updatePreviewSelectedId(asset.uid)}
-              />
-            ))
+        </AnimateHeight>
+        <div className={styles.images}>
+          {displayedAssets && displayedAssets.length ? (
+            isTemplates ? (
+              templateImages.map((asset) => (
+                <ItemWidget
+                  key={asset.uid}
+                  asset={asset}
+                  selected={previewSelectedId === asset.uid}
+                  onClick={() => updatePreviewSelectedId(asset.uid)}
+                />
+              ))
+            ) : (
+              userImages.map((asset) => (
+                <ItemWidget
+                  key={asset.uid}
+                  asset={asset}
+                  selected={previewSelectedId === asset.uid}
+                  onClick={() => updatePreviewSelectedId(asset.uid)}
+                />
+              ))
+            )
+          ) : isLoading ? (
+            <PropagateLoader color="#ffffff55" />
+          ) : isTemplates ? (
+            <div>No matched Templates</div>
           ) : (
-            userImages.map((asset) => (
-              <ItemWidget
-                key={asset.uid}
-                asset={asset}
-                selected={previewSelectedId === asset.uid}
-                onClick={() => updatePreviewSelectedId(asset.uid)}
-              />
-            ))
-          )
-        ) : isLoading ? (
-          <PropagateLoader color="#ffffff55" />
-        ) : isTemplates ? (
-          <div>No matched Templates</div>
-        ) : (
-          <div className={styles.placeholder}>
-            <AllInboxSharpIcon className={styles.icon} />
-            <div className={styles.title}>You don’t have any designs yet.</div>
-            <div className={styles.description}>
-              Create a new one to get started!
+            <div className={styles.placeholder}>
+              <AllInboxSharpIcon className={styles.icon} />
+              <div className={styles.title}>
+                You don’t have any designs yet.
+              </div>
+              <div className={styles.description}>
+                Create a new one to get started!
+              </div>
+              <Button className={styles.create} onClick={handleCreate}>
+                <AddSharpIcon /> Create a design
+              </Button>
             </div>
-            <Button className={styles.create} onClick={handleCreate}>
-              <AddSharpIcon /> Create a design
-            </Button>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </PageContainer>
   );
