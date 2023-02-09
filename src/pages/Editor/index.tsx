@@ -248,6 +248,7 @@ export default function EditorPage() {
           )}
           enableDropImage
           enablePasteImage
+          enableMoveTool
           stickerEnableButtonFlipVertical
           // modifies the controls shown when clicking on a shape
           willRenderToolbar={(toolbar: any /* env: any, redraw: any */) => {
