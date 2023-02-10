@@ -246,7 +246,6 @@ export default function EditorPage() {
           imageState={loadJSON(
             `${APP_ASSET_URL}${selectedAsset?.meta_file_path}`
           )}
-          enableDropImage
           enablePasteImage
           enableMoveTool
           stickerEnableButtonFlipVertical
