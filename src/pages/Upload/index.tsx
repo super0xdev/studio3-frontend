@@ -61,24 +61,24 @@ export default function UploadPage() {
     );
   };
 
-  const handleTest = async () => {
-    const data = new FormData();
-    data.append('tab', '');
-    data.append('collection', 'b');
-    data.append('tags', '');
+  // const handleTest = async () => {
+  //   const data = new FormData();
+  //   data.append('tab', '');
+  //   data.append('collection', 'b');
+  //   data.append('tags', '');
 
-    fetchAPI(
-      `${APP_API_URL}/list_template_assets_by_category`,
-      'POST',
-      data,
-      false
-    ).then((res) => {
-      console.log(res.data);
-      if (res.success) {
-        toast.success('Saved successfully!');
-      }
-    });
-  };
+  //   fetchAPI(
+  //     `${APP_API_URL}/list_template_assets_by_category`,
+  //     'POST',
+  //     data,
+  //     false
+  //   ).then((res) => {
+  //     console.log(res.data);
+  //     if (res.success) {
+  //       toast.success('Saved successfully!');
+  //     }
+  //   });
+  // };
 
   // useEffect(() => {
   //   if (images.length < 1) return;
@@ -184,9 +184,6 @@ export default function UploadPage() {
 
             <Button className={styles.create} onClick={handleUpload}>
               <UploadIcon /> Upload
-            </Button>
-            <Button className={styles.create} onClick={handleTest}>
-              <UploadIcon /> Test
             </Button>
           </div>
         </div>
