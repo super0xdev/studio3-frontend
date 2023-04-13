@@ -14,8 +14,10 @@ import useFetchAPI from '@/hooks/useFetchAPI';
 import GalleryHeading from '@/components/composed/gallery/GalleryHeading';
 
 export default function UploadPage() {
-  const [image, setImage] = useState<any>();
-  const [imageURL, setImageURL] = useState<string>();
+  //const [image, setImage] = useState<any>();
+  //const [imageURL, setImageURL] = useState<string>();
+  const [images, setImages] = useState([]);
+  const [imageURLs, setImageURLs] = useState(['']);
   const [tab, setTab] = useState<string>('');
   const [collection, setCollection] = useState<string>('');
   const [tags, setTags] = useState<string>('');
@@ -27,30 +29,33 @@ export default function UploadPage() {
   const fetchAPI = useFetchAPI();
 
   const onImageChange = (e: any) => {
-    setImage(e.target.files[0]);
+    setImages(e.target.files);
   };
 
   const handleUpload = async () => {
-    if (!image) {
+    if (!images) {
       toast.error('Please select image to upload');
       return;
     }
-    const data = new FormData();
-    const imageFile = image as File;
-    if (imageFile.size >= 10 * 1024 * 1024) {
-      toast.error('The maximum upload image size is 10 MB!');
-      return;
+    const dat: FormData[] = [];
+    for (let i = 0; i < images.length; i++) {
+      const data = new FormData();
+      const imageFile = images[i] as File;
+      console.log(imageFile);
+      if (imageFile.size >= 10 * 1024 * 1024) {
+        toast.error('The maximum upload image size is 10 MB!');
+        return;
+      }
+      //data.append('image', images[i] as Blob, imageFile.name);
+      data.append('tab', tab);
+      data.append('collection', collection);
+      data.append('tags', tags);
+      dat.push(data);
     }
-    console.log(imageFile);
-
-    data.append('image', image as Blob, imageFile.name);
-    data.append('tab', tab);
-    data.append('collection', collection);
-    data.append('tags', tags);
-    console.log(data);
+    console.log(dat[0].get('tab'));
     const toastLoadingID = toast.loading('Saving...');
 
-    fetchAPI(`${APP_API_URL}/upload_template_asset`, 'POST', data, false).then(
+    fetchAPI(`${APP_API_URL}/upload_template_asset`, 'POST', dat, false).then(
       (res) => {
         toast.dismiss(toastLoadingID);
 
@@ -80,17 +85,19 @@ export default function UploadPage() {
   //   });
   // };
 
-  // useEffect(() => {
-  //   if (images.length < 1) return;
-  //   const newImageUrls: string[] = [];
-  //   images.forEach((image) => newImageUrls.push(URL.createObjectURL(image)));
-  //   setImageURLs(newImageUrls);
-  // }, [images]);
-
   useEffect(() => {
-    if (!image) return;
-    setImageURL(URL.createObjectURL(image));
-  }, [image]);
+    if (images.length < 1) return;
+    const newImageUrls: string[] = [];
+    for (let i = 0; i < images.length; i++) {
+      newImageUrls.push(URL.createObjectURL(images[i]));
+    }
+    setImageURLs(newImageUrls);
+  }, [images]);
+
+  // useEffect(() => {
+  //   if (!image) return;
+  //   setImageURL(URL.createObjectURL(image));
+  // }, [image]);
 
   useEffect(() => {
     fetchAPI(`${APP_API_URL}/get_categories`, 'POST').then((res) => {
@@ -113,7 +120,7 @@ export default function UploadPage() {
               id="upload"
               style={{ display: 'none' }}
               type="file"
-              // multiple
+              multiple
               accept="image/*"
               onChange={onImageChange}
             />
@@ -122,23 +129,23 @@ export default function UploadPage() {
                 <AddSharpIcon /> Open image file
               </label>
             </Button>
-
-            {image && (
-              <div className={styles.images}>
-                <Card className={styles.widget}>
-                  <div className={styles.imageWrapper}>
-                    {imageURL ? (
-                      <LazyLoadImage src={imageURL} effect="blur" />
-                    ) : (
-                      <CircularProgress />
-                    )}
-                  </div>
-                  <div className={styles.infoContainer}>
-                    <div className={styles.title}>{''}</div>
-                  </div>
-                </Card>
-              </div>
-            )}
+            {images &&
+              Array.from(images).map((image, index) => (
+                <div key={index} className={styles.images}>
+                  <Card className={styles.widget}>
+                    <div className={styles.imageWrapper}>
+                      {imageURLs[index] ? (
+                        <LazyLoadImage src={imageURLs[index]} effect="blur" />
+                      ) : (
+                        <CircularProgress />
+                      )}
+                    </div>
+                    <div className={styles.infoContainer}>
+                      <div className={styles.title}>{''}</div>
+                    </div>
+                  </Card>
+                </div>
+              ))}
 
             <div className={styles.features}>
               <div className={styles.list}>
