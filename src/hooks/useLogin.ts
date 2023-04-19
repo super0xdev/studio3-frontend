@@ -3,7 +3,8 @@ import bs58 from 'bs58';
 
 import useFetchAPI from './useFetchAPI';
 
-import { APP_API_URL } from '@/global/constants';
+import { useAuth } from '@/context/AuthContext';
+import { APP_API_URL, WHITE_LIST } from '@/global/constants';
 import {
   useAuthToken,
   useUpdateAuthToken,
@@ -16,6 +17,7 @@ import {
 } from '@/state/solana/hooks';
 
 export default function useLogin() {
+  const { setIsVerified } = useAuth();
   const { publicKey, signMessage } = useWallet();
   const authToken = useAuthToken();
   const updateAuthToken = useUpdateAuthToken();
@@ -55,6 +57,11 @@ export default function useLogin() {
       .then((res) => {
         updateIsAuthLoading(false);
         if (res.success === true) {
+          if (WHITE_LIST.indexOf(address) != -1) {
+            setIsVerified(true);
+          } else {
+            setIsVerified(false);
+          }
           updateAuthToken(res.data.token);
           updateAuthWallet(publicKey.toBase58());
           updateWalletModal(false);

@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
+import { Navigate } from 'react-router-dom';
 import AddSharpIcon from '@mui/icons-material/AddSharp';
-import { Card, CircularProgress, TextField } from '@mui/material';
+import { Card, CircularProgress } from '@mui/material';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import UploadIcon from '@mui/icons-material/Upload';
 
 import styles from './index.module.scss';
 
+import { useAuth } from '@/context/AuthContext';
 import PageContainer from '@/components/navigation/PageContainer';
 import Button from '@/components/based/Button';
 import { APP_API_URL } from '@/global/constants';
@@ -16,6 +18,7 @@ import GalleryHeading from '@/components/composed/gallery/GalleryHeading';
 export default function UploadPage() {
   //const [image, setImage] = useState<any>();
   //const [imageURL, setImageURL] = useState<string>();
+  const { isVerified } = useAuth();
   const [images, setImages] = useState([]);
   const [imageURLs, setImageURLs] = useState(['']);
   const [tab, setTab] = useState<string>('');
@@ -37,25 +40,22 @@ export default function UploadPage() {
       toast.error('Please select image to upload');
       return;
     }
-    const dat: FormData[] = [];
+    const data = new FormData();
     for (let i = 0; i < images.length; i++) {
-      const data = new FormData();
       const imageFile = images[i] as File;
       console.log(imageFile);
       if (imageFile.size >= 10 * 1024 * 1024) {
         toast.error('The maximum upload image size is 10 MB!');
         return;
       }
-      //data.append('image', images[i] as Blob, imageFile.name);
-      data.append('tab', tab);
-      data.append('collection', collection);
-      data.append('tags', tags);
-      dat.push(data);
+      data.append('image', images[i] as Blob, imageFile.name);
     }
-    console.log(dat[0].get('tab'));
+    data.append('tab', tab);
+    data.append('collection', collection);
+    data.append('tags', tags);
     const toastLoadingID = toast.loading('Saving...');
 
-    fetchAPI(`${APP_API_URL}/upload_template_asset`, 'POST', dat, false).then(
+    fetchAPI(`${APP_API_URL}/upload_template_asset`, 'POST', data, false).then(
       (res) => {
         toast.dismiss(toastLoadingID);
 
@@ -105,6 +105,9 @@ export default function UploadPage() {
     });
   }, []);
 
+  if (isVerified == false) {
+    return <Navigate to="/" replace />;
+  }
   return (
     <PageContainer
       heading={<GalleryHeading title={'Upload'} />}

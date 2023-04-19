@@ -1,8 +1,10 @@
 import React, { SyntheticEvent, useEffect, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import UploadIcon from '@mui/icons-material/Upload';
 
 import styles from './index.module.scss';
 
+import { useAuth } from '@/context/AuthContext';
 import { APP_ROUTES } from '@/config/routes';
 import LogoImage from '@/assets/images/logo-svg.svg';
 import Tabs from '@/components/based/Tabs';
@@ -14,6 +16,7 @@ import {
 } from '@/state/gallery/hooks';
 
 const Sidebar = () => {
+  const { isVerified } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
   const previewSelectId = usePreviewSelectedId();
@@ -72,6 +75,20 @@ const Sidebar = () => {
               {...a11yProps(idx)}
             />
           ))}
+          {isVerified == true ? (
+            <Tab
+              disabled={false}
+              label={
+                <div className={styles.menu}>
+                  <UploadIcon />
+                  Upload
+                </div>
+              }
+              onClick={() => navigate('/upload')}
+            />
+          ) : (
+            <></>
+          )}
         </Tabs>
       </section>
       <section className={styles.bottomSection}>

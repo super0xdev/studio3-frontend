@@ -3,12 +3,10 @@ import CollectionsSharpIcon from '@mui/icons-material/CollectionsSharp';
 import DashboardSharpIcon from '@mui/icons-material/DashboardSharp';
 import ArchitectureSharpIcon from '@mui/icons-material/ArchitectureSharp';
 import HelpSharpIcon from '@mui/icons-material/HelpSharp';
-import UploadIcon from '@mui/icons-material/Upload';
 
 import { RouteType } from '@/config/types';
 import GalleryPage from '@/pages/Gallery';
 import EditorPage from '@/pages/Editor';
-import UploadPage from '@/pages/Upload';
 
 export const APP_ROUTES: RouteType[] = [
   {
@@ -50,14 +48,6 @@ export const APP_ROUTES: RouteType[] = [
     Icon: HelpSharpIcon,
     isMenuLinked: true,
     isDisabled: true,
-  },
-  {
-    path: '/upload',
-    component: <UploadPage />,
-    title: 'Upload',
-    Icon: UploadIcon,
-    isMenuLinked: true,
-    isDisabled: false,
   },
 ];
 
