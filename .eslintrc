@@ -7,7 +7,9 @@
       "jsx": false
     }
   },
-  "ignorePatterns": ["node_modules/**/*"],
+  "ignorePatterns": [
+    "node_modules/**/*"
+  ],
   "settings": {
     "react": {
       "version": "detect"
@@ -25,20 +27,34 @@
   "rules": {
     "@typescript-eslint/explicit-module-boundary-types": "off",
     "@typescript-eslint/explicit-function-return-type": "off",
-    "prettier/prettier": "error",
+    "prettier/prettier": [
+      "error",
+      {
+        "endOfLine": "auto"
+      }
+    ],
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/no-var-requires": "off",
     "react/prop-types": "off",
     "import/no-unresolved": "off",
-    "semi": [2, "always"],
+    "semi": [
+      2,
+      "always"
+    ],
     "import/order": [
       "error",
       {
         "groups": [
           "builtin",
-          ["external", "internal"],
+          [
+            "external",
+            "internal"
+          ],
           "parent",
-          ["sibling", "index"]
+          [
+            "sibling",
+            "index"
+          ]
         ],
         "newlines-between": "always"
       }

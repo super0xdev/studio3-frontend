@@ -4,6 +4,8 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { Phantom } from '@solana-suite/phantom';
 
 import { updateAuthWallet } from './state/application';
+import { AuthProvider, useAuth } from './context/AuthContext';
+import UploadPage from './pages/Upload';
 
 import { LockedStatus } from '@/global/types';
 import { APP_ROUTES, DEFAULT_ROUTE } from '@/config/routes';
@@ -34,6 +36,7 @@ declare global {
 }
 
 export default function App() {
+  const { isVerified } = useAuth();
   const authToken = useAuthToken();
   const authWallet = useAuthWallet();
   const { publicKey, wallet } = useWallet();
@@ -57,14 +60,25 @@ export default function App() {
   useUpdateTokenMap();
 
   return (
-    <PageLayout>
-      <LockScreen status={lockedStatus} />
-      <Routes>
-        {APP_ROUTES.map((route) => (
-          <Route key={route.path} path={route.path} element={route.component} />
-        ))}
-        <Route path="*" element={<Navigate to={DEFAULT_ROUTE} replace />} />
-      </Routes>
-    </PageLayout>
+    <AuthProvider>
+      <PageLayout>
+        <LockScreen status={lockedStatus} />
+        <Routes>
+          {APP_ROUTES.map((route) => (
+            <Route
+              key={route.path}
+              path={route.path}
+              element={route.component}
+            />
+          ))}
+          {isVerified == true ? (
+            <Route key="/upload" path="/upload" element={<UploadPage />} />
+          ) : (
+            <></>
+          )}
+          <Route path="*" element={<Navigate to={DEFAULT_ROUTE} replace />} />
+        </Routes>
+      </PageLayout>
+    </AuthProvider>
   );
 }

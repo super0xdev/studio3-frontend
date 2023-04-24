@@ -7,6 +7,14 @@ export const TOKEN_LIST = [
   'DUSTawucrTsGU8hcqRdHDCbuYhCPADMLM2VcCb8VnFnQ', // DUST
 ];
 
+export const WHITE_LIST = [
+  '53VqXqwTEK5MNJPqxu3yEUBHpo78vMoHt1vZpjVThnps',
+  '6Dio27qRnsTFaFUwAshonT82FS1d3C9uA9WvyyQXyuro',
+  'C8VSZEcAUXNKTEvtfRztREXt1fT5Rf3tAvNaumvuc8Li',
+  '6zBaDY9LG2DMotrjdfJfJ6w8aLA7YqSV4jm6V7JWgabC',
+];
+
+// export const APP_API_URL = 'http://127.0.0.1:8081';
 export const APP_API_URL = 'https://api.studio-3.xyz';
 
 export const APP_ASSET_URL =
