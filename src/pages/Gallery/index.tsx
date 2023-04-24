@@ -14,6 +14,7 @@ import ItemWidget from '@/components/composed/gallery/ItemWidget';
 import GalleryHeading from '@/components/composed/gallery/GalleryHeading';
 import ItemPreviewDrawer from '@/components/composed/gallery/ItemPreviewDrawer';
 import ExportModal from '@/components/composed/gallery/ExportModal';
+import FilterPanel from '@/components/composed/gallery/FilterPanel';
 import {
   useDisplayedAssets,
   useTemplateAssets,
@@ -189,11 +190,12 @@ export default function GalleryPage({
         </div>
       )}
       <div className={styles.gallery}>
+        <FilterPanel></FilterPanel>
         <AnimateHeight duration={500} height={isTagsActved ? 'auto' : 0}>
           <div className={styles.tags}>
             {TEMPLATE_TAGS.map((tag, index) => (
               <Button
-                key={index}
+                key={`tag-buttons-${index}`}
                 className={
                   index === activedTag ? styles.active_button : styles.button
                 }
@@ -209,7 +211,7 @@ export default function GalleryPage({
             isTemplates ? (
               templateImages.map((asset) => (
                 <ItemWidget
-                  key={asset.uid}
+                  key={`widget-template-${asset.uid}`}
                   asset={asset}
                   selected={previewSelectedId === asset.uid}
                   onClick={() => updatePreviewSelectedId(asset.uid)}
@@ -218,7 +220,7 @@ export default function GalleryPage({
             ) : (
               userImages.map((asset) => (
                 <ItemWidget
-                  key={asset.uid}
+                  key={`widget-user-${asset.uid}`}
                   asset={asset}
                   selected={previewSelectedId === asset.uid}
                   onClick={() => updatePreviewSelectedId(asset.uid)}

@@ -81,8 +81,11 @@ const ItemPreviewDrawer: FC<IItemPreviewDrawer> = ({ open, onClose }) => {
   const [downloadModalContent, setDownloadModalContent] = useState('');
   const [downloadModalSubmitText, setDownloadModalSubmitText] = useState('');
   const [isPending, setIsPending] = useState(false);
-  const { url: processedImageUrl, content: processedImageContent } =
-    useProcessImage(asset);
+  const {
+    url: processedImageUrl,
+    content: processedImageContent,
+    processing,
+  } = useProcessImage(asset);
 
   const isTemplateAsset = useMemo(() => {
     return asset?.user_uid === TEMPLATE_USER_ID;
@@ -372,7 +375,7 @@ const ItemPreviewDrawer: FC<IItemPreviewDrawer> = ({ open, onClose }) => {
       </section>
       <section className={styles.content}>
         <div className={styles.imageWrapper}>
-          {processedImageUrl ? (
+          {processedImageUrl && !processing ? (
             <LazyLoadImage src={processedImageUrl} effect="blur" />
           ) : (
             <CircularProgress />
@@ -470,7 +473,11 @@ const ItemPreviewDrawer: FC<IItemPreviewDrawer> = ({ open, onClose }) => {
             Export
           </div>
         )}
-        <div className={styles.button} onClick={handleDuplicate}>
+        <div
+          className={styles.button}
+          // we don't need to show the confirmation modal for templates
+          onClick={isTemplateAsset ? handleProcessDuplicate : handleDuplicate}
+        >
           <IconButton>
             {isTemplateAsset ? <NoteAltOutlinedIcon /> : <FileCopySharp />}
           </IconButton>

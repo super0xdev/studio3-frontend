@@ -16,6 +16,7 @@ import { loadJSON } from '@/global/utils';
 export default function useProcessImage(asset: AssetInfoType | null) {
   const [processedImage, setProcessedImage] =
     useState<PinturaDefaultImageWriterResult>();
+  const [processing, setProcessing] = useState(false);
   // const [previewUrl, setPreviewUrl] = useState<string>();
 
   // const compressImage = async (image: File) => {
@@ -40,6 +41,8 @@ export default function useProcessImage(asset: AssetInfoType | null) {
 
   useEffect(() => {
     if (!asset) return;
+
+    setProcessing(true);
     processImage(`${APP_ASSET_URL}${asset.file_path}`, {
       imageReader: createDefaultImageReader(),
       imageWriter: createDefaultImageWriter(),
@@ -50,6 +53,7 @@ export default function useProcessImage(asset: AssetInfoType | null) {
         : undefined,
     }).then((res) => {
       setProcessedImage(res);
+      setProcessing(false);
     });
   }, [asset]);
 
@@ -66,5 +70,6 @@ export default function useProcessImage(asset: AssetInfoType | null) {
       ? URL.createObjectURL(processedImage?.dest as Blob)
       : null,
     content: processedImage?.dest as Blob,
+    processing,
   };
 }
