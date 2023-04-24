@@ -20335,7 +20335,7 @@ function instance$w($$self, $$props, $$invalidate) {
 
 	component_subscribe($$self, imageProcessingPreparing, value => $$invalidate(226, $imageProcessingPreparing = value));
 
-	const handleExport = () => {
+    const handleExport = () => {
 		// this will trigger status overlay fade in
 		set_store_value(imageProcessingPreparing, $imageProcessingPreparing = true, $imageProcessingPreparing);
 

@@ -37,8 +37,8 @@ const EditModal: FC<IEditModal> = ({ open, onClose }) => {
   };
 
   useEffect(() => {
-    if (fileNameInfo) setFileName(fileNameInfo[0]);
-  }, [fileNameInfo]);
+    if (fileNameInfo) setFileName(selectedAsset?.file_name || '');
+  }, [fileNameInfo, selectedAsset?.file_name]);
 
   const handleSubmit = async () => {
     if (!selectedAsset) return;
@@ -53,7 +53,8 @@ const EditModal: FC<IEditModal> = ({ open, onClose }) => {
 
     fetchAPI(`${APP_API_URL}/update_asset_metadata`, 'POST', {
       asset_uid: selectedAsset.uid,
-      file_name: fileName?.concat(fileNameInfo ? fileNameInfo[1] : ''),
+      // file_name: fileName?.concat(fileNameInfo ? fileNameInfo[1] : ''),
+      file_name: fileName,
       transaction_signature: bs58.encode(signature),
       purchase_price: '0',
       purchase_type: '',
@@ -79,7 +80,7 @@ const EditModal: FC<IEditModal> = ({ open, onClose }) => {
         <div className={styles.controls}>
           <TextField
             className={styles.input}
-            defaultValue={fileName}
+            defaultValue={!!fileNameInfo && fileNameInfo[0] + fileNameInfo[1]}
             onChange={handleInputChange}
           />
         </div>

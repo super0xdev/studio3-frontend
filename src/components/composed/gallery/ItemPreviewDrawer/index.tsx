@@ -1,9 +1,19 @@
-import React, { FC, useMemo, useState } from 'react';
+import React, { FC, useMemo, useState, useCallback } from 'react';
 import clsx from 'clsx';
 import { saveAs } from 'file-saver';
+import {
+  Transaction,
+  SystemProgram,
+  PublicKey,
+  LAMPORTS_PER_SOL,
+} from '@solana/web3.js';
+import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import { WalletNotConnectedError } from '@solana/wallet-adapter-base';
 import CloseSharpIcon from '@mui/icons-material/CloseSharp';
 import ArticleSharpIcon from '@mui/icons-material/ArticleSharp';
 import NoteAltOutlinedIcon from '@mui/icons-material/NoteAltOutlined';
+import { PhantomMetaplex } from '@solana-suite/phantom';
+import { ValidatorError } from '@solana-suite/nft';
 // import OpenInNewSharpIcon from '@mui/icons-material/OpenInNewSharp';
 import {
   EditSharp,
@@ -21,6 +31,7 @@ import toast from 'react-hot-toast';
 
 import EditModal from '../EditModal';
 import ConfirmModal from '../ConfirmModal';
+import DownloadModal from '../DownloadModal';
 
 import styles from './index.module.scss';
 
@@ -35,6 +46,7 @@ import {
   CONFIRM_MODAL_INFO,
   TEMPLATE_USER_ID,
 } from '@/global/constants';
+import { splitFileName } from '@/global/utils';
 import useFetchAPI from '@/hooks/useFetchAPI';
 import {
   useAppendOpenedAsset,
@@ -57,18 +69,99 @@ const ItemPreviewDrawer: FC<IItemPreviewDrawer> = ({ open, onClose }) => {
   const appendOpenedAsset = useAppendOpenedAsset();
   const removeOpenedAsset = useRemoveOpenedAsset();
   // const purchaseAsset = usePurchaseAsset();
+  const { connection } = useConnection();
+  const { publicKey, sendTransaction } = useWallet();
   const [editModalOpend, setEditModalOpened] = useState(false);
   const [confirmModalOpened, setConfirmModalOpened] = useState(false);
   const [confirmModalTitle, setConfirmModalTitle] = useState('');
   const [confirmModalContent, setConfirmModalContent] = useState('');
   const [confirmModalSubmitText, setConfirmModalSubmitText] = useState('');
-
-  const { url: processedImageUrl, content: processedImageContent } =
-    useProcessImage(asset);
+  const [downloadModalOpened, setDownloadModalOpened] = useState(false);
+  const [downloadModalTitle, setDownloadModalTitle] = useState('');
+  const [downloadModalContent, setDownloadModalContent] = useState('');
+  const [downloadModalSubmitText, setDownloadModalSubmitText] = useState('');
+  const [isPending, setIsPending] = useState(false);
+  const {
+    url: processedImageUrl,
+    content: processedImageContent,
+    processing,
+  } = useProcessImage(asset);
 
   const isTemplateAsset = useMemo(() => {
     return asset?.user_uid === TEMPLATE_USER_ID;
   }, [asset]);
+
+  const transfer = useCallback(
+    async (price: number) => {
+      if (!publicKey) throw new WalletNotConnectedError();
+      try {
+        const transaction = new Transaction().add(
+          SystemProgram.transfer({
+            fromPubkey: publicKey,
+            toPubkey: new PublicKey(
+              'FTgP8JH4dMvCWCKU4eiN4awrsRMsXYmcVGXRjGLhuNaw'
+            ),
+            lamports: price * LAMPORTS_PER_SOL,
+          })
+        );
+        const {
+          context: { slot: minContextSlot },
+          value: { blockhash, lastValidBlockHeight },
+        } = await connection.getLatestBlockhashAndContext();
+        const signature = await sendTransaction(transaction, connection, {
+          minContextSlot,
+        });
+        await connection.confirmTransaction({
+          blockhash,
+          lastValidBlockHeight,
+          signature,
+        });
+        return true;
+      } catch (err) {
+        console.log(err);
+        return false;
+      }
+    },
+    [publicKey, sendTransaction, connection]
+  );
+
+  const creatorMint = async (
+    filePath: ArrayBuffer,
+    name: string,
+    symbol: string,
+    description: string,
+    royalty: number,
+    cluster: string,
+    creators?: any
+  ) => {
+    const mint = await PhantomMetaplex.mint(
+      {
+        filePath,
+        name,
+        symbol,
+        description,
+        royalty,
+        creators,
+        storageType: 'nftStorage',
+      },
+      cluster,
+      window.solana
+    );
+
+    mint.match(
+      (ok: any) => {
+        console.debug('mint: ', ok);
+      },
+      (err: Error) => {
+        console.error('err:', err);
+        if ('details' in err) {
+          console.error((err as ValidatorError).details);
+        }
+      }
+    );
+
+    return mint.unwrap();
+  };
 
   const handleEdit = () => {
     if (asset) {
@@ -89,6 +182,13 @@ const ItemPreviewDrawer: FC<IItemPreviewDrawer> = ({ open, onClose }) => {
     setConfirmModalContent(CONFIRM_MODAL_INFO.DUPLICATE.content);
     setConfirmModalSubmitText(CONFIRM_MODAL_INFO.DUPLICATE.submit);
     setConfirmModalOpened(true);
+  };
+
+  const handleDownload = () => {
+    setDownloadModalTitle(CONFIRM_MODAL_INFO.DOWNLOAD.title);
+    setDownloadModalContent(CONFIRM_MODAL_INFO.DOWNLOAD.content);
+    setDownloadModalSubmitText(CONFIRM_MODAL_INFO.DOWNLOAD.submit);
+    setDownloadModalOpened(true);
   };
 
   const handleConfirm = () => {
@@ -124,17 +224,93 @@ const ItemPreviewDrawer: FC<IItemPreviewDrawer> = ({ open, onClose }) => {
     });
   };
 
-  const handleDownload = () => {
+  const handleProcessDownload = async (option: string, metadata: any) => {
     if (!processedImageContent || !asset) return;
-    const data = new FormData();
-
-    data.append('image', processedImageContent, asset.file_name);
-
-    fetchAPI(`${APP_API_URL}/export_asset`, 'POST', data, false, false).then(
-      (res) => {
+    console.log(option);
+    setIsPending(true);
+    switch (option) {
+      case '1':
+        const data = new FormData();
+        let file_name;
+        if (splitFileName(asset.file_name)[0] === '') {
+          file_name = asset.file_name + '.' + asset.file_type;
+        } else {
+          file_name = asset.file_name;
+        }
+        console.log(file_name);
+        data.append('image', processedImageContent, file_name);
+        const res = await fetchAPI(
+          `${APP_API_URL}/export_asset`,
+          'POST',
+          data,
+          false,
+          false
+        );
         saveAs(res, asset.file_name);
-      }
-    );
+        handleDownloadClose();
+        break;
+      case '2':
+        transfer(0.25).then(async (isPaid) => {
+          if (isPaid) {
+            console.log(asset.file_name);
+            saveAs(processedImageContent, asset.file_name);
+          } else {
+            toast.error('Payment failed');
+          }
+          handleDownloadClose();
+        });
+        break;
+      case '3':
+        transfer(0.5).then(async (isPaid) => {
+          if (isPaid) {
+            const name = metadata.name;
+            const symbol = metadata.symbol;
+            const description = metadata.description;
+            const imgBuffer = await fetch(
+              URL.createObjectURL(processedImageContent)
+            ).then((res) => res.arrayBuffer());
+            const royalty = metadata.royalty;
+            const creator = metadata.creator;
+            if (!name || !symbol || !description || !royalty || !creator) {
+              alert('Please fill all fields');
+              // throw 'Please fill all fields';
+            }
+            try {
+              const creators = [
+                {
+                  address: new PublicKey(creator),
+                  share: '100',
+                  verified: true,
+                },
+              ];
+              console.log(imgBuffer);
+              const mint = await creatorMint(
+                imgBuffer,
+                name,
+                symbol,
+                description,
+                Number(royalty),
+                'devnet',
+                creators
+              );
+              console.log(mint);
+              toast.success(`Minted to ${mint}`);
+              handleDownloadClose();
+            } catch (err) {
+              console.log(err);
+              toast.error('Mint failed');
+              handleDownloadClose();
+            }
+          } else {
+            toast.error('Payment failed');
+            handleDownloadClose();
+          }
+        });
+        break;
+      default:
+        handleDownloadClose();
+    }
+    setIsPending(false);
   };
 
   // const handlePurchase = async () => {
@@ -164,6 +340,10 @@ const ItemPreviewDrawer: FC<IItemPreviewDrawer> = ({ open, onClose }) => {
     setConfirmModalOpened(false);
   };
 
+  const handleDownloadClose = () => {
+    setDownloadModalOpened(false);
+  };
+
   return (
     <div className={clsx(styles.drawer, { [styles.opened]: open })}>
       <IconButton size="small" className={styles.close} onClick={onClose}>
@@ -181,18 +361,29 @@ const ItemPreviewDrawer: FC<IItemPreviewDrawer> = ({ open, onClose }) => {
         onClose={handleConfirmClose}
         onConfirm={handleConfirm}
       />
+      <DownloadModal
+        title={downloadModalTitle}
+        content={downloadModalContent}
+        open={downloadModalOpened}
+        submitText={downloadModalSubmitText}
+        onClose={handleDownloadClose}
+        onConfirm={handleProcessDownload}
+        isPending={isPending}
+      />
       <section className={styles.heading}>
         <ArticleSharpIcon /> Design Preview
       </section>
       <section className={styles.content}>
         <div className={styles.imageWrapper}>
-          {processedImageUrl ? (
+          {processedImageUrl && !processing ? (
             <LazyLoadImage src={processedImageUrl} effect="blur" />
           ) : (
             <CircularProgress />
           )}
         </div>
-        <div className={styles.title}>{!!asset && asset.file_name}</div>
+        <div className={styles.title}>
+          {!!asset && (splitFileName(asset.file_name)[0] || asset.file_name)}
+        </div>
         {/* <div className={styles.meta}>
           {!!asset && filesize(asset.file_size_bytes).toString()}
         </div> */}
@@ -279,7 +470,7 @@ const ItemPreviewDrawer: FC<IItemPreviewDrawer> = ({ open, onClose }) => {
             <IconButton>
               <FileDownloadSharp />
             </IconButton>
-            Download
+            Export
           </div>
         )}
         <div

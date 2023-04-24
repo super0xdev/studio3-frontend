@@ -6,6 +6,8 @@ import { useUpdateOpenedAssets } from '../application/hooks';
 import {
   updateDisplayedAssets,
   updateTemplateAssets,
+  // updateDisplayedAssetsPreview,
+  // updateTemplateAssetsPreview,
   updateIsLoading,
   updatePreviewSelectedId,
 } from './index';
@@ -33,6 +35,7 @@ export const useUpdateDisplayedAssets = () => {
     updateIsLoading(true);
     fetchAPI(`${APP_API_URL}/list_assets`, 'POST')
       .then((listedAssets) => {
+        console.log(listedAssets.data);
         const assets = [...listedAssets.data];
         dispatch(updateDisplayedAssets(assets));
         updateOpenedAssets(assets);
@@ -52,13 +55,13 @@ export const useUpdateTemplateAssets = () => {
   // const updateOpenedAssets = useUpdateOpenedAssets();
   const updateIsLoading = useUpdateIsLoading();
 
-  const handleUpdateDisplayedAssets = () => {
+  const handleUpdateDisplayedAssets = async () => {
     updateIsLoading(true);
     fetchAPI(`${APP_API_URL}/list_template_assets`, 'POST')
       .then((templateAssets) => {
+        console.log(templateAssets);
         const assets = [...templateAssets.data];
         dispatch(updateTemplateAssets(assets));
-        // updateOpenedAssets(assets);
         updateIsLoading(false);
       })
       .catch(() => {

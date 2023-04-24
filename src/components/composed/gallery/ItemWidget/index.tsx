@@ -8,8 +8,9 @@ import { LazyLoadImage } from 'react-lazy-load-image-component';
 import styles from './index.module.scss';
 
 import { AssetInfoType } from '@/global/types';
+import { splitFileName } from '@/global/utils';
 import CircularProgress from '@/components/based/CircularProgress';
-import useProcessImage from '@/hooks/useProcessImage';
+import useProcessThumbnail from '@/hooks/useProcessThumbnail';
 
 interface IItemWidget {
   title?: string;
@@ -25,8 +26,7 @@ const ItemWidget: FC<IItemWidget> = ({
   onClick,
   onDoubleClick,
 }) => {
-  const { url: processedImage } = useProcessImage(asset);
-
+  const { url: processedImg } = useProcessThumbnail(asset);
   return (
     <Card
       className={clsx(styles.widget, { [styles.selected]: selected })}
@@ -34,14 +34,16 @@ const ItemWidget: FC<IItemWidget> = ({
       onDoubleClick={onDoubleClick}
     >
       <div className={styles.imageWrapper}>
-        {processedImage ? (
-          <LazyLoadImage src={processedImage} effect="blur" />
+        {processedImg ? (
+          <LazyLoadImage src={processedImg} effect="blur" />
         ) : (
           <CircularProgress />
         )}
       </div>
       <div className={styles.infoContainer}>
-        <div className={styles.title}>{asset.file_name}</div>
+        <div className={styles.title}>
+          {splitFileName(asset.file_name)[0] || asset.file_name}
+        </div>
         {/* <div className={styles.info}>
           <div className={styles.meta}>
             <div className={styles.row}>

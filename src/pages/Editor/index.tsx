@@ -254,6 +254,7 @@ export default function EditorPage() {
             // call redraw to trigger a redraw of the editor state
             // attachSelectPhoto(toolbar);
             // console.log({ toolbar });
+            console.log(toolbar);
             console.log(toolbar[2][3]);
             // TODO: this is where we can modify the "Done" button and add our own buttons
 

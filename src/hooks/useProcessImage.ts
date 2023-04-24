@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+// import imageCompression from 'browser-image-compression';
 import {
   createDefaultImageReader,
   createDefaultImageScrambler,
@@ -15,9 +16,33 @@ import { loadJSON } from '@/global/utils';
 export default function useProcessImage(asset: AssetInfoType | null) {
   const [processedImage, setProcessedImage] =
     useState<PinturaDefaultImageWriterResult>();
+  const [processing, setProcessing] = useState(false);
+  // const [previewUrl, setPreviewUrl] = useState<string>();
+
+  // const compressImage = async (image: File) => {
+  //   if (!image) return undefined;
+  //   // cannot compress gif file
+  //   if (image.type == 'image/gif') {
+  //     return image;
+  //   }
+  //   const options = {
+  //     maxSizeMB: 0.05,
+  //     maxWidthOrHeight: 300,
+  //     useWebWorker: true,
+  //     maxIteration: 5,
+  //   };
+  //   try {
+  //     const compressedFile = await imageCompression(image, options);
+  //     setPreviewUrl(URL.createObjectURL(compressedFile));
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   useEffect(() => {
     if (!asset) return;
+
+    setProcessing(true);
     processImage(`${APP_ASSET_URL}${asset.file_path}`, {
       imageReader: createDefaultImageReader(),
       imageWriter: createDefaultImageWriter(),
@@ -28,13 +53,23 @@ export default function useProcessImage(asset: AssetInfoType | null) {
         : undefined,
     }).then((res) => {
       setProcessedImage(res);
+      setProcessing(false);
     });
   }, [asset]);
 
+  // useEffect(() => {
+  //   compressImage(processedImage?.dest as File);
+  // }, [processedImage]);
+
+  // return {
+  //   url: previewUrl ? previewUrl : null,
+  //   content: processedImage?.dest as Blob,
+  // };
   return {
     url: processedImage
       ? URL.createObjectURL(processedImage?.dest as Blob)
       : null,
     content: processedImage?.dest as Blob,
+    processing,
   };
 }

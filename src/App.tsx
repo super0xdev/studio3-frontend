@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useWallet } from '@solana/wallet-adapter-react';
+import { Phantom } from '@solana-suite/phantom';
 
 import { updateAuthWallet } from './state/application';
 
@@ -18,6 +19,19 @@ import {
 import '@pqina/pintura/pintura.css';
 import '@/assets/styles/pintura.scss';
 import 'react-lazy-load-image-component/src/effects/blur.css';
+
+declare global {
+  interface Window {
+    solana: Phantom;
+  }
+  interface NavigateOptions {
+    state: {
+      warning?: string;
+      error?: string;
+      mint?: string;
+    };
+  }
+}
 
 export default function App() {
   const authToken = useAuthToken();
