@@ -282,7 +282,11 @@ const ItemPreviewDrawer: FC<IItemPreviewDrawer> = ({ open, onClose }) => {
             Download
           </div>
         )}
-        <div className={styles.button} onClick={handleDuplicate}>
+        <div
+          className={styles.button}
+          // we don't need to show the confirmation modal for templates
+          onClick={isTemplateAsset ? handleProcessDuplicate : handleDuplicate}
+        >
           <IconButton>
             {isTemplateAsset ? <NoteAltOutlinedIcon /> : <FileCopySharp />}
           </IconButton>
