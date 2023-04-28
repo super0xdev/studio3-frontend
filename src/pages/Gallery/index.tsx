@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState, useRef, useMemo } from 'react';
+import toast from 'react-hot-toast';
 import clsx from 'clsx';
 import AnimateHeight from 'react-animate-height';
 import AllInboxSharpIcon from '@mui/icons-material/AllInboxSharp';
@@ -9,6 +10,7 @@ import { PropagateLoader } from 'react-spinners';
 
 import styles from './index.module.scss';
 
+import { useAuth } from '@/context/AuthContext';
 import PageContainer from '@/components/navigation/PageContainer';
 import ItemWidget from '@/components/composed/gallery/ItemWidget';
 import GalleryHeading from '@/components/composed/gallery/GalleryHeading';
@@ -25,16 +27,18 @@ import {
   useUpdatePreviewSelectedId,
 } from '@/state/gallery/hooks';
 import { useAuthToken } from '@/state/application/hooks';
+import useFetchAPI from '@/hooks/useFetchAPI';
 import Button from '@/components/based/Button';
 import { AssetInfoType } from '@/global/types';
-import { filterByName } from '@/global/utils';
-import { TEMPLATE_TAGS } from '@/global/constants';
+import { filterByName, filterByTags } from '@/global/utils';
+import { APP_API_URL } from '@/global/constants';
 
 export default function GalleryPage({
   isTemplates = false,
 }: {
   isTemplates: boolean;
 }) {
+  const { isVerified } = useAuth();
   const searchRef = useRef<HTMLInputElement>(null);
   const authToken = useAuthToken();
   const isLoading = useIsLoading();
@@ -42,20 +46,30 @@ export default function GalleryPage({
   const updatePreviewSelectedId = useUpdatePreviewSelectedId();
   const userAssets = useDisplayedAssets();
   const templateAssets = useTemplateAssets();
+  const [taglist, setTagList] = useState<string[]>([]);
   const navigate = useNavigate();
   const [isTagsActved, setIsTagsActved] = useState<boolean>(false);
-  const [activedTag, setActivedTag] = useState<number>(0);
   const [exportModalOpened, setExportModalOpened] = useState<boolean>(false);
   const [userImages, setUserImages] = useState<AssetInfoType[]>([]);
   const [templateImages, setTemplateImages] = useState<AssetInfoType[]>([]);
   const [userLoading, setUserLoading] = useState<boolean>(false);
   const [templateLoading, setTemplateLoading] = useState<boolean>(false);
+  const [tags, setTags] = useState<boolean[]>([false]);
   const displayedAssets = useMemo(
     () => (isTemplates ? templateImages : userImages),
     [templateImages, userImages]
   );
   const handleUpdateDisplayedAssets = useUpdateDisplayedAssets();
   const handleUpdateTemplateAssets = useUpdateTemplateAssets();
+  const fetchAPI = useFetchAPI();
+
+  useEffect(() => {
+    fetchAPI(`${APP_API_URL}/list_tags`, 'POST').then((res) => {
+      const tmp: any[] = [];
+      for (let i = 0; i < res.data.length; i++) tmp[i] = res.data[i].tag;
+      setTagList([...tmp]);
+    });
+  }, []);
 
   useEffect(() => {
     handleUpdateDisplayedAssets();
@@ -89,21 +103,54 @@ export default function GalleryPage({
   function search() {
     if (!searchRef.current) return;
     const result = filterByName(searchRef.current.value, templateAssets);
-    console.log(result);
     setTemplateLoading(false);
     loadImages(result);
+  }
+
+  function addNewTag() {
+    const val = searchRef.current;
+    if (!val) return;
+    if (taglist.indexOf(val.value) != -1) return;
+    for (let i = 0; i < val.value.length; i++) {
+      if (
+        !(
+          (val.value[i] >= 'a' && val.value[i] <= 'z') ||
+          (val.value[i] >= 'A' && val.value[i] <= 'Z')
+        )
+      )
+        return;
+    }
+    console.log('success');
+    const data = new FormData();
+    data.append('id', String(taglist.length + 1));
+    data.append('tag', val.value);
+    fetchAPI(`${APP_API_URL}/insert_tag`, 'POST', data, false).then((res) => {
+      if (res.success) {
+        toast.success('Added successfully!');
+      }
+    });
   }
 
   function tagSwitch(obj: any, index: number) {
-    setActivedTag(index);
-    const tagName = obj?.innerText;
-    if (!tagName) return;
-    const result = filterByName(tagName, templateAssets);
-    console.log(result);
+    const ar = tags;
+    ar[index] = !ar[index];
+    setTags(ar);
+    //setActivedTag(index);
+    //const tagName = obj?.innerText;
+    //if (!tagName) return;
+    const result = filterByTags(ar, templateAssets, taglist);
     setTemplateLoading(false);
     loadImages(result);
   }
 
+  function handleFilters() {
+    setIsTagsActved((p) => !p);
+    fetchAPI(`${APP_API_URL}/list_tags`, 'POST').then((res) => {
+      const tmp: any[] = [];
+      for (let i = 0; i < res.data.length; i++) tmp[i] = res.data[i].tag;
+      if (taglist.length != tmp.length) setTagList([...tmp]);
+    });
+  }
   // function tagAll() {
   //   setTemplateLoading(false);
   //   loadImages(templateAssets);
@@ -183,21 +230,29 @@ export default function GalleryPage({
           </Button>
           <Button
             className={isTagsActved ? styles.active_button : styles.button}
-            onClick={() => setIsTagsActved((p) => !p)}
+            // onClick={() => setIsTagsActved((p) => !p)}
+            onClick={handleFilters}
           >
             Filters
           </Button>
+          {isVerified == true ? (
+            <Button className={styles.button} onClick={addNewTag}>
+              Add a new Tag
+            </Button>
+          ) : (
+            <></>
+          )}
         </div>
       )}
       <div className={styles.gallery}>
         <FilterPanel></FilterPanel>
         <AnimateHeight duration={500} height={isTagsActved ? 'auto' : 0}>
           <div className={styles.tags}>
-            {TEMPLATE_TAGS.map((tag, index) => (
+            {taglist.map((tag, index) => (
               <Button
                 key={`tag-buttons-${index}`}
                 className={
-                  index === activedTag ? styles.active_button : styles.button
+                  tags[index] == true ? styles.active_button : styles.button
                 }
                 onClick={(e) => tagSwitch(e.target as HTMLButtonElement, index)}
               >
