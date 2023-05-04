@@ -49,6 +49,14 @@ export const useUpdateDisplayedAssets = () => {
   return handleUpdateTemplateAssets;
 };
 
+function removeDuplicates(array: any[], key: string) {
+  return array.filter(
+    (obj: { [x: string]: any }, index: any, self: any[]) =>
+      index ===
+      self.findIndex((el: { [x: string]: any }) => el[key] === obj[key])
+  );
+}
+
 export const useUpdateTemplateAssets = () => {
   const dispatch = useDispatch();
   const fetchAPI = useFetchAPI();
@@ -59,9 +67,11 @@ export const useUpdateTemplateAssets = () => {
     updateIsLoading(true);
     fetchAPI(`${APP_API_URL}/list_template_assets`, 'POST')
       .then((templateAssets) => {
-        console.log(templateAssets);
         const assets = [...templateAssets.data];
-        dispatch(updateTemplateAssets(assets));
+        const uniqueAssets = removeDuplicates(assets, 'file_name');
+        uniqueAssets.sort((a, b) => (a.file_name > b.file_name ? 1 : -1));
+        console.log(uniqueAssets);
+        dispatch(updateTemplateAssets(uniqueAssets));
         updateIsLoading(false);
       })
       .catch(() => {

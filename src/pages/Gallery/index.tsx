@@ -69,6 +69,14 @@ export default function GalleryPage({
       for (let i = 0; i < res.data.length; i++) tmp[i] = res.data[i].tag;
       setTagList([...tmp]);
     });
+
+    const intervalId = setInterval(() => {
+      window.location.reload();
+    }, 300000);
+
+    return () => {
+      clearInterval(intervalId);
+    };
   }, []);
 
   useEffect(() => {
