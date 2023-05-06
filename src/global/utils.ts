@@ -91,3 +91,28 @@ export const filterByName = (keyword: string, images: any[]) => {
     image.file_name.toLowerCase().includes(keyword.toLowerCase())
   );
 };
+
+export const filterByTags = (
+  keyword: boolean[],
+  images: any[],
+  list: string[]
+) => {
+  // if (keyword === '') return images;
+  // return images.filter((image) =>
+  //   image.file_name.toLowerCase(t).includes(keyword.toLowerCase())
+  // );
+  let i;
+  if (keyword.length == 0) return images;
+  for (i = 0; i < keyword.length; i++) {
+    if (keyword[i] == true) break;
+  }
+  if (i == keyword.length) return images;
+  const filteredStrings = images.filter((image) => {
+    const lowerCaseString = image.file_name.toLowerCase();
+    return keyword.some(
+      (word, index) =>
+        word == true && lowerCaseString.includes(list[index].toLowerCase())
+    );
+  });
+  return filteredStrings;
+};

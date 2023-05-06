@@ -35,6 +35,7 @@ import DownloadModal from '../DownloadModal';
 
 import styles from './index.module.scss';
 
+import { useAuth } from '@/context/AuthContext';
 import CircularProgress from '@/components/based/CircularProgress';
 import IconButton from '@/components/based/IconButton';
 import {
@@ -62,6 +63,7 @@ interface IItemPreviewDrawer {
 }
 
 const ItemPreviewDrawer: FC<IItemPreviewDrawer> = ({ open, onClose }) => {
+  const { isVerified } = useAuth();
   const asset = usePreviewSelectedAsset();
   const navigate = useNavigate();
   const fetchAPI = useFetchAPI();
@@ -494,7 +496,7 @@ const ItemPreviewDrawer: FC<IItemPreviewDrawer> = ({ open, onClose }) => {
             Info
           </div>
         )}
-        {!isTemplateAsset && (
+        {((isTemplateAsset && isVerified) || !isTemplateAsset) && (
           <div className={styles.button} onClick={handleDelete}>
             <IconButton>
               <DeleteSharp />
