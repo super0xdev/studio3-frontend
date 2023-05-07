@@ -72,14 +72,14 @@
   }
 
   .images {
-    margin-top: 18px;
+    margin-top: 88px;
     display: flex;
     flex-direction: row;
     column-gap: 20px;
     justify-content: center;
     row-gap: 20px;
     flex-wrap: wrap;
-
+    flex: none;
     .placeholder {
       display: flex;
       flex-direction: column;
