@@ -218,7 +218,7 @@ export default function GalleryPage({
     // setUserImages([...userAssets]);
     return () => setUserImages([]);
   }, [isTemplates, userAssets]);
-
+  let flag = true;
   return (
     <PageContainer
       heading={
@@ -259,7 +259,6 @@ export default function GalleryPage({
         </div>
       )}
       <div className={styles.gallery}>
-        <FilterPanel></FilterPanel>
         <AnimateHeight duration={500} height={isTagsActved ? 'auto' : 0}>
           <div className={styles.tags}>
             {taglist.map((tag, index) => (
@@ -279,12 +278,21 @@ export default function GalleryPage({
           {displayedAssets && displayedAssets.length ? (
             isTemplates ? (
               templateImages.map((asset) => (
-                <ItemWidget
+                <div
+                  style={{ position: 'relative' }}
                   key={`widget-template-${asset.uid}`}
-                  asset={asset}
-                  selected={previewSelectedId === asset.uid}
-                  onClick={() => updatePreviewSelectedId(asset.uid)}
-                />
+                >
+                  <div style={{ position: 'absolute', top: '-80px' }}>
+                    {flag && isTemplates && <FilterPanel></FilterPanel>}
+                  </div>
+                  <ItemWidget
+                    key={`widget-template-${asset.uid}`}
+                    asset={asset}
+                    selected={previewSelectedId === asset.uid}
+                    onClick={() => updatePreviewSelectedId(asset.uid)}
+                  />
+                  {(flag = false)}
+                </div>
               ))
             ) : (
               userImages.map((asset) => (
@@ -299,7 +307,15 @@ export default function GalleryPage({
           ) : isLoading ? (
             <PropagateLoader color="#ffffff55" />
           ) : isTemplates ? (
-            <div>No matched Templates</div>
+            <div style={{ position: 'relative' }}>
+              <div
+                style={{ position: 'absolute', top: '-80px', left: '-140px' }}
+              >
+                <FilterPanel></FilterPanel>
+              </div>
+              <br></br>
+              No matched Templates
+            </div>
           ) : (
             <div className={styles.placeholder}>
               <AllInboxSharpIcon className={styles.icon} />

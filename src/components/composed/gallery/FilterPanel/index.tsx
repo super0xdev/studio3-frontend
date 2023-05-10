@@ -12,20 +12,6 @@ type SelectOptionType = {
 
 const FilterPanel: FC = () => {
   const TEMPLATE_COLLECTION = {
-    Asset: [
-      {
-        value: 'JPG',
-        data: 'JPG',
-      },
-      {
-        value: 'PNG',
-        data: 'PNG',
-      },
-      {
-        value: 'WEBP',
-        data: 'WEBP',
-      },
-    ],
     Tab: [
       {
         value: 'Meme',
@@ -64,17 +50,6 @@ const FilterPanel: FC = () => {
         data: 'pointing',
       },
     ],
-    'User Created': [
-      {
-        value: '1',
-        data: '1',
-      },
-      {
-        value: '0',
-        data: '0',
-      },
-    ],
-    UserID: [],
   } as { [key: string]: SelectOptionType[] };
   const [selectedValues, setSelectedValues] = useState(
     {} as { [key: string]: string }
