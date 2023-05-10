@@ -152,6 +152,12 @@ export default function GalleryPage({
   }
 
   function handleFilters() {
+    if (isTagsActved == true) {
+      setTags([]);
+      const result = filterByTags([], templateAssets, taglist);
+      setTemplateLoading(false);
+      loadImages(result);
+    }
     setIsTagsActved((p) => !p);
     fetchAPI(`${APP_API_URL}/list_tags`, 'POST').then((res) => {
       const tmp: any[] = [];

@@ -37,7 +37,9 @@ export const useUpdateDisplayedAssets = () => {
       .then((listedAssets) => {
         console.log(listedAssets.data);
         const assets = [...listedAssets.data];
-        dispatch(updateDisplayedAssets(assets));
+        const uniqueAssets = removeDuplicates(assets, 'file_name');
+        uniqueAssets.sort((a, b) => (a.file_name > b.file_name ? 1 : -1));
+        dispatch(updateDisplayedAssets(uniqueAssets));
         updateOpenedAssets(assets);
         updateIsLoading(false);
       })
