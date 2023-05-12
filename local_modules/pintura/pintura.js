@@ -24967,7 +24967,7 @@ var canCheckFontAvailability = () => {
 const toLocaleFn = (key, localePrefix) => (locale) => locale[localePrefix ? `${localePrefix}${upperCaseFirstLetter(key)}` : key];
 const mapToSizeOption = (v) => [v, `${v}`];
 const createLocaleMapper = (options, localePrefix) => (key) => [options[key], toLocaleFn(key, localePrefix)];
-const toolColorDefault = [1, 0.2549, 0.2118];
+const toolColorDefault = [0, 0, 0];
 const toolStrokeColorDefault = [1, 1, 1, 0];
 //#region tools
 const toolShapeDefaults = {
@@ -25039,7 +25039,8 @@ const createToolStyles = (tools) => ({
     }),
     text: createToolStyle('text', {
         color: [...toolColorDefault],
-        fontSize: '2%',
+        fontSize: '30',
+        fontFamily: 'Impact',
     }),
     ...tools,
 });
