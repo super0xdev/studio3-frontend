@@ -106,6 +106,8 @@ export default function GalleryPage({
       }
       i++;
     }
+    console.log(images);
+    if (images.length == templateImages.length) window.location.reload();
   };
 
   function search() {
@@ -165,6 +167,17 @@ export default function GalleryPage({
       if (taglist.length != tmp.length) setTagList([...tmp]);
     });
   }
+
+  const onChangeFilterPanel = (filters: { [key: string]: string }) => {
+    console.log(filters);
+    let result: AssetInfoType[] = [];
+    if (filters['Tags'] != null) {
+      result = templateAssets.filter((image) => {
+        return image.file_name.includes(filters['Tags']);
+      });
+    }
+    loadImages(result);
+  };
   // function tagAll() {
   //   setTemplateLoading(false);
   //   loadImages(templateAssets);
@@ -283,7 +296,11 @@ export default function GalleryPage({
                   key={`widget-template-${asset.uid}`}
                 >
                   <div style={{ position: 'absolute', top: '-80px' }}>
-                    {flag && isTemplates && <FilterPanel></FilterPanel>}
+                    {flag && isTemplates && (
+                      <FilterPanel
+                        onChangeFilter={onChangeFilterPanel}
+                      ></FilterPanel>
+                    )}
                   </div>
                   <ItemWidget
                     key={`widget-template-${asset.uid}`}
@@ -311,7 +328,7 @@ export default function GalleryPage({
               <div
                 style={{ position: 'absolute', top: '-80px', left: '-140px' }}
               >
-                <FilterPanel></FilterPanel>
+                <FilterPanel onChangeFilter={onChangeFilterPanel}></FilterPanel>
               </div>
               <br></br>
               No matched Templates
