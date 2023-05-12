@@ -157,7 +157,6 @@ const FilterPanel: FC<FIlterPanelProps> = ({ onChangeFilter }) => {
   const [taglist, setTagList] = useState<{ value: string; data: string }[]>([]);
 
   async function onTags() {
-    console.log('tag list --------------------------');
     await fetchAPI(`${APP_API_URL}/list_tags`, 'POST')
       .then((res) => {
         const tmp: { value: string; data: string }[] = [];
@@ -181,7 +180,7 @@ const FilterPanel: FC<FIlterPanelProps> = ({ onChangeFilter }) => {
   };
 
   const onOther = () => {
-    console.log('------------other');
+    console.log('');
   };
 
   return (

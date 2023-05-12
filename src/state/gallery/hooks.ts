@@ -35,7 +35,6 @@ export const useUpdateDisplayedAssets = () => {
     updateIsLoading(true);
     fetchAPI(`${APP_API_URL}/list_assets`, 'POST')
       .then((listedAssets) => {
-        console.log(listedAssets.data);
         const assets = [...listedAssets.data];
         const uniqueAssets = removeDuplicates(assets, 'file_name');
         uniqueAssets.sort((a, b) => (a.file_name > b.file_name ? 1 : -1));
@@ -72,7 +71,6 @@ export const useUpdateTemplateAssets = () => {
         const assets = [...templateAssets.data];
         const uniqueAssets = removeDuplicates(assets, 'file_name');
         uniqueAssets.sort((a, b) => (a.file_name > b.file_name ? 1 : -1));
-        console.log(uniqueAssets);
         dispatch(updateTemplateAssets(uniqueAssets));
         updateIsLoading(false);
       })
