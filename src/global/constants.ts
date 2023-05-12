@@ -14,7 +14,7 @@ export const WHITE_LIST = [
   '6zBaDY9LG2DMotrjdfJfJ6w8aLA7YqSV4jm6V7JWgabC',
 ];
 
-// export const APP_API_URL = 'http://127.0.0.1:8081';
+//export const APP_API_URL = 'http://127.0.0.1:8081';
 export const APP_API_URL = 'https://api.studio-3.xyz';
 
 export const APP_ASSET_URL =

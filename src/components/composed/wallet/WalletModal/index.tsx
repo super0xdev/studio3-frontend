@@ -1,4 +1,4 @@
-import React, { FC, SyntheticEvent, useCallback } from 'react';
+import React, { FC, SyntheticEvent, useCallback, useEffect } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import type { WalletName } from '@solana/wallet-adapter-base';
 
@@ -10,6 +10,7 @@ import {
   useUpdateAuthToken,
   useUpdateAuthWallet,
 } from '@/state/application/hooks';
+import useLogin from '@/hooks/useLogin';
 
 interface IWalletModal {
   open: boolean;
@@ -17,9 +18,10 @@ interface IWalletModal {
 }
 
 const WalletModal: FC<IWalletModal> = ({ open, onClose }) => {
-  const { wallets, select, wallet } = useWallet();
+  const { wallets, select, wallet, connected } = useWallet();
   const updateAuthToken = useUpdateAuthToken();
   const updateAuthWallet = useUpdateAuthWallet();
+  const login = useLogin();
 
   const handleWalletClick = useCallback(
     (_: SyntheticEvent, walletName: WalletName) => {
@@ -33,6 +35,13 @@ const WalletModal: FC<IWalletModal> = ({ open, onClose }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [select, onClose]
   );
+
+  useEffect(() => {
+    if (connected) {
+      login();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [connected]);
 
   return (
     <Dialog title="Connect a wallet" open={open} onClose={onClose}>
