@@ -12,9 +12,10 @@ export const WHITE_LIST = [
   '6Dio27qRnsTFaFUwAshonT82FS1d3C9uA9WvyyQXyuro',
   'C8VSZEcAUXNKTEvtfRztREXt1fT5Rf3tAvNaumvuc8Li',
   '6zBaDY9LG2DMotrjdfJfJ6w8aLA7YqSV4jm6V7JWgabC',
+  '5HoATg69fVLTFm7ypSWZTfHNyhQAgPZmYKsh2e5jvtqv',
 ];
 
-//export const APP_API_URL = 'http://127.0.0.1:8081';
+// export const APP_API_URL = 'http://127.0.0.1:8081';
 export const APP_API_URL = 'https://api.studio-3.xyz';
 
 export const APP_ASSET_URL =
@@ -42,3 +43,117 @@ export const CONFIRM_MODAL_INFO = {
     submit: 'OK',
   },
 };
+
+type SelectOptionType = {
+  value: string;
+  data: string;
+};
+
+export const TEMPLATE_COLLECTION = {
+  Tab: [
+    {
+      value: 'Meme',
+      data: 'Meme',
+    },
+    {
+      value: 'Merch',
+      data: 'Merch',
+    },
+    {
+      value: 'Collection',
+      data: 'Collection',
+    },
+  ],
+  Tags: [
+    {
+      value: 'value',
+      data: 'data',
+    },
+  ],
+  Collection: [
+    {
+      value: 'Alpha Pharaohs',
+      data: 'Alpha Pharaohs',
+    },
+    {
+      value: 'Anon',
+      data: 'Anon',
+    },
+    {
+      value: 'Aptos Monkeys',
+      data: 'Aptos Monkeys',
+    },
+    {
+      value: 'Bonkz',
+      data: 'Bonkz',
+    },
+    {
+      value: 'Clayno',
+      data: 'Clayno',
+    },
+    {
+      value: 'Dandies',
+      data: 'Dandies',
+    },
+    {
+      value: 'DeFi Apes',
+      data: 'DeFi Apes',
+    },
+    {
+      value: 'Famous Foxes',
+      data: 'Famous Foxes',
+    },
+    {
+      value: 'Fuddies',
+      data: 'Fuddies',
+    },
+    {
+      value: 'GhostKidDAO',
+      data: 'GhostKidDAO',
+    },
+    {
+      value: 'Gods',
+      data: 'Gods',
+    },
+    {
+      value: 'Jelly Rascals',
+      data: 'Jelly Rascals',
+    },
+    {
+      value: 'Jikan',
+      data: 'Jikan',
+    },
+    {
+      value: 'Liberty Square',
+      data: 'Liberty Square',
+    },
+    {
+      value: 'Lily',
+      data: 'Lily',
+    },
+    {
+      value: 'Mad Lads',
+      data: 'Mad Lads',
+    },
+    {
+      value: 'Oogy',
+      data: 'Oogy',
+    },
+    {
+      value: 'Sharx',
+      data: 'Sharx',
+    },
+    {
+      value: 'Smyths',
+      data: 'Smyths',
+    },
+    {
+      value: 'Stoned Apes',
+      data: 'Stoned Apes',
+    },
+    {
+      value: 'Wolf Capital',
+      data: 'Wolf Capital',
+    },
+  ],
+} as { [key: string]: SelectOptionType[] };
