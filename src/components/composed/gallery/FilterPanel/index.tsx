@@ -5,12 +5,7 @@ import styles from './index.module.scss';
 
 import Select from '@/components/based/Select';
 import useFetchAPI from '@/hooks/useFetchAPI';
-import { APP_API_URL } from '@/global/constants';
-
-type SelectOptionType = {
-  value: string;
-  data: string;
-};
+import { APP_API_URL, TEMPLATE_COLLECTION } from '@/global/constants';
 
 interface FIlterPanelProps {
   onChangeFilter: (filterValue: { [key: string]: string }) => void;
@@ -18,114 +13,7 @@ interface FIlterPanelProps {
 
 const FilterPanel: FC<FIlterPanelProps> = ({ onChangeFilter }) => {
   const fetchAPI = useFetchAPI();
-  const TEMPLATE_COLLECTION = {
-    Tab: [
-      {
-        value: 'Meme',
-        data: 'Meme',
-      },
-      {
-        value: 'Merch',
-        data: 'Merch',
-      },
-      {
-        value: 'Collection',
-        data: 'Collection',
-      },
-    ],
-    Tags: [
-      {
-        value: 'value',
-        data: 'data',
-      },
-    ],
-    Collection: [
-      {
-        value: 'Alpha Pharaohs',
-        data: 'Alpha Pharaohs',
-      },
-      {
-        value: 'Anon',
-        data: 'Anon',
-      },
-      {
-        value: 'Aptos Monkeys',
-        data: 'Aptos Monkeys',
-      },
-      {
-        value: 'Bonkz',
-        data: 'Bonkz',
-      },
-      {
-        value: 'Clayno',
-        data: 'Clayno',
-      },
-      {
-        value: 'Dandies',
-        data: 'Dandies',
-      },
-      {
-        value: 'DeFi Apes',
-        data: 'DeFi Apes',
-      },
-      {
-        value: 'Famous Foxes',
-        data: 'Famous Foxes',
-      },
-      {
-        value: 'Fuddies',
-        data: 'Fuddies',
-      },
-      {
-        value: 'GhostKidDAO',
-        data: 'GhostKidDAO',
-      },
-      {
-        value: 'Gods',
-        data: 'Gods',
-      },
-      {
-        value: 'Jelly Rascals',
-        data: 'Jelly Rascals',
-      },
-      {
-        value: 'Jikan',
-        data: 'Jikan',
-      },
-      {
-        value: 'Liberty Square',
-        data: 'Liberty Square',
-      },
-      {
-        value: 'Lily',
-        data: 'Lily',
-      },
-      {
-        value: 'Mad Lads',
-        data: 'Mad Lads',
-      },
-      {
-        value: 'Oogy',
-        data: 'Oogy',
-      },
-      {
-        value: 'Sharx',
-        data: 'Sharx',
-      },
-      {
-        value: 'Smyths',
-        data: 'Smyths',
-      },
-      {
-        value: 'Stoned Apes',
-        data: 'Stoned Apes',
-      },
-      {
-        value: 'Wolf Capital',
-        data: 'Wolf Capital',
-      },
-    ],
-  } as { [key: string]: SelectOptionType[] };
+
   const [selectedValues, setSelectedValues] = useState(
     {} as { [key: string]: string }
   );

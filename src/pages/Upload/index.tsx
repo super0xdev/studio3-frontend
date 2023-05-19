@@ -11,9 +11,15 @@ import styles from './index.module.scss';
 import { useAuth } from '@/context/AuthContext';
 import PageContainer from '@/components/navigation/PageContainer';
 import Button from '@/components/based/Button';
-import { APP_API_URL } from '@/global/constants';
+import { APP_API_URL, TEMPLATE_COLLECTION } from '@/global/constants';
 import useFetchAPI from '@/hooks/useFetchAPI';
 import GalleryHeading from '@/components/composed/gallery/GalleryHeading';
+
+interface Categories {
+  tab: string[];
+  collection: string[];
+  tags: string[];
+}
 
 export default function UploadPage() {
   //const [image, setImage] = useState<any>();
@@ -100,9 +106,36 @@ export default function UploadPage() {
   // }, [image]);
 
   useEffect(() => {
-    fetchAPI(`${APP_API_URL}/get_categories`, 'POST').then((res) => {
-      if (res.data) setCategories({ ...res.data });
-    });
+    (async () => {
+      const t_categories: Categories = {
+        tab: [],
+        collection: [],
+        tags: [],
+      };
+      await fetchAPI(`${APP_API_URL}/list_tags`, 'POST')
+        .then((res) => {
+          let i;
+          for (i = 0; i < TEMPLATE_COLLECTION.Tab.length; i++) {
+            t_categories.tab.push(TEMPLATE_COLLECTION['Tab'][i].data);
+          }
+
+          for (i = 0; i < TEMPLATE_COLLECTION.Collection.length; i++) {
+            t_categories.collection.push(
+              TEMPLATE_COLLECTION['Collection'][i].data
+            );
+          }
+
+          for (i = 0; i < res.data.length; i++) {
+            const tag = res.data[i].tag;
+            t_categories.tags.push(tag);
+          }
+
+          setCategories(t_categories);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    })();
   }, []);
 
   if (isVerified == false) {

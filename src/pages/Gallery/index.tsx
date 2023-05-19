@@ -121,6 +121,7 @@ export default function GalleryPage({
     const val = searchRef.current;
     if (!val) return;
     if (taglist.indexOf(val.value) != -1) return;
+    if (val.value.length == 0) return;
     for (let i = 0; i < val.value.length; i++) {
       if (
         !(
