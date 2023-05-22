@@ -1,5 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState, useRef, useMemo } from 'react';
+import React, {
+  useEffect,
+  useState,
+  useRef,
+  useMemo,
+  ReactElement,
+} from 'react';
 import toast from 'react-hot-toast';
 import clsx from 'clsx';
 import AnimateHeight from 'react-animate-height';
@@ -55,6 +61,7 @@ export default function GalleryPage({
   const [userLoading, setUserLoading] = useState<boolean>(false);
   const [templateLoading, setTemplateLoading] = useState<boolean>(false);
   const [tags, setTags] = useState<boolean[]>([false]);
+  const [rendered, setRendered] = useState<boolean>(false);
   const displayedAssets = useMemo(
     () => (isTemplates ? templateImages : userImages),
     [templateImages, userImages]
@@ -152,6 +159,32 @@ export default function GalleryPage({
     const result = filterByTags(ar, templateAssets, taglist);
     setTemplateLoading(false);
     loadImages(result);
+  }
+
+  function getImageData() {
+    const nodeData: ReactElement[] = [];
+    for (let i = 0; i < templateImages.length; i++) {
+      nodeData.push(
+        <div
+          style={{ position: 'relative' }}
+          key={`widget-template-${templateImages[i].uid}`}
+        >
+          <div style={{ position: 'absolute', top: '-80px' }}>
+            {flag && isTemplates && (
+              <FilterPanel onChangeFilter={onChangeFilterPanel}></FilterPanel>
+            )}
+          </div>
+          <ItemWidget
+            key={`widget-template-${templateImages[i].uid}`}
+            asset={templateImages[i]}
+            selected={previewSelectedId === templateImages[i].uid}
+            onClick={() => updatePreviewSelectedId(templateImages[i].uid)}
+          />
+          {(flag = false)}
+        </div>
+      );
+    }
+    return nodeData;
   }
 
   function handleFilters() {
@@ -291,27 +324,7 @@ export default function GalleryPage({
         <div className={styles.images}>
           {displayedAssets && displayedAssets.length ? (
             isTemplates ? (
-              templateImages.map((asset) => (
-                <div
-                  style={{ position: 'relative' }}
-                  key={`widget-template-${asset.uid}`}
-                >
-                  <div style={{ position: 'absolute', top: '-80px' }}>
-                    {flag && isTemplates && (
-                      <FilterPanel
-                        onChangeFilter={onChangeFilterPanel}
-                      ></FilterPanel>
-                    )}
-                  </div>
-                  <ItemWidget
-                    key={`widget-template-${asset.uid}`}
-                    asset={asset}
-                    selected={previewSelectedId === asset.uid}
-                    onClick={() => updatePreviewSelectedId(asset.uid)}
-                  />
-                  {(flag = false)}
-                </div>
-              ))
+              getImageData()
             ) : (
               userImages.map((asset) => (
                 <ItemWidget

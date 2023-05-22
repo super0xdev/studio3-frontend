@@ -14,9 +14,11 @@ interface FIlterPanelProps {
 const FilterPanel: FC<FIlterPanelProps> = ({ onChangeFilter }) => {
   const fetchAPI = useFetchAPI();
 
-  const [selectedValues, setSelectedValues] = useState(
-    {} as { [key: string]: string }
-  );
+  const [selectedValues, setSelectedValues] = useState({
+    Tab: '',
+    Tags: '',
+    Collection: '',
+  } as { [key: string]: string });
   const [taglist, setTagList] = useState<{ value: string; data: string }[]>([]);
 
   async function onTags() {

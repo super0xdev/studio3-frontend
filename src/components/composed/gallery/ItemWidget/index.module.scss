@@ -111,5 +111,11 @@ body {
     &:active {
       border: 1px solid $gray-50;
     }
+
+    .container {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px; /* adjust it as needed */
+    }
   }
 }
