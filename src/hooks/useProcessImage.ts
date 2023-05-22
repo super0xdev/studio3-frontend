@@ -14,9 +14,11 @@ import { APP_ASSET_URL } from '@/global/constants';
 import { loadJSON } from '@/global/utils';
 
 export default function useProcessImage(asset: AssetInfoType | null) {
-  const [processedImage, setProcessedImage] =
-    useState<PinturaDefaultImageWriterResult>();
+  const [processedImage, setProcessedImage] = useState<
+    PinturaDefaultImageWriterResult[]
+  >([]);
   const [processing, setProcessing] = useState(false);
+  const [urls, setUrls] = useState<string[]>([]);
   // const [previewUrl, setPreviewUrl] = useState<string>();
 
   // const compressImage = async (image: File) => {
@@ -40,36 +42,43 @@ export default function useProcessImage(asset: AssetInfoType | null) {
   // };
 
   useEffect(() => {
-    if (!asset) return;
+    async function processAsset() {
+      try {
+        if (!asset) return;
+        const turl: string[] = [];
+        setProcessing(true);
+        for (const path of asset.file_path.split('%')) {
+          if (path != '') {
+            const res = await processImage(`${APP_ASSET_URL}${path}`, {
+              imageReader: createDefaultImageReader(),
+              imageWriter: createDefaultImageWriter(),
+              imageScrambler: createDefaultImageScrambler(),
+              shapePreprocessor: createDefaultShapePreprocessor(),
+              imageState: asset.meta_file_path
+                ? await loadJSON(`${APP_ASSET_URL}${asset.meta_file_path}`)
+                : undefined,
+            });
+            if (res != null) {
+              turl.push(URL.createObjectURL(res?.dest as Blob));
+            } else {
+              turl.push('');
+            }
+          }
+        }
+        setUrls(turl);
+        setProcessing(false);
+      } catch (error) {
+        console.error(error);
+        setProcessing(false);
+      }
+    }
 
-    setProcessing(true);
-    processImage(`${APP_ASSET_URL}${asset.file_path}`, {
-      imageReader: createDefaultImageReader(),
-      imageWriter: createDefaultImageWriter(),
-      imageScrambler: createDefaultImageScrambler(),
-      shapePreprocessor: createDefaultShapePreprocessor(),
-      imageState: asset.meta_file_path
-        ? loadJSON(`${APP_ASSET_URL}${asset.meta_file_path}`)
-        : undefined,
-    }).then((res) => {
-      setProcessedImage(res);
-      setProcessing(false);
-    });
+    processAsset();
   }, [asset]);
 
-  // useEffect(() => {
-  //   compressImage(processedImage?.dest as File);
-  // }, [processedImage]);
-
-  // return {
-  //   url: previewUrl ? previewUrl : null,
-  //   content: processedImage?.dest as Blob,
-  // };
   return {
-    url: processedImage
-      ? URL.createObjectURL(processedImage?.dest as Blob)
-      : null,
-    content: processedImage?.dest as Blob,
+    url: urls,
+    content: processedImage[0]?.dest as Blob,
     processing,
   };
 }

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
   createDefaultImageReader,
   createDefaultImageScrambler,
@@ -12,25 +12,36 @@ import { AssetInfoType } from '@/global/types';
 import { APP_ASSET_URL } from '@/global/constants';
 import { loadJSON } from '@/global/utils';
 
-export default function useProcessThumbnail(asset: AssetInfoType | null) {
-  const [processedThumbnail, setProcessedThumbnail] =
-    useState<PinturaDefaultImageWriterResult>();
-
-  useEffect(() => {
-    if (!asset) return;
-    processImage(`${APP_ASSET_URL}${asset.thumbnail_file_path}`, {
-      imageReader: createDefaultImageReader(),
-      imageWriter: createDefaultImageWriter(),
-      imageScrambler: createDefaultImageScrambler(),
-      shapePreprocessor: createDefaultShapePreprocessor(),
-      imageState: asset.meta_file_path
-        ? loadJSON(`${APP_ASSET_URL}${asset.meta_file_path}`)
-        : undefined,
-    }).then((res) => {
-      setProcessedThumbnail(res);
-    });
-  }, [asset]);
-
+export default async function useProcessThumbnail(asset: AssetInfoType | null) {
+  const [processedThumbnail] = useState<PinturaDefaultImageWriterResult[]>([]);
+  const data: string[] = [];
+  async function getThumbnailFiles(str: AssetInfoType) {
+    const buffer: string[] = str.thumbnail_file_path.split('%');
+    for (let i = 0; i < buffer.length; i++) {
+      if (buffer[i] != '') {
+        const res = await processImage(`${APP_ASSET_URL}${buffer[i]}`, {
+          imageReader: createDefaultImageReader(),
+          imageWriter: createDefaultImageWriter(),
+          imageScrambler: createDefaultImageScrambler(),
+          shapePreprocessor: createDefaultShapePreprocessor(),
+          imageState: str.meta_file_path
+            ? loadJSON(`${APP_ASSET_URL}${str.meta_file_path}`)
+            : undefined,
+        });
+        if (res != null) {
+          data.push(URL.createObjectURL(res?.dest as Blob));
+        } else {
+          data.push('');
+        }
+      }
+    }
+  }
+  if (!asset)
+    return {
+      url: [],
+      content: processedThumbnail[0]?.dest as Blob,
+    };
+  await getThumbnailFiles(asset);
   // useEffect(() => {
   //   compressImage(processedImage?.dest as File);
   // }, [processedImage]);
@@ -40,9 +51,7 @@ export default function useProcessThumbnail(asset: AssetInfoType | null) {
   //   content: processedImage?.dest as Blob,
   // };
   return {
-    url: processedThumbnail
-      ? URL.createObjectURL(processedThumbnail?.dest as Blob)
-      : null,
-    content: processedThumbnail?.dest as Blob,
+    url: data,
+    content: processedThumbnail[0]?.dest as Blob,
   };
 }

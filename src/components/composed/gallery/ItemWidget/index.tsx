@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import clsx from 'clsx';
 import { Card } from '@mui/material';
 // import { filesize } from 'filesize';
@@ -26,7 +26,10 @@ const ItemWidget: FC<IItemWidget> = ({
   onClick,
   onDoubleClick,
 }) => {
-  const { url: processedImg } = useProcessThumbnail(asset);
+  const [processedImg, setProcessedImg] = useState<string[]>([]);
+  useProcessThumbnail(asset).then((value) => {
+    setProcessedImg(value.url);
+  });
   return (
     <Card
       className={clsx(styles.widget, { [styles.selected]: selected })}
@@ -35,14 +38,19 @@ const ItemWidget: FC<IItemWidget> = ({
     >
       <div className={styles.imageWrapper}>
         {processedImg ? (
-          <LazyLoadImage src={processedImg} effect="blur" />
+          <div className="">
+            {processedImg.map((item, index) => (
+              <LazyLoadImage key={index} src={item} effect="blur" />
+            ))}
+          </div>
         ) : (
           <CircularProgress />
         )}
       </div>
       <div className={styles.infoContainer}>
         <div className={styles.title}>
-          {splitFileName(asset.file_name)[0] || asset.file_name}
+          {splitFileName(asset.file_name.replaceAll('%', ' '))[0] ||
+            asset.file_name}
         </div>
         {/* <div className={styles.info}>
           <div className={styles.meta}>
