@@ -304,6 +304,7 @@ export default function EditorPage() {
             fontFamilyOptions: [
               // Add our custom fonts
               ['Impact', 'Impact'],
+              ['Impact-meme', 'Meme'],
               ['Arial', 'Arial'],
               ['Helvetica', 'Helvetica'],
               ['Montserrat', 'Montserrat'],

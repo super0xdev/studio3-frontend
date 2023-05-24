@@ -2445,8 +2445,10 @@ var textToImage = async (text = '', options) => {
 
     // MYC add meme method
     const fontColor = colorArrayToRGBA(options.color);
-    if(textStyles.indexOf("Impact-meme") >= 0) textStyles += `-webkit-text-stroke:2px ${fontColor}; color:transparent !important; background-color:transparent !important;`;
-
+    if(textStyles.indexOf("Impact-meme") >= 0)
+        textStyles += `-webkit-text-stroke:2px ${fontColor}!important;
+            color:transparent !important; background-color:transparent !important`;
+    console.log('styles:::::: ', `position:absolute;padding-right:${paddingRight}px;padding-left:${paddingLeft}px;${textStyles};${textContentEditableStyles}`);
     const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}"><foreignObject x="0" y="0" width="${width}" height="${height}"><div xmlns="http://www.w3.org/1999/xhtml" style="transform-origin:0 0;transform:scale(${pixelRatio})">${fontEmbed ? `<style>${fontEmbed}</style>` : ''}<pre contenteditable="true" spellcheck="false" style="position:absolute;padding-right:${paddingRight}px;padding-left:${paddingLeft}px;${textStyles};${textContentEditableStyles}">${textFinal}</pre></div></foreignObject></svg>`;
     // uncomment for debugging
     // document.body.append(h('div', { innerHTML: svg }));
@@ -33073,7 +33075,7 @@ function create_fragment$g(ctx) {
                 //if(ctx[4].indexOf('Impact-meme') >= 0) strokeStyle = '-webkit-text-stroke: 2px black;';
                 
 
-				attr(pre, "style", /*style*/ ctx[4]+strokeStyle);
+				attr(pre, "style", /*style*/ ctx[4]);
 			}
 		},
 		i: noop,
@@ -35961,7 +35963,7 @@ if (/arrow/i.test(key)) {
 		const initialLineOffset = Math.max(0, fontSize - lineHeight) * 0.5;
         // MYC part set white color when meme font
         const colorPart = shapeComputed.fontFamily == 'Impact-meme' ? 
-            `color:transparent;-webkit-text-stroke: 2px ${color}${imp};` : `color:${color}${imp};`;
+            `color:transparent!important;-webkit-text-stroke: 2px ${color}${imp};` : `color:${color}${imp};`;
 		console.log(`--bottom-inset:${initialLineOffset}px;padding:${initialLineOffset}px 0 0${imp};${colorPart}font-size:${fontSize}px${imp};line-height:${lineHeight}px${imp};${cosmetic}`);
         return`--bottom-inset:${initialLineOffset}px;padding:${initialLineOffset}px 0 0${imp};${colorPart}font-size:${fontSize}px${imp};line-height:${lineHeight}px${imp};${cosmetic}` ;
 	};
