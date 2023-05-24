@@ -109,10 +109,11 @@ export const filterByTags = (
   if (i == keyword.length) return images;
   const filteredStrings = images.filter((image) => {
     const lowerCaseString = image.file_name.toLowerCase();
-    return keyword.some(
+    const tmp = keyword.some(
       (word, index) =>
         word == true && lowerCaseString.includes(list[index].toLowerCase())
     );
+    return tmp;
   });
   return filteredStrings;
 };

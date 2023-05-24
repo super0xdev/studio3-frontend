@@ -9,15 +9,23 @@ import { APP_API_URL, TEMPLATE_COLLECTION } from '@/global/constants';
 
 interface FIlterPanelProps {
   onChangeFilter: (filterValue: { [key: string]: string }) => void;
+  dTab: string;
+  dTags: string;
+  dCollection: string;
 }
 
-const FilterPanel: FC<FIlterPanelProps> = ({ onChangeFilter }) => {
+const FilterPanel: FC<FIlterPanelProps> = ({
+  onChangeFilter,
+  dTab,
+  dTags,
+  dCollection,
+}) => {
   const fetchAPI = useFetchAPI();
 
   const [selectedValues, setSelectedValues] = useState({
-    Tab: '',
-    Tags: '',
-    Collection: '',
+    Tab: dTab,
+    Tags: dTags,
+    Collection: dCollection,
   } as { [key: string]: string });
   const [taglist, setTagList] = useState<{ value: string; data: string }[]>([]);
 
@@ -45,7 +53,7 @@ const FilterPanel: FC<FIlterPanelProps> = ({ onChangeFilter }) => {
   };
 
   const onOther = () => {
-    console.log('');
+    const t = 1;
   };
 
   return (

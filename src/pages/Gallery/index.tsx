@@ -61,7 +61,10 @@ export default function GalleryPage({
   const [userLoading, setUserLoading] = useState<boolean>(false);
   const [templateLoading, setTemplateLoading] = useState<boolean>(false);
   const [tags, setTags] = useState<boolean[]>([false]);
-  const [rendered, setRendered] = useState<boolean>(false);
+  const [f_tab, setFTab] = useState<string>('');
+  const [f_tag, setFTag] = useState<string>('');
+  const [f_collection, setFCollection] = useState<string>('');
+  const [current, setCurrent] = useState<boolean>(false);
   const displayedAssets = useMemo(
     () => (isTemplates ? templateImages : userImages),
     [templateImages, userImages]
@@ -69,7 +72,7 @@ export default function GalleryPage({
   const handleUpdateDisplayedAssets = useUpdateDisplayedAssets();
   const handleUpdateTemplateAssets = useUpdateTemplateAssets();
   const fetchAPI = useFetchAPI();
-
+  console.log(templateImages);
   useEffect(() => {
     fetchAPI(`${APP_API_URL}/list_tags`, 'POST').then((res) => {
       const tmp: any[] = [];
@@ -79,16 +82,27 @@ export default function GalleryPage({
 
     const intervalId = setInterval(() => {
       window.location.reload();
+      console.log(
+        'reload ............................................................................................. '
+      );
     }, 300000);
 
     return () => {
       clearInterval(intervalId);
     };
   }, []);
-
   useEffect(() => {
-    handleUpdateDisplayedAssets();
-    handleUpdateTemplateAssets();
+    if (current != isTemplates) {
+      setCurrent(isTemplates);
+      if (isTemplates && templateImages.length == 0)
+        handleUpdateTemplateAssets();
+    }
+  }, [isTemplates]);
+  useEffect(() => {
+    if (!isTemplates && (userImages.length == 0 || templateImages.length > 0))
+      handleUpdateDisplayedAssets();
+    if (isTemplates && (userImages.length > 0 || templateImages.length == 0))
+      handleUpdateTemplateAssets();
   }, [authToken]);
 
   const handleCreate = () => {
@@ -102,19 +116,22 @@ export default function GalleryPage({
   const loadImages = async (images: any[]) => {
     let i = 0;
     setTemplateImages([]);
+    const image: AssetInfoType[] = [];
     for (const item of images) {
       if (!isTemplates) break;
       await sleep(200);
       if (i < 15) {
-        setTemplateImages((p) => [...p, item]);
+        image.push(item);
+        //setTemplateImages((p) => [...p, item]);
       } else {
-        setTemplateImages((p) => [...p, ...images.slice(15)]);
+        image.push(...image.slice(15));
+        //setTemplateImages((p) => [...p, ...images.slice(15)]);
         break;
       }
       i++;
     }
-    console.log(images);
-    if (images.length == templateImages.length) window.location.reload();
+    setTemplateImages(image);
+    //if (images.length == templateImages.length) window.location.reload();
   };
 
   function search() {
@@ -138,7 +155,6 @@ export default function GalleryPage({
       )
         return;
     }
-    console.log('success');
     const data = new FormData();
     data.append('id', String(taglist.length + 1));
     data.append('tag', val.value);
@@ -171,11 +187,15 @@ export default function GalleryPage({
         >
           <div style={{ position: 'absolute', top: '-80px' }}>
             {flag && isTemplates && (
-              <FilterPanel onChangeFilter={onChangeFilterPanel}></FilterPanel>
+              <FilterPanel
+                dTab={f_tab}
+                dTags={f_tag}
+                dCollection={f_collection}
+                onChangeFilter={onChangeFilterPanel}
+              ></FilterPanel>
             )}
           </div>
           <ItemWidget
-            key={`widget-template-${templateImages[i].uid}`}
             asset={templateImages[i]}
             selected={previewSelectedId === templateImages[i].uid}
             onClick={() => updatePreviewSelectedId(templateImages[i].uid)}
@@ -203,14 +223,23 @@ export default function GalleryPage({
   }
 
   const onChangeFilterPanel = (filters: { [key: string]: string }) => {
-    console.log(filters);
-    let result: AssetInfoType[] = [];
-    if (filters['Tags'] != null) {
-      result = templateAssets.filter((image) => {
-        return image.file_name.includes(filters['Tags']);
-      });
-    }
-    loadImages(result);
+    setFTag(filters['Tags']);
+    setFTab(filters['Tab']);
+    setFCollection(filters['Collection']);
+    const ttag = filters['Tags'],
+      ttab = filters['Tab'],
+      tcollection = filters['Collection'];
+    const filteredItems = templateAssets.filter(
+      (item) =>
+        (!ttag ||
+          (item.tags && item.tags.toLowerCase() === ttag.toLowerCase())) &&
+        (!ttab ||
+          (item.tab && item.tab.toLowerCase() === ttab.toLowerCase())) &&
+        (!tcollection ||
+          (item.collection &&
+            item.collection.toLowerCase() === tcollection.toLowerCase()))
+    );
+    loadImages(filteredItems);
   };
   // function tagAll() {
   //   setTemplateLoading(false);
@@ -220,19 +249,24 @@ export default function GalleryPage({
   useEffect(() => {
     if (templateLoading) return;
     if (!isTemplates) return;
+    if (templateImages.length > 0) setTemplateImages([]);
     const loadImages = async () => {
       let i = 0;
+      const image: AssetInfoType[] = [];
       for (const item of templateAssets) {
         if (!isTemplates) break;
         await sleep(200);
         if (i < 15) {
-          setTemplateImages((p) => [...p, item]);
+          image.push(item);
+          //setTemplateImages((p) => [...p, item]);
         } else {
-          setTemplateImages((p) => [...p, ...templateAssets.slice(15)]);
+          image.push(...templateAssets.slice(15));
+          //setTemplateImages((p) => [...p, ...templateAssets.slice(15)]);
           break;
         }
         i++;
       }
+      setTemplateImages(image);
     };
     setTemplateLoading(true);
     loadImages();
@@ -243,21 +277,25 @@ export default function GalleryPage({
 
   useEffect(() => {
     if (userLoading) return;
-    setUserImages([]);
     if (!!isTemplates) return;
+    if (userImages.length > 0) setUserImages([]);
     const loadImages = async () => {
       let i = 0;
+      const image: AssetInfoType[] = [];
       for (const item of userAssets) {
         if (!!isTemplates) break;
         await sleep(200);
         if (i < 15) {
-          setUserImages((p) => [...p, item]);
+          image.push(item);
+          //setUserImages((p) => [...p, item]);
         } else {
-          setUserImages((p) => [...p, ...userAssets.slice(15)]);
+          image.push(...userAssets.slice(15));
+          //setUserImages((p) => [...p, ...userAssets.slice(15)]);
           break;
         }
         i++;
       }
+      setUserImages(image);
     };
     setUserLoading(true);
     loadImages();
@@ -342,7 +380,12 @@ export default function GalleryPage({
               <div
                 style={{ position: 'absolute', top: '-80px', left: '-140px' }}
               >
-                <FilterPanel onChangeFilter={onChangeFilterPanel}></FilterPanel>
+                <FilterPanel
+                  dTab={f_tab}
+                  dTags={f_tag}
+                  dCollection={f_collection}
+                  onChangeFilter={onChangeFilterPanel}
+                ></FilterPanel>
               </div>
               <br></br>
               No matched Templates

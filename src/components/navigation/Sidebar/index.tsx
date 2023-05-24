@@ -36,7 +36,7 @@ const Sidebar = () => {
   };
 
   useEffect(() => {
-    setValue(pathIndex);
+    setValue(pathIndex == -1 ? 3 : pathIndex);
   }, [pathIndex]);
 
   const a11yProps = (index: number) => {

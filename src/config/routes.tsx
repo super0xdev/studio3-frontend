@@ -35,7 +35,7 @@ export const APP_ROUTES: RouteType[] = [
   },
   {
     path: '/templates',
-    component: <GalleryPage isTemplates />,
+    component: <GalleryPage isTemplates={true} />,
     title: 'Templates',
     Icon: DashboardSharpIcon,
     isMenuLinked: true,

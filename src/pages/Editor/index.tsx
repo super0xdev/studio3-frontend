@@ -304,11 +304,11 @@ export default function EditorPage() {
             fontFamilyOptions: [
               // Add our custom fonts
               ['Impact', 'Impact'],
+              ['Impact-meme', 'Meme'],
               ['Arial', 'Arial'],
               ['Helvetica', 'Helvetica'],
               ['Montserrat', 'Montserrat'],
               ['Comic Sans MS', 'Comic Sans MS'],
-
               // Add the default options
               ...createDefaultFontFamilyOptions(),
             ],

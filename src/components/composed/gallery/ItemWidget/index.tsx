@@ -1,6 +1,6 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import clsx from 'clsx';
-import { Card } from '@mui/material';
+import { Card, Grid } from '@mui/material';
 // import { filesize } from 'filesize';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 // import AccountCircleSharpIcon from '@mui/icons-material/AccountCircleSharp';
@@ -26,10 +26,7 @@ const ItemWidget: FC<IItemWidget> = ({
   onClick,
   onDoubleClick,
 }) => {
-  const [processedImg, setProcessedImg] = useState<string[]>([]);
-  useProcessThumbnail(asset).then((value) => {
-    setProcessedImg(value.url);
-  });
+  const { url: processedImg } = useProcessThumbnail(asset);
   return (
     <Card
       className={clsx(styles.widget, { [styles.selected]: selected })}
@@ -38,19 +35,32 @@ const ItemWidget: FC<IItemWidget> = ({
     >
       <div className={styles.imageWrapper}>
         {processedImg ? (
-          <div className="">
+          <Grid
+            sx={{
+              alignItems: 'center',
+              textAlign: 'center',
+            }}
+          >
             {processedImg.map((item, index) => (
               <LazyLoadImage key={index} src={item} effect="blur" />
             ))}
-          </div>
+          </Grid>
         ) : (
           <CircularProgress />
         )}
       </div>
       <div className={styles.infoContainer}>
-        <div className={styles.title}>
-          {splitFileName(asset.file_name.replaceAll('%', ' '))[0] ||
-            asset.file_name}
+        <div className={styles.title} style={{ textAlign: 'center' }}>
+          {asset.file_name.includes('%') ? (
+            <div>
+              <div>Multiple Images</div>
+              {asset.file_name
+                .split('%')
+                .map((item) => (item != '' ? <div>{item}</div> : <></>))}
+            </div>
+          ) : (
+            asset.file_name
+          )}
         </div>
         {/* <div className={styles.info}>
           <div className={styles.meta}>

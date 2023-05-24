@@ -1209,6 +1209,8 @@ const container = isBrowser() &&
 let timeoutId;
 var appendForMeasuring = (element) => {
     // replace element children with this child
+    element.style.webkitTextStroke = '1px black';
+    //element.style += '--webkit-text-stroke: 1px black !important;';
     fn$1(container, element);
     // append to DOM if not in it atm
     if (!container.parentNode)
@@ -2427,7 +2429,7 @@ var textToImage = async (text = '', options) => {
     const { imageWidth = 300, imageHeight = 150, paddingLeft = TextPadding, paddingRight = TextPadding, fontFamily, pixelRatio = 1, willRequest, } = options;
     const width = (imageWidth + paddingLeft + paddingRight) * pixelRatio;
     const height = imageHeight * pixelRatio;
-    const textStyles = textGetStyles(options);
+    let textStyles = textGetStyles(options);
     const textContentEditableStyles = textGetContentEditableStyles(options);
     const fontEmbed = await getFontFaceEmbed(fontFamily, willRequest);
     const textEncoded = text
@@ -2440,6 +2442,11 @@ var textToImage = async (text = '', options) => {
         .replace(/\n/g, '___BR___');
     const textEscaped = escapeTags(textEncoded);
     const textFinal = textEscaped.replace(/___BR___/g, '<br/>');
+
+    // MYC add meme method
+    const fontColor = colorArrayToRGBA(options.color);
+    if(textStyles.indexOf("Impact-meme") >= 0) textStyles += `-webkit-text-stroke:2px ${fontColor}; color:transparent !important; background-color:transparent !important;`;
+
     const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}"><foreignObject x="0" y="0" width="${width}" height="${height}"><div xmlns="http://www.w3.org/1999/xhtml" style="transform-origin:0 0;transform:scale(${pixelRatio})">${fontEmbed ? `<style>${fontEmbed}</style>` : ''}<pre contenteditable="true" spellcheck="false" style="position:absolute;padding-right:${paddingRight}px;padding-left:${paddingLeft}px;${textStyles};${textContentEditableStyles}">${textFinal}</pre></div></foreignObject></svg>`;
     // uncomment for debugging
     // document.body.append(h('div', { innerHTML: svg }));
@@ -8646,6 +8653,7 @@ function instance$P($$self, $$props, $$invalidate) {
 			fontVariant,
 			fontStyle,
 			lineHeight,
+            webkitTextStroke: '2px red',
 			height: height
 			? Math.min(lastCharPosition.y, Math.ceil(height / lineHeight) * lineHeight)
 			: "auto",
@@ -8685,6 +8693,7 @@ function instance$P($$self, $$props, $$invalidate) {
 				fontStyle,
 				textAlign,
 				lineHeight,
+                webkitTextStroke: '2px red',
 				width: widthRounded,
 				height: heightRounded,
 				imageWidth,
@@ -8718,7 +8727,6 @@ function instance$P($$self, $$props, $$invalidate) {
 		}
 
 		const texture = Textures.get(textUID);
-
 		return isTexture(texture)
 		? texture
 		: PlaceholderTextures.get(shape.id);
@@ -8915,7 +8923,7 @@ function instance$P($$self, $$props, $$invalidate) {
 							let width = shape.width || (pixelTextureSize.width - TextPadding * 2) * scalar;
 
 							let height = shape.height || pixelTextureSize.height * scalar;
-							canvasGL.drawRect({ ...shapeRect, width, height }, shape.rotation, shape.flipX, shape.flipY, shapeCornerRadius, shape.backgroundColor, undefined, undefined, undefined, undefined, strokeWidth, shape.strokeColor, shape.opacity, undefined, undefined, shape.inverted);
+							//canvasGL.drawRect({ ...shapeRect, width, height }, shape.rotation, shape.flipX, shape.flipY, shapeCornerRadius, shape.backgroundColor, undefined, undefined, undefined, undefined, strokeWidth, shape.strokeColor, shape.opacity, undefined, undefined, shape.inverted);
 						}
 
 						// Apply TextPadding so text doesn't clip on left and right edges
@@ -8947,7 +8955,6 @@ function instance$P($$self, $$props, $$invalidate) {
 						if (shape._prerender) colorize[3] = 0;
 					}
 				}
-
 				canvasGL.drawRect(shapeRect, shape.rotation, shape.flipX, shape.flipY, shapeCornerRadius, shapeBackgroundColor, texture, backgroundSize, backgroundPosition, shape.backgroundCorners && backgroundCornersToUVMap(shape.backgroundCorners), strokeWidth, shapeStrokeColor, shape.opacity, undefined, colorize, shape.inverted);
 			}
 
@@ -8967,7 +8974,6 @@ function instance$P($$self, $$props, $$invalidate) {
 	const redraw = () => {
 		// reset array of textures used in this draw call
 		usedTextures.length = 0;
-
 		// get top image shortcut
 		const imagesTop = images[0];
 
@@ -12299,7 +12305,6 @@ function create_fragment$G(ctx) {
 	let current;
 	const default_slot_template = /*#slots*/ ctx[5].default;
 	const default_slot = create_slot(default_slot_template, ctx, /*$$scope*/ ctx[4], null);
-
 	return {
 		c() {
 			span = element("span");
@@ -25040,7 +25045,7 @@ const createToolStyles = (tools) => ({
     text: createToolStyle('text', {
         color: [...toolColorDefault],
         fontSize: '30',
-        fontFamily: 'Impact',
+        fontFamily: 'Impact'
     }),
     ...tools,
 });
@@ -33064,7 +33069,11 @@ function create_fragment$g(ctx) {
 			}
 
 			if (dirty[0] & /*style*/ 16) {
-				attr(pre, "style", /*style*/ ctx[4]);
+                let strokeStyle ='';
+                //if(ctx[4].indexOf('Impact-meme') >= 0) strokeStyle = '-webkit-text-stroke: 2px black;';
+                
+
+				attr(pre, "style", /*style*/ ctx[4]+strokeStyle);
 			}
 		},
 		i: noop,
@@ -33826,10 +33835,13 @@ function create_if_block_3$2(ctx) {
 
 	return {
 		c() {
+            let style = ctx[21];
 			div = element("div");
 			create_component(contenteditable.$$.fragment);
 			attr(div, "class", "PinturaInlineInput");
-			attr(div, "style", /*textInputPositionStyles*/ ctx[21]);
+            //if(ctx[20].indexOf(';color:rgba(255, 255, 255') >= 0)
+            //    style = '-webkit-text-stroke:1px black;' + ctx[21];
+			attr(div, "style", /*textInputPositionStyles*/ style);
 		},
 		m(target, anchor) {
 			insert(target, div, anchor);
@@ -35936,6 +35948,8 @@ if (/arrow/i.test(key)) {
 
 	const getTextShapeOriginSnapshot = () => ({ ...activeMarkup });
 
+    // MYC part getTextStyle
+
 	const getTextInputTextStyles = (shapeComputed, mode) => {
 		const { textAlign = "left", fontFamily = "sans-serif", fontWeight = "normal", fontStyle = "normal" } = shapeComputed;
 		const fontSize = shapeComputed.fontSize;
@@ -35945,7 +35959,11 @@ if (/arrow/i.test(key)) {
 		const color = colorArrayToRGBA(shapeComputed.color);
 		const lineHeight = shapeComputed.lineHeight;
 		const initialLineOffset = Math.max(0, fontSize - lineHeight) * 0.5;
-		return `--bottom-inset:${initialLineOffset}px;padding:${initialLineOffset}px 0 0${imp};color:${color}${imp};font-size:${fontSize}px${imp};line-height:${lineHeight}px${imp};${cosmetic}`;
+        // MYC part set white color when meme font
+        const colorPart = shapeComputed.fontFamily == 'Impact-meme' ? 
+            `color:transparent;-webkit-text-stroke: 2px ${color}${imp};` : `color:${color}${imp};`;
+		console.log(`--bottom-inset:${initialLineOffset}px;padding:${initialLineOffset}px 0 0${imp};${colorPart}font-size:${fontSize}px${imp};line-height:${lineHeight}px${imp};${cosmetic}`);
+        return`--bottom-inset:${initialLineOffset}px;padding:${initialLineOffset}px 0 0${imp};${colorPart}font-size:${fontSize}px${imp};line-height:${lineHeight}px${imp};${cosmetic}` ;
 	};
 
 	const getTextInputPositionStyles = (shapeComputed, offset, contextZoom, contextRotation) => {

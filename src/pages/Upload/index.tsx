@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { Navigate } from 'react-router-dom';
 import AddSharpIcon from '@mui/icons-material/AddSharp';
-import { Card, CircularProgress } from '@mui/material';
+import { Card, CircularProgress, Grid } from '@mui/material';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import UploadIcon from '@mui/icons-material/Upload';
 
@@ -49,7 +49,6 @@ export default function UploadPage() {
     const data = new FormData();
     for (let i = 0; i < images.length; i++) {
       const imageFile = images[i] as File;
-      console.log(imageFile);
       if (imageFile.size >= 10 * 1024 * 1024) {
         toast.error('The maximum upload image size is 10 MB!');
         return;
@@ -66,7 +65,9 @@ export default function UploadPage() {
         toast.dismiss(toastLoadingID);
 
         if (res.success) {
-          toast.success('Saved successfully!');
+          toast.success('Saved successfully!', {
+            duration: 2000,
+          });
         }
       }
     );
@@ -165,24 +166,42 @@ export default function UploadPage() {
                 <AddSharpIcon /> Open image file
               </label>
             </Button>
-            {images &&
-              Array.from(images).map((image, index) => (
-                <div key={index} className={styles.images}>
-                  <Card className={styles.widget}>
-                    <div className={styles.imageWrapper}>
-                      {imageURLs[index] ? (
-                        <LazyLoadImage src={imageURLs[index]} effect="blur" />
-                      ) : (
-                        <CircularProgress />
-                      )}
-                    </div>
-                    <div className={styles.infoContainer}>
-                      <div className={styles.title}>{''}</div>
-                    </div>
-                  </Card>
-                </div>
-              ))}
-
+            <Grid
+              container
+              spacing={2}
+              rowSpacing={2}
+              sx={{ justifyContent: 'center' }}
+            >
+              {images &&
+                Array.from(images).map((image, index) => (
+                  <Grid
+                    item
+                    xs={12}
+                    md={6}
+                    lg={4}
+                    xl={3}
+                    key={index}
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <Card className={styles.widget}>
+                      <div className={styles.imageWrapper}>
+                        {imageURLs[index] ? (
+                          <LazyLoadImage src={imageURLs[index]} effect="blur" />
+                        ) : (
+                          <CircularProgress />
+                        )}
+                      </div>
+                      <div className={styles.infoContainer}>
+                        <div className={styles.title}>{''}</div>
+                      </div>
+                    </Card>
+                  </Grid>
+                ))}
+            </Grid>
             <div className={styles.features}>
               <div className={styles.list}>
                 <div>Tab</div>

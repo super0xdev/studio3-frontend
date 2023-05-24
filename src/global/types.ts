@@ -17,6 +17,9 @@ export type AssetInfoType = {
   transaction_signature: string | null;
   uid: number;
   user_uid: number;
+  tab: string;
+  tags: string;
+  collection: string;
 };
 
 export type LockedStatus = 'WALLET_REQUIRED' | 'AUTH_REQUIRED' | 'LOGGED_IN';
