@@ -2445,6 +2445,7 @@ var textToImage = async (text = '', options) => {
 
     // MYC add meme method
     const fontColor = colorArrayToRGBA(options.color);
+    console.log(fontColor);
     if(textStyles.indexOf("Impact-meme") >= 0)
         textStyles += `-webkit-text-stroke:2px ${fontColor}!important;
             color:transparent !important; background-color:transparent !important`;

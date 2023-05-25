@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import {
   createDefaultImageReader,
   createDefaultImageScrambler,
@@ -13,37 +13,36 @@ import { APP_ASSET_URL } from '@/global/constants';
 import { loadJSON } from '@/global/utils';
 
 export default function useProcessThumbnail(asset: AssetInfoType | null) {
-  const [processedThumbnail, setProcessedThumbnail] = useState<
-    PinturaDefaultImageWriterResult[]
-  >([]);
-  const [data, setData] = useState<string[]>([]);
+  const [processedThumbnail, setProcessedThumbnail] =
+    useState<PinturaDefaultImageWriterResult>();
 
   useEffect(() => {
     if (!asset) return;
-    const urls: File[] = [];
-    asset.thumbnail_file_path.split('%').map((path) => {
-      if (path == '') return;
-      processImage(`${APP_ASSET_URL}${path}`, {
-        imageReader: createDefaultImageReader(),
-        imageWriter: createDefaultImageWriter(),
-        imageScrambler: createDefaultImageScrambler(),
-        shapePreprocessor: createDefaultShapePreprocessor(),
-        imageState: asset.meta_file_path
-          ? loadJSON(`${APP_ASSET_URL}${asset.meta_file_path}`)
-          : undefined,
-      }).then((res) => {
-        if (res != null && !urls.includes(res?.dest)) {
-          urls.push(res?.dest);
-          setData([...urls.map((url) => URL.createObjectURL(url))]);
-          // console.log('******', data);
-        } else {
-          console.log('-------', data);
-        }
-      });
+    processImage(`${APP_ASSET_URL}${asset.thumbnail_file_path}`, {
+      imageReader: createDefaultImageReader(),
+      imageWriter: createDefaultImageWriter(),
+      imageScrambler: createDefaultImageScrambler(),
+      shapePreprocessor: createDefaultShapePreprocessor(),
+      imageState: asset.meta_file_path
+        ? loadJSON(`${APP_ASSET_URL}${asset.meta_file_path}`)
+        : undefined,
+    }).then((res) => {
+      setProcessedThumbnail(res);
     });
   }, [asset]);
 
+  // useEffect(() => {
+  //   compressImage(processedImage?.dest as File);
+  // }, [processedImage]);
+
+  // return {
+  //   url: previewUrl ? previewUrl : null,
+  //   content: processedImage?.dest as Blob,
+  // };
   return {
-    url: data,
+    url: processedThumbnail
+      ? URL.createObjectURL(processedThumbnail?.dest as Blob)
+      : null,
+    content: processedThumbnail?.dest as Blob,
   };
 }

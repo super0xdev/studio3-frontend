@@ -1,11 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, {
-  useEffect,
-  useState,
-  useRef,
-  useMemo,
-  ReactElement,
-} from 'react';
+import React, { useEffect, useState, useRef, useMemo } from 'react';
 import toast from 'react-hot-toast';
 import clsx from 'clsx';
 import AnimateHeight from 'react-animate-height';
@@ -64,7 +58,6 @@ export default function GalleryPage({
   const [f_tab, setFTab] = useState<string>('');
   const [f_tag, setFTag] = useState<string>('');
   const [f_collection, setFCollection] = useState<string>('');
-  const [current, setCurrent] = useState<boolean>(false);
   const displayedAssets = useMemo(
     () => (isTemplates ? templateImages : userImages),
     [templateImages, userImages]
@@ -72,7 +65,6 @@ export default function GalleryPage({
   const handleUpdateDisplayedAssets = useUpdateDisplayedAssets();
   const handleUpdateTemplateAssets = useUpdateTemplateAssets();
   const fetchAPI = useFetchAPI();
-  console.log(templateImages);
   useEffect(() => {
     fetchAPI(`${APP_API_URL}/list_tags`, 'POST').then((res) => {
       const tmp: any[] = [];
@@ -82,27 +74,26 @@ export default function GalleryPage({
 
     const intervalId = setInterval(() => {
       window.location.reload();
-      console.log(
-        'reload ............................................................................................. '
-      );
     }, 300000);
 
     return () => {
       clearInterval(intervalId);
     };
   }, []);
+
   useEffect(() => {
-    if (current != isTemplates) {
-      setCurrent(isTemplates);
-      if (isTemplates && templateImages.length == 0)
-        handleUpdateTemplateAssets();
-    }
-  }, [isTemplates]);
-  useEffect(() => {
-    if (!isTemplates && (userImages.length == 0 || templateImages.length > 0))
+    // if (userAssets.length == 0 || templateAssets.length == 0) {
+    //   handleUpdateDisplayedAssets();
+    //   handleUpdateTemplateAssets();
+    // }
+    if (!isTemplates && userAssets.length == 0) {
       handleUpdateDisplayedAssets();
-    if (isTemplates && (userImages.length > 0 || templateImages.length == 0))
       handleUpdateTemplateAssets();
+    }
+    if (isTemplates && templateAssets.length == 0) {
+      handleUpdateTemplateAssets();
+      handleUpdateDisplayedAssets();
+    }
   }, [authToken]);
 
   const handleCreate = () => {
@@ -155,6 +146,7 @@ export default function GalleryPage({
       )
         return;
     }
+    console.log('success');
     const data = new FormData();
     data.append('id', String(taglist.length + 1));
     data.append('tag', val.value);
@@ -175,36 +167,6 @@ export default function GalleryPage({
     const result = filterByTags(ar, templateAssets, taglist);
     setTemplateLoading(false);
     loadImages(result);
-  }
-
-  function getImageData() {
-    const nodeData: ReactElement[] = [];
-    for (let i = 0; i < templateImages.length; i++) {
-      nodeData.push(
-        <div
-          style={{ position: 'relative' }}
-          key={`widget-template-${templateImages[i].uid}`}
-        >
-          <div style={{ position: 'absolute', top: '-80px' }}>
-            {flag && isTemplates && (
-              <FilterPanel
-                dTab={f_tab}
-                dTags={f_tag}
-                dCollection={f_collection}
-                onChangeFilter={onChangeFilterPanel}
-              ></FilterPanel>
-            )}
-          </div>
-          <ItemWidget
-            asset={templateImages[i]}
-            selected={previewSelectedId === templateImages[i].uid}
-            onClick={() => updatePreviewSelectedId(templateImages[i].uid)}
-          />
-          {(flag = false)}
-        </div>
-      );
-    }
-    return nodeData;
   }
 
   function handleFilters() {
@@ -301,8 +263,9 @@ export default function GalleryPage({
     loadImages();
     setUserLoading(false);
     // setUserImages([...userAssets]);
-    return () => setUserImages([]);
+    //return () => setUserImages([]);
   }, [isTemplates, userAssets]);
+
   let flag = true;
   return (
     <PageContainer
@@ -362,7 +325,29 @@ export default function GalleryPage({
         <div className={styles.images}>
           {displayedAssets && displayedAssets.length ? (
             isTemplates ? (
-              getImageData()
+              templateImages.map((asset, index) => (
+                <div
+                  style={{ position: 'relative' }}
+                  key={`widget-template-${index}`}
+                >
+                  <div style={{ position: 'absolute', top: '-80px' }}>
+                    {flag && isTemplates && (
+                      <FilterPanel
+                        dTab={f_tab}
+                        dTags={f_tag}
+                        dCollection={f_collection}
+                        onChangeFilter={onChangeFilterPanel}
+                      ></FilterPanel>
+                    )}
+                  </div>
+                  <ItemWidget
+                    asset={asset}
+                    selected={previewSelectedId === asset.uid}
+                    onClick={() => updatePreviewSelectedId(asset.uid)}
+                  />
+                  {(flag = false)}
+                </div>
+              ))
             ) : (
               userImages.map((asset) => (
                 <ItemWidget
@@ -388,7 +373,7 @@ export default function GalleryPage({
                 ></FilterPanel>
               </div>
               <br></br>
-              No matched Templates
+              <PropagateLoader color="#ffffff55" />
             </div>
           ) : (
             <div className={styles.placeholder}>

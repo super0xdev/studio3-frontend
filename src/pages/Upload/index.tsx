@@ -14,6 +14,7 @@ import Button from '@/components/based/Button';
 import { APP_API_URL, TEMPLATE_COLLECTION } from '@/global/constants';
 import useFetchAPI from '@/hooks/useFetchAPI';
 import GalleryHeading from '@/components/composed/gallery/GalleryHeading';
+import { useUpdateTemplateAssets } from '@/state/gallery/hooks';
 
 interface Categories {
   tab: string[];
@@ -24,6 +25,7 @@ interface Categories {
 export default function UploadPage() {
   //const [image, setImage] = useState<any>();
   //const [imageURL, setImageURL] = useState<string>();
+  const handleUpdateTemplateAssets = useUpdateTemplateAssets();
   const { isVerified } = useAuth();
   const [images, setImages] = useState([]);
   const [imageURLs, setImageURLs] = useState(['']);
@@ -63,8 +65,8 @@ export default function UploadPage() {
     fetchAPI(`${APP_API_URL}/upload_template_asset`, 'POST', data, false).then(
       (res) => {
         toast.dismiss(toastLoadingID);
-
         if (res.success) {
+          handleUpdateTemplateAssets();
           toast.success('Saved successfully!', {
             duration: 2000,
           });

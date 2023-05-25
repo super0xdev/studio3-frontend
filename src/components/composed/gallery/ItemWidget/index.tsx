@@ -1,6 +1,6 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC } from 'react';
 import clsx from 'clsx';
-import { Card, Grid } from '@mui/material';
+import { Card } from '@mui/material';
 // import { filesize } from 'filesize';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 // import AccountCircleSharpIcon from '@mui/icons-material/AccountCircleSharp';
@@ -35,32 +35,14 @@ const ItemWidget: FC<IItemWidget> = ({
     >
       <div className={styles.imageWrapper}>
         {processedImg ? (
-          <Grid
-            sx={{
-              alignItems: 'center',
-              textAlign: 'center',
-            }}
-          >
-            {processedImg.map((item, index) => (
-              <LazyLoadImage key={index} src={item} effect="blur" />
-            ))}
-          </Grid>
+          <LazyLoadImage src={processedImg} effect="blur" />
         ) : (
           <CircularProgress />
         )}
       </div>
       <div className={styles.infoContainer}>
-        <div className={styles.title} style={{ textAlign: 'center' }}>
-          {asset.file_name.includes('%') ? (
-            <div>
-              <div>Multiple Images</div>
-              {asset.file_name
-                .split('%')
-                .map((item) => (item != '' ? <div>{item}</div> : <></>))}
-            </div>
-          ) : (
-            asset.file_name
-          )}
+        <div className={styles.title}>
+          {splitFileName(asset.file_name)[0] || asset.file_name}
         </div>
         {/* <div className={styles.info}>
           <div className={styles.meta}>

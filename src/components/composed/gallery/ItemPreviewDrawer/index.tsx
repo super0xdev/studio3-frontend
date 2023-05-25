@@ -88,6 +88,7 @@ const ItemPreviewDrawer: FC<IItemPreviewDrawer> = ({ open, onClose }) => {
     content: processedImageContent,
     processing,
   } = useProcessImage(asset);
+
   const isTemplateAsset = useMemo(() => {
     return asset?.user_uid === TEMPLATE_USER_ID;
   }, [asset]);
@@ -238,7 +239,6 @@ const ItemPreviewDrawer: FC<IItemPreviewDrawer> = ({ open, onClose }) => {
         } else {
           file_name = asset.file_name;
         }
-        console.log(file_name);
         data.append('image', processedImageContent, file_name);
         const res = await fetchAPI(
           `${APP_API_URL}/export_asset`,
@@ -247,7 +247,11 @@ const ItemPreviewDrawer: FC<IItemPreviewDrawer> = ({ open, onClose }) => {
           false,
           false
         );
-        saveAs(res, asset.file_name);
+        file_name = file_name.replace(
+          file_name.substring(file_name.lastIndexOf('.'), file_name.length),
+          '.png'
+        );
+        saveAs(res, file_name);
         handleDownloadClose();
         break;
       case '2':
@@ -320,24 +324,21 @@ const ItemPreviewDrawer: FC<IItemPreviewDrawer> = ({ open, onClose }) => {
   // };
 
   const handleProcessDuplicate = () => {
-    console.log('==============addd project');
     if (!asset) return;
     fetchAPI(`${APP_API_URL}/duplicate_multi_asset`, 'POST', {
       asset_uid: asset.uid,
-    })
-      .then((res) => {
-        if (res.success) {
-          toast.success(
-            isTemplateAsset
-              ? 'Added Template to Projects!'
-              : 'Duplicated successfully!'
-          );
-          if (isTemplateAsset) navigate('/gallery');
-          handleUpdateDisplayedAssets();
-          onClose();
-        }
-      })
-      .catch((err) => console.log(err));
+    }).then((res) => {
+      if (res.success) {
+        toast.success(
+          isTemplateAsset
+            ? 'Added Template to Projects!'
+            : 'Duplicated successfully!'
+        );
+        if (isTemplateAsset) navigate('/gallery');
+        handleUpdateDisplayedAssets();
+        onClose();
+      }
+    });
   };
 
   const handleConfirmClose = () => {
@@ -377,165 +378,136 @@ const ItemPreviewDrawer: FC<IItemPreviewDrawer> = ({ open, onClose }) => {
       <section className={styles.heading}>
         <ArticleSharpIcon /> Design Preview
       </section>
-      <div style={{ height: window.innerHeight, overflow: 'auto' }}>
-        {asset?.file_size_bytes.split('%').map((item, index) => {
-          if (item.trim() !== '') {
-            return (
-              <div key={index}>
-                <section className={styles.content}>
-                  <div className={styles.imageWrapper}>
-                    {processedImageUrl && !processing ? (
-                      <LazyLoadImage
-                        src={processedImageUrl[index]}
-                        effect="blur"
-                      />
-                    ) : (
-                      <CircularProgress />
-                    )}
-                  </div>
-                  <div className={styles.title}>
-                    {!!asset &&
-                      (splitFileName(asset.file_name.split('%')[index])[0] ||
-                        asset.file_name.split('%')[index])}
-                  </div>
-                  {/* <div className={styles.meta}>
-                    {!!asset && filesize(asset.file_size_bytes).toString()}
-                  </div> */}
-                </section>
-                <section className={styles.details}>
-                  <div className={styles.label}>Information</div>
-                  {!isTemplateAsset && (
-                    <>
-                      <div className={styles.row}>
-                        Date Created:{' '}
-                        {!!asset && (
-                          <b>
-                            {new Date(
-                              asset.creation_timestamp * 1000
-                            ).toLocaleString()}
-                          </b>
-                        )}
-                      </div>
-                      <div className={styles.row}>
-                        Last Modified:{' '}
-                        {!!asset && (
-                          <b>
-                            {new Date(
-                              asset.update_timestamp * 1000
-                            ).toLocaleString()}
-                          </b>
-                        )}
-                      </div>
-                    </>
-                  )}
-                  {/* The user doesn't need this info */}
-                  {/* <div className={styles.row}>
-                    Confirmed:{' '}
-                    {!!asset && (
-                      <b>
-                        {asset.confirmation_timestamp
-                          ? new Date(asset.confirmation_timestamp * 1000).toLocaleString()
-                          : '-'}
-                      </b>
-                    )}
-                  </div> */}
-                  {isTemplateAsset && (
-                    <div className={styles.row}>
-                      Creator: <b>studio³</b>
-                    </div>
-                  )}
-                  {/* <div className={styles.row}>
-                    Creator:{' '}
-                    {!!asset && !isTemplateAsset && (
-                      <b>
-                        {asset.user_uid}{' '}
-                        <IconButton size="small" className={styles.openInNew}>
-                          <OpenInNewSharpIcon />
-                        </IconButton>
-                      </b>
-                    )}
-                    {!!asset && isTemplateAsset && <b>studio³</b>}
-                  </div> */}
-                  <div className={styles.row}>
-                    File Size:{' '}
-                    {!!asset && (
-                      <b>
-                        {filesize(
-                          asset.file_size_bytes.split('%')[index]
-                        ).toString()}
-                      </b>
-                    )}
-                  </div>
-                  <div className={styles.row}>
-                    File Type:{' '}
-                    {!!asset && (
-                      <b>{asset.file_type.split('%')[index].toUpperCase()}</b>
-                    )}
-                  </div>
-                  {/* <div className={styles.row}>
-                    Tags: <b>Hello, World, Solana</b>
-                  </div> */}
-                </section>
-              </div>
-            );
-          }
-        })}
-
-        <section className={styles.actions}>
-          {/* This will go in the export modal when it's ready */}
-          {/* <div className={styles.button} onClick={handlePurchase}>
+      <section className={styles.content}>
+        <div className={styles.imageWrapper}>
+          {processedImageUrl && !processing ? (
+            <LazyLoadImage src={processedImageUrl} effect="blur" />
+          ) : (
+            <CircularProgress />
+          )}
+        </div>
+        <div className={styles.title}>
+          {!!asset && (splitFileName(asset.file_name)[0] || asset.file_name)}
+        </div>
+        {/* <div className={styles.meta}>
+          {!!asset && filesize(asset.file_size_bytes).toString()}
+        </div> */}
+      </section>
+      <section className={styles.details}>
+        <div className={styles.label}>Information</div>
+        {!isTemplateAsset && (
+          <>
+            <div className={styles.row}>
+              Date Created:{' '}
+              {!!asset && (
+                <b>
+                  {new Date(asset.creation_timestamp * 1000).toLocaleString()}
+                </b>
+              )}
+            </div>
+            <div className={styles.row}>
+              Last Modified:{' '}
+              {!!asset && (
+                <b>
+                  {new Date(asset.update_timestamp * 1000).toLocaleString()}
+                </b>
+              )}
+            </div>
+          </>
+        )}
+        {/* The user doesn't need this info */}
+        {/* <div className={styles.row}>
+          Confirmed:{' '}
+          {!!asset && (
+            <b>
+              {asset.confirmation_timestamp
+                ? new Date(asset.confirmation_timestamp * 1000).toLocaleString()
+                : '-'}
+            </b>
+          )}
+        </div> */}
+        {isTemplateAsset && (
+          <div className={styles.row}>
+            Creator: <b>studio³</b>
+          </div>
+        )}
+        {/* <div className={styles.row}>
+          Creator:{' '}
+          {!!asset && !isTemplateAsset && (
+            <b>
+              {asset.user_uid}{' '}
+              <IconButton size="small" className={styles.openInNew}>
+                <OpenInNewSharpIcon />
+              </IconButton>
+            </b>
+          )}
+          {!!asset && isTemplateAsset && <b>studio³</b>}
+        </div> */}
+        <div className={styles.row}>
+          File Size:{' '}
+          {!!asset && <b>{filesize(asset.file_size_bytes).toString()}</b>}
+        </div>
+        <div className={styles.row}>
+          File Type: {!!asset && <b>{asset.file_type.toUpperCase()}</b>}
+        </div>
+        {/* <div className={styles.row}>
+          Tags: <b>Hello, World, Solana</b>
+        </div> */}
+      </section>
+      <section className={styles.actions}>
+        {/* This will go in the export modal when it's ready */}
+        {/* <div className={styles.button} onClick={handlePurchase}>
+          <IconButton>
+            <ShoppingCartSharp />
+          </IconButton>
+          Purchase
+        </div> */}
+        {!isTemplateAsset && (
+          <div className={styles.button} onClick={handleEdit}>
             <IconButton>
-              <ShoppingCartSharp />
+              <EditSharp />
             </IconButton>
-            Purchase
-          </div> */}
-          {!isTemplateAsset && (
-            <div className={styles.button} onClick={handleEdit}>
-              <IconButton>
-                <EditSharp />
-              </IconButton>
-              Edit
-            </div>
-          )}
-          {!isTemplateAsset && (
-            <div className={styles.button} onClick={handleDownload}>
-              <IconButton>
-                <FileDownloadSharp />
-              </IconButton>
-              Export
-            </div>
-          )}
+            Edit
+          </div>
+        )}
+        {!isTemplateAsset && (
+          <div className={styles.button} onClick={handleDownload}>
+            <IconButton>
+              <FileDownloadSharp />
+            </IconButton>
+            Export
+          </div>
+        )}
+        <div
+          className={styles.button}
+          // we don't need to show the confirmation modal for templates
+          onClick={isTemplateAsset ? handleProcessDuplicate : handleDuplicate}
+        >
+          <IconButton>
+            {isTemplateAsset ? <NoteAltOutlinedIcon /> : <FileCopySharp />}
+          </IconButton>
+          {isTemplateAsset ? 'Add to Projects' : 'Duplicate'}
+        </div>
+        {!isTemplateAsset && (
           <div
             className={styles.button}
-            // we don't need to show the confirmation modal for templates
-            onClick={isTemplateAsset ? handleProcessDuplicate : handleDuplicate}
+            onClick={() => setEditModalOpened(true)}
           >
             <IconButton>
-              {isTemplateAsset ? <NoteAltOutlinedIcon /> : <FileCopySharp />}
+              <InfoSharp />
             </IconButton>
-            {isTemplateAsset ? 'Add to Projects' : 'Duplicate'}
+            Info
           </div>
-          {!isTemplateAsset && (
-            <div
-              className={styles.button}
-              onClick={() => setEditModalOpened(true)}
-            >
-              <IconButton>
-                <InfoSharp />
-              </IconButton>
-              Info
-            </div>
-          )}
-          {((isTemplateAsset && isVerified) || !isTemplateAsset) && (
-            <div className={styles.button} onClick={handleDelete}>
-              <IconButton>
-                <DeleteSharp />
-              </IconButton>
-              Delete
-            </div>
-          )}
-        </section>
-      </div>
+        )}
+        {((isTemplateAsset && isVerified) || !isTemplateAsset) && (
+          <div className={styles.button} onClick={handleDelete}>
+            <IconButton>
+              <DeleteSharp />
+            </IconButton>
+            Delete
+          </div>
+        )}
+      </section>
     </div>
   );
 };

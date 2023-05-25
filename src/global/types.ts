@@ -10,7 +10,7 @@ export type AssetInfoType = {
   file_path: string;
   meta_file_path: string;
   thumbnail_file_path: string;
-  file_size_bytes: string;
+  file_size_bytes: number;
   file_type: string;
   purchase_price: number;
   purchase_type: string;
