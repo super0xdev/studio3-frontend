@@ -86,6 +86,8 @@ export default function GalleryPage({
     //   handleUpdateDisplayedAssets();
     //   handleUpdateTemplateAssets();
     // }
+    if (userAssets.length == 0) handleUpdateDisplayedAssets();
+    if (templateAssets.length == 0) handleUpdateTemplateAssets();
     if (!isTemplates && userAssets.length == 0) {
       handleUpdateDisplayedAssets();
       handleUpdateTemplateAssets();
@@ -122,6 +124,7 @@ export default function GalleryPage({
       i++;
     }
     setTemplateImages(image);
+    setTemplateLoading(false);
     //if (images.length == templateImages.length) window.location.reload();
   };
 
@@ -129,6 +132,7 @@ export default function GalleryPage({
     if (!searchRef.current) return;
     const result = filterByName(searchRef.current.value, templateAssets);
     setTemplateLoading(false);
+    console.log('result in search', result);
     loadImages(result);
   }
 
@@ -157,31 +161,30 @@ export default function GalleryPage({
     });
   }
 
-  function tagSwitch(obj: any, index: number) {
+  async function tagSwitch(obj: any, index: number) {
     const ar = tags;
     ar[index] = !ar[index];
     setTags(ar);
     //setActivedTag(index);
     //const tagName = obj?.innerText;
     //if (!tagName) return;
-    const result = filterByTags(ar, templateAssets, taglist);
+    const result = await filterByTags(ar, templateAssets, taglist);
     setTemplateLoading(false);
     loadImages(result);
   }
 
-  function handleFilters() {
+  async function handleFilters() {
     if (isTagsActved == true) {
       setTags([]);
-      const result = filterByTags([], templateAssets, taglist);
+      const result = await filterByTags([], templateAssets, taglist);
       setTemplateLoading(false);
       loadImages(result);
     }
     setIsTagsActved((p) => !p);
-    fetchAPI(`${APP_API_URL}/list_tags`, 'POST').then((res) => {
-      const tmp: any[] = [];
-      for (let i = 0; i < res.data.length; i++) tmp[i] = res.data[i].tag;
-      if (taglist.length != tmp.length) setTagList([...tmp]);
-    });
+    const res = await fetchAPI(`${APP_API_URL}/list_tags`, 'POST');
+    const tmp: any[] = [];
+    for (let i = 0; i < res.data.length; i++) tmp[i] = res.data[i].tag;
+    if (taglist.length != tmp.length) setTagList([...tmp]);
   }
 
   const onChangeFilterPanel = (filters: { [key: string]: string }) => {
@@ -209,6 +212,7 @@ export default function GalleryPage({
   // }
 
   useEffect(() => {
+    if (isTemplates == false) setIsTagsActved(false);
     if (templateLoading) return;
     if (!isTemplates) return;
     if (templateImages.length > 0) setTemplateImages([]);
@@ -373,7 +377,11 @@ export default function GalleryPage({
                 ></FilterPanel>
               </div>
               <br></br>
-              <PropagateLoader color="#ffffff55" />
+              {templateLoading ? (
+                <PropagateLoader color="#ffffff55" />
+              ) : (
+                <>No matched Templates</>
+              )}
             </div>
           ) : (
             <div className={styles.placeholder}>

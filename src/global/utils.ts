@@ -92,28 +92,26 @@ export const filterByName = (keyword: string, images: any[]) => {
   );
 };
 
-export const filterByTags = (
+export const filterByTags = async (
   keyword: boolean[],
   images: any[],
   list: string[]
-) => {
-  // if (keyword === '') return images;
-  // return images.filter((image) =>
-  //   image.file_name.toLowerCase(t).includes(keyword.toLowerCase())
-  // );
+): Promise<any[]> => {
   let i;
-  if (keyword.length == 0) return images;
+  if (keyword.length === 0) return images;
   for (i = 0; i < keyword.length; i++) {
-    if (keyword[i] == true) break;
+    if (keyword[i]) break;
   }
-  if (i == keyword.length) return images;
-  const filteredStrings = images.filter((image) => {
-    const lowerCaseString = image.file_name.toLowerCase();
-    const tmp = keyword.some(
-      (word, index) =>
-        word == true && lowerCaseString.includes(list[index].toLowerCase())
-    );
-    return tmp;
-  });
-  return filteredStrings;
+  if (i === keyword.length) return images;
+  const filteredStrings = await Promise.all(
+    images.map(async (image) => {
+      const lowerCaseString = image.file_name.toLowerCase();
+      const includeWord = await keyword.some(
+        (word, index) =>
+          word && lowerCaseString.includes(list[index].toLowerCase())
+      );
+      return includeWord ? image : null;
+    })
+  );
+  return filteredStrings.filter((image) => image !== null);
 };
