@@ -7,11 +7,12 @@ import HelpSharpIcon from '@mui/icons-material/HelpSharp';
 import { RouteType } from '@/config/types';
 import GalleryPage from '@/pages/Gallery';
 import EditorPage from '@/pages/Editor';
+import TemplatePage from '@/pages/Template';
 
 export const APP_ROUTES: RouteType[] = [
   {
     path: '/gallery',
-    component: <GalleryPage isTemplates={false} />,
+    component: <GalleryPage />,
     title: 'Projects',
     Icon: CollectionsSharpIcon,
     isMenuLinked: true,
@@ -19,7 +20,7 @@ export const APP_ROUTES: RouteType[] = [
   },
   {
     path: '/gallery#Dashboard',
-    component: <GalleryPage isTemplates={false} />,
+    component: <GalleryPage />,
     title: 'Dashboard',
     Icon: DashboardSharpIcon,
     isMenuLinked: true,
@@ -35,7 +36,7 @@ export const APP_ROUTES: RouteType[] = [
   },
   {
     path: '/templates',
-    component: <GalleryPage isTemplates={true} />,
+    component: <TemplatePage />,
     title: 'Templates',
     Icon: DashboardSharpIcon,
     isMenuLinked: true,
@@ -43,7 +44,7 @@ export const APP_ROUTES: RouteType[] = [
   },
   {
     path: '/gallery#Support',
-    component: <GalleryPage isTemplates={false} />,
+    component: <GalleryPage />,
     title: 'Support',
     Icon: HelpSharpIcon,
     isMenuLinked: true,
