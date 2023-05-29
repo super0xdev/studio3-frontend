@@ -67,6 +67,11 @@ export default function UploadPage() {
         toast.dismiss(toastLoadingID);
         if (res.success) {
           handleUpdateTemplateAssets();
+          setImages([]);
+          setImageURLs([]);
+          setTab('');
+          setTags('');
+          setCollection('');
           toast.success('Saved successfully!', {
             duration: 2000,
           });

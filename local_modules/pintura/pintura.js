@@ -2049,6 +2049,7 @@ var toPercentage = (value, total) => `${(value / total) * 100}%`;
 
 var colorArrayToRGBA = (color) => `rgba(${Math.round(color[0] * 255)}, ${Math.round(color[1] * 255)}, ${Math.round(color[2] * 255)}, ${isNumber(color[3]) ? color[3] : 1})`;
 
+var colorArrayToRGB = (color) => `rgb(${Math.round(color[0] * 255)}, ${Math.round(color[1] * 255)}, ${Math.round(color[2] * 255)})`;
 // tested and this seems a tiny bit faster than JSON.stringify
 var objectUID = (obj) => Object.values(obj).join('_');
 
@@ -2444,11 +2445,11 @@ var textToImage = async (text = '', options) => {
     const textFinal = textEscaped.replace(/___BR___/g, '<br/>');
 
     // MYC add meme method
-    const fontColor = colorArrayToRGBA(options.color);
-    console.log(fontColor);
+    const fontColor = colorArrayToRGB(options.color);
+    console.log(fontColor, options);
     if(textStyles.indexOf("Impact-meme") >= 0)
         textStyles += `-webkit-text-stroke:2px ${fontColor}!important;
-            color:transparent !important; background-color:transparent !important`;
+            color:white !important;`;
     console.log('styles:::::: ', `position:absolute;padding-right:${paddingRight}px;padding-left:${paddingLeft}px;${textStyles};${textContentEditableStyles}`);
     const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}"><foreignObject x="0" y="0" width="${width}" height="${height}"><div xmlns="http://www.w3.org/1999/xhtml" style="transform-origin:0 0;transform:scale(${pixelRatio})">${fontEmbed ? `<style>${fontEmbed}</style>` : ''}<pre contenteditable="true" spellcheck="false" style="position:absolute;padding-right:${paddingRight}px;padding-left:${paddingLeft}px;${textStyles};${textContentEditableStyles}">${textFinal}</pre></div></foreignObject></svg>`;
     // uncomment for debugging
@@ -8703,7 +8704,7 @@ function instance$P($$self, $$props, $$invalidate) {
 				imageHeight,
 				pixelRatio: textPixelRatio * textureSizeScalar,
 				willRequest,
-				color: [1, 0, 1], // purple will be replaced in render method
+				color: fontFamily == 'Impact-meme' ? [0, 0, 0] : [1, 0, 1], // purple will be replaced in render method
 				
 			}).then(image => {
 				// canvas destroyed while loading texture data
@@ -35959,12 +35960,13 @@ if (/arrow/i.test(key)) {
 		const imp = "!important";
 		const cosmetic = `text-align:${textAlign}${imp};font-family:${fontFamily}${imp};font-weight:${fontWeight}${imp};font-style:${fontStyle}${imp};`;
 		if (mode === "modal") return cosmetic;
-		const color = colorArrayToRGBA(shapeComputed.color);
+		// const color = colorArrayToRGBA(shapeComputed.color);
+        const color = colorArrayToRGB(shapeComputed.color);
 		const lineHeight = shapeComputed.lineHeight;
 		const initialLineOffset = Math.max(0, fontSize - lineHeight) * 0.5;
         // MYC part set white color when meme font
         const colorPart = shapeComputed.fontFamily == 'Impact-meme' ? 
-            `color:transparent!important;-webkit-text-stroke: 2px ${color}${imp};` : `color:${color}${imp};`;
+            `color:white!important;-webkit-text-stroke: 2px rgb(0, 0, 0)${imp};` : `color:${color}${imp};`;
 		console.log(`--bottom-inset:${initialLineOffset}px;padding:${initialLineOffset}px 0 0${imp};${colorPart}font-size:${fontSize}px${imp};line-height:${lineHeight}px${imp};${cosmetic}`);
         return`--bottom-inset:${initialLineOffset}px;padding:${initialLineOffset}px 0 0${imp};${colorPart}font-size:${fontSize}px${imp};line-height:${lineHeight}px${imp};${cosmetic}` ;
 	};
