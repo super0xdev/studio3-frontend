@@ -136,8 +136,20 @@ export const TEMPLATE_COLLECTION = {
       data: 'Mad Lads',
     },
     {
+      value: 'Okay Bears',
+      data: 'Okay Bears',
+    },
+    {
       value: 'Oogy',
       data: 'Oogy',
+    },
+    {
+      value: 'Ordinals',
+      data: 'Ordinals',
+    },
+    {
+      value: 'Pepe',
+      data: 'Pepe',
     },
     {
       value: 'Sharx',
@@ -146,6 +158,10 @@ export const TEMPLATE_COLLECTION = {
     {
       value: 'Smyths',
       data: 'Smyths',
+    },
+    {
+      value: 'Solana',
+      data: 'Solana',
     },
     {
       value: 'Stoned Apes',
