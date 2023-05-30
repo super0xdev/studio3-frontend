@@ -136,6 +136,10 @@ export const TEMPLATE_COLLECTION = {
       data: 'Mad Lads',
     },
     {
+      value: 'Network',
+      data: 'Network',
+    },
+    {
       value: 'Okay Bears',
       data: 'Okay Bears',
     },
