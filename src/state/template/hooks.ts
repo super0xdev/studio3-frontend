@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import { useUpdateOpenedAssets } from '../application/hooks';
 
 import {
-  updateDisplayedAssets,
+  updateTemplateAssets,
   // updateDisplayedAssetsPreview,
   // updateTemplateAssetsPreview,
   updateIsLoading,
@@ -18,24 +18,31 @@ import useFetchAPI from '@/hooks/useFetchAPI';
 
 // === displayedAssets ===
 
-export const useDisplayedAssets = () =>
-  useAppSelector((state) => state.gallery.displayedAssets) as AssetInfoType[];
+export const useTemplateAssets = () =>
+  useAppSelector((state) => state.template.templateAssets) as AssetInfoType[];
 
-export const useUpdateDisplayedAssets = () => {
+function removeDuplicates(array: any[], key: string) {
+  return array.filter(
+    (obj: { [x: string]: any }, index: any, self: any[]) =>
+      index ===
+      self.findIndex((el: { [x: string]: any }) => el[key] === obj[key])
+  );
+}
+
+export const useUpdateTemplateAssets = () => {
   const dispatch = useDispatch();
   const fetchAPI = useFetchAPI();
-  const updateOpenedAssets = useUpdateOpenedAssets();
+  // const updateOpenedAssets = useUpdateOpenedAssets();
   const updateIsLoading = useUpdateIsLoading();
 
-  const handleUpdateTemplateAssets = () => {
+  const handleUpdateTemplateAssets = async () => {
     updateIsLoading(true);
-    fetchAPI(`${APP_API_URL}/list_assets`, 'POST')
-      .then((listedAssets) => {
-        const assets = [...listedAssets.data];
-        // const uniqueAssets = removeDuplicates(assets, 'file_name');
-        assets.sort((a, b) => (a.file_name > b.file_name ? 1 : -1));
-        dispatch(updateDisplayedAssets(assets));
-        updateOpenedAssets(assets);
+    fetchAPI(`${APP_API_URL}/list_template_assets`, 'POST')
+      .then((templateAssets) => {
+        const assets = [...templateAssets.data];
+        const uniqueAssets = removeDuplicates(assets, 'file_name');
+        uniqueAssets.sort((a, b) => (a.file_name > b.file_name ? 1 : -1));
+        dispatch(updateTemplateAssets(uniqueAssets));
         updateIsLoading(false);
       })
       .catch(() => {
@@ -46,18 +53,10 @@ export const useUpdateDisplayedAssets = () => {
   return handleUpdateTemplateAssets;
 };
 
-function removeDuplicates(array: any[], key: string) {
-  return array.filter(
-    (obj: { [x: string]: any }, index: any, self: any[]) =>
-      index ===
-      self.findIndex((el: { [x: string]: any }) => el[key] === obj[key])
-  );
-}
-
 // === previewSelectedId ===
 
 export const usePreviewSelectedId = () =>
-  useAppSelector((state) => state.gallery.previewSelectedId) as number | null;
+  useAppSelector((state) => state.template.previewSelectedId) as number | null;
 
 export const useUpdatePreviewSelectedId = () => {
   const previewSelectedId = usePreviewSelectedId();
@@ -74,8 +73,8 @@ export const useUpdatePreviewSelectedId = () => {
 
 export const usePreviewSelectedAsset = () => {
   const previewSelectedId = usePreviewSelectedId();
-  const displayedAssets = useDisplayedAssets();
-  const allAssets = [...displayedAssets];
+  const templateAssets = useTemplateAssets();
+  const allAssets = [...templateAssets];
 
   if (!previewSelectedId) return null;
   return allAssets.filter((asset) => asset.uid === previewSelectedId)[0];
@@ -84,7 +83,7 @@ export const usePreviewSelectedAsset = () => {
 // === isLoading ===
 
 export const useIsLoading = () =>
-  useAppSelector((state) => state.gallery.isLoading) as boolean;
+  useAppSelector((state) => state.template.isLoading) as boolean;
 
 export const useUpdateIsLoading = () => {
   const dispatch = useDispatch();

@@ -20,6 +20,7 @@ export type AssetInfoType = {
   tab: string;
   tags: string;
   collection: string;
+  owner: string;
 };
 
 export type LockedStatus = 'WALLET_REQUIRED' | 'AUTH_REQUIRED' | 'LOGGED_IN';

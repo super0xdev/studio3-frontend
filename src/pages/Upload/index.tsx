@@ -5,6 +5,7 @@ import AddSharpIcon from '@mui/icons-material/AddSharp';
 import { Card, CircularProgress, Grid } from '@mui/material';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import UploadIcon from '@mui/icons-material/Upload';
+import { useWallet } from '@solana/wallet-adapter-react';
 
 import styles from './index.module.scss';
 
@@ -14,7 +15,7 @@ import Button from '@/components/based/Button';
 import { APP_API_URL, TEMPLATE_COLLECTION } from '@/global/constants';
 import useFetchAPI from '@/hooks/useFetchAPI';
 import GalleryHeading from '@/components/composed/gallery/GalleryHeading';
-import { useUpdateTemplateAssets } from '@/state/gallery/hooks';
+import { useUpdateTemplateAssets } from '@/state/template/hooks';
 
 interface Categories {
   tab: string[];
@@ -32,6 +33,7 @@ export default function UploadPage() {
   const [tab, setTab] = useState<string>('');
   const [collection, setCollection] = useState<string>('');
   const [tags, setTags] = useState<string>('');
+  const { publicKey, signMessage } = useWallet();
   const [categories, setCategories] = useState<any>({
     tab: [],
     collection: [],
@@ -60,6 +62,10 @@ export default function UploadPage() {
     data.append('tab', tab);
     data.append('collection', collection);
     data.append('tags', tags);
+    if (publicKey != null) {
+      data.append('address', publicKey.toBase58());
+    }
+
     const toastLoadingID = toast.loading('Saving...');
 
     fetchAPI(`${APP_API_URL}/upload_template_asset`, 'POST', data, false).then(

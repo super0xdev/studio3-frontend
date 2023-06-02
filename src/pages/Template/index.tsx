@@ -11,17 +11,16 @@ import { useAuth } from '@/context/AuthContext';
 import PageContainer from '@/components/navigation/PageContainer';
 import ItemWidget from '@/components/composed/gallery/ItemWidget';
 import GalleryHeading from '@/components/composed/gallery/GalleryHeading';
-import ItemPreviewDrawer from '@/components/composed/gallery/ItemPreviewDrawer';
+import ItemPreviewDrawer from '@/components/composed/gallery/ItemPreviewDrawerTemplate';
 import ExportModal from '@/components/composed/gallery/ExportModal';
 import FilterPanel from '@/components/composed/gallery/FilterPanel';
 import {
-  useTemplateAssets,
   useIsLoading,
-  usePreviewSelectedId,
-  useUpdateDisplayedAssets,
+  useTemplateAssets,
   useUpdateTemplateAssets,
+  usePreviewSelectedId,
   useUpdatePreviewSelectedId,
-} from '@/state/gallery/hooks';
+} from '@/state/template/hooks';
 import { useAuthToken } from '@/state/application/hooks';
 import useFetchAPI from '@/hooks/useFetchAPI';
 import Button from '@/components/based/Button';
@@ -47,7 +46,6 @@ export default function TemplatePage() {
   const [f_tag, setFTag] = useState<string>('');
   const [f_collection, setFCollection] = useState<string>('');
   const displayedAssets = useMemo(() => templateImages, [templateImages]);
-  const handleUpdateDisplayedAssets = useUpdateDisplayedAssets();
   const handleUpdateTemplateAssets = useUpdateTemplateAssets();
   const fetchAPI = useFetchAPI();
   useEffect(() => {
@@ -71,11 +69,7 @@ export default function TemplatePage() {
     //   handleUpdateDisplayedAssets();
     //   handleUpdateTemplateAssets();
     // }
-    if (
-      templateAssets.length == 0 ||
-      templateAssets.length != templateImages.length
-    )
-      handleUpdateTemplateAssets();
+    if (templateAssets.length == 0) handleUpdateTemplateAssets();
   }, [authToken]);
 
   function sleep(ms: number) {
@@ -107,7 +101,6 @@ export default function TemplatePage() {
     if (!searchRef.current) return;
     const result = filterByName(searchRef.current.value, templateAssets);
     setTemplateLoading(false);
-    console.log('result in search', result);
     loadImages(result);
   }
 
@@ -292,8 +285,6 @@ export default function TemplatePage() {
                 {(flag = false)}
               </div>
             ))
-          ) : isLoading ? (
-            <PropagateLoader color="#ffffff55" />
           ) : (
             <div style={{ position: 'relative' }}>
               <div

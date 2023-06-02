@@ -209,7 +209,7 @@ const ItemPreviewDrawer: FC<IItemPreviewDrawer> = ({ open, onClose }) => {
   const handleProcessDelete = () => {
     if (!asset) return;
     fetchAPI(
-      `${APP_API_URL}/delete_asset`,
+      `${APP_API_URL}/delete_user_asset`,
       'POST',
       {
         asset_uid: asset.uid,
