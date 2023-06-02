@@ -1,6 +1,10 @@
 import clsx from 'clsx';
 import React, { FC, ReactNode } from 'react';
 
+import AccountIndicator from '../AccountIndicator';
+import MoodSVG from '../../../Icons/mood.svg';
+import SearchSVG from '../../../Icons/search.svg';
+
 import styles from './index.module.scss';
 
 interface IPageContainer {
@@ -9,6 +13,7 @@ interface IPageContainer {
   variant?: string;
   heading?: ReactNode;
   noHeading?: boolean;
+  onCreateMeme?: () => void;
 }
 
 const PageContainer: FC<IPageContainer> = ({
@@ -17,6 +22,7 @@ const PageContainer: FC<IPageContainer> = ({
   children,
   variant = '',
   noHeading = false,
+  onCreateMeme,
 }) => {
   const containerClasses = clsx(styles.container, { [variant]: noHeading });
   const bodyClasses = clsx(styles.body, { [variant]: !noHeading });
@@ -28,7 +34,18 @@ const PageContainer: FC<IPageContainer> = ({
       ) : (
         <>
           <section className={styles.heading}>
-            {heading ?? <div className={styles.title}>{title}</div>}
+            {
+              <div className={styles.title}>
+                <input className={styles.search} placeholder="Search" />
+                <div style={{ display: 'flex', flexDirection: 'row' }}>
+                  <button className={styles.meme} onClick={onCreateMeme}>
+                    <img src={MoodSVG} />
+                    Create Meme
+                  </button>
+                  <AccountIndicator />
+                </div>
+              </div>
+            }
           </section>
           <section className={bodyClasses}>{children}</section>
         </>

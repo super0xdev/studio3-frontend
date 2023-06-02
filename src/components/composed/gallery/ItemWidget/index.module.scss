@@ -119,3 +119,43 @@ body {
     }
   }
 }
+
+.card {
+  
+  position: relative;
+  .check {
+    position: absolute;
+    display: none;
+    left: -5px;
+    top: -5px;
+    z-index: 20;
+  }
+
+  .checked {
+    position: absolute;
+    display: block;
+    left: -5px;
+    top: -5px;
+    z-index: 20;
+  }
+  
+  &:hover {
+    .check {
+      display: block;
+    }
+  }
+
+  .option {
+    position: absolute;
+    display: none;
+    right: -5px;
+    top: -5px;
+    z-index: 20;
+  }
+
+  &:hover {
+    .option {
+      display: block;
+    }
+  }
+}

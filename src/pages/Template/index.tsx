@@ -279,7 +279,7 @@ export default function TemplatePage() {
                 </div>
                 <ItemWidget
                   asset={asset}
-                  selected={previewSelectedId === asset.uid}
+                  type={false}
                   onClick={() => updatePreviewSelectedId(asset.uid)}
                 />
                 {(flag = false)}
