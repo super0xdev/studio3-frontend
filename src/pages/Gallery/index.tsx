@@ -117,7 +117,7 @@ export default function GalleryPage() {
                 onClick={() => updatePreviewSelectedId(asset.uid)}
               />
             ))
-          ) : isLoading || userAssets.length != 0 ? (
+          ) : userAssets.length != 0 ? (
             <PropagateLoader color="#ffffff55" />
           ) : (
             <div className={styles.placeholder}>

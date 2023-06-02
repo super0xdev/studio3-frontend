@@ -6,6 +6,7 @@ import { TypedUseSelectorHook, useSelector } from 'react-redux';
 
 import application from './application';
 import gallery from './gallery';
+import template from './template';
 import solana from './solana';
 
 const persistConfig = {
@@ -19,7 +20,7 @@ const isDevelopment = process.env.NODE_ENV !== 'production';
 const store: Store = configureStore({
   reducer: persistReducer(
     persistConfig,
-    combineReducers({ application, gallery, solana })
+    combineReducers({ application, gallery, solana, template })
   ),
   middleware: (getDefaultMiddleware) => {
     const middleware = getDefaultMiddleware({
