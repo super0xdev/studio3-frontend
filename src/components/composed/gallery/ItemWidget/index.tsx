@@ -9,6 +9,7 @@ import { grey } from '@mui/material/colors';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 // import AccountCircleSharpIcon from '@mui/icons-material/AccountCircleSharp';
 
 import CheckSVG from '../../../../Icons/check.svg';
@@ -22,9 +23,11 @@ import ExportSVG from '../../../../Icons/context-export.svg';
 import MintSVG from '../../../../Icons/context-mint.svg';
 import DeleteSVG from '../../../../Icons/context-delete.svg';
 import BackSVG from '../../../../Icons/context-arrow_back.svg';
+import ConfirmModal from '../ConfirmModal';
 
 import styles from './index.module.scss';
 
+import useFetchAPI from '@/hooks/useFetchAPI';
 import { AssetInfoType } from '@/global/types';
 import { splitFileName } from '@/global/utils';
 import CircularProgress from '@/components/based/CircularProgress';
@@ -33,6 +36,15 @@ import {
   useAppendOpenedAsset,
   useRemoveOpenedAsset,
 } from '@/state/application/hooks';
+import {
+  APP_API_URL,
+  CONFIRM_MODAL_INFO,
+  TEMPLATE_USER_ID,
+} from '@/global/constants';
+import {
+  usePreviewSelectedAsset,
+  useUpdateTemplateAssets,
+} from '@/state/template/hooks';
 
 interface IItemWidget {
   title?: string;
@@ -58,13 +70,88 @@ const ItemWidget: FC<IItemWidget> = ({
   const [visible, setVisible] = useState(false);
   const [menuType, setMenuType] = useState(0);
   const [value, setValue] = useState('with');
-
+  const fetchAPI = useFetchAPI();
   const nameRef = useRef<HTMLInputElement>(null);
   const symbolRef = useRef<HTMLInputElement>(null);
   const descriptionRef = useRef<HTMLTextAreaElement>(null);
   const royaltyRef = useRef<HTMLInputElement>(null);
   const creatorRef = useRef<HTMLInputElement>(null);
   const contextRef = useRef<HTMLDivElement>(null);
+  const handleUpdateTemplateAssets = useUpdateTemplateAssets();
+  const [confirmModalOpened, setConfirmModalOpened] = useState(false);
+  const [confirmModalTitle, setConfirmModalTitle] = useState('');
+  const [confirmModalContent, setConfirmModalContent] = useState('');
+  const [confirmModalSubmitText, setConfirmModalSubmitText] = useState('');
+  const removeOpenedAsset = useRemoveOpenedAsset();
+
+  const handleConfirmClose = () => {
+    setConfirmModalOpened(false);
+  };
+  const handleConfirm = () => {
+    switch (confirmModalTitle) {
+      case CONFIRM_MODAL_INFO.DELETE.title:
+        handleProcessDelete();
+        break;
+      case CONFIRM_MODAL_INFO.DUPLICATE.title:
+        handleProcessDuplicate();
+        break;
+      default:
+    }
+    setConfirmModalOpened(false);
+  };
+  const handleProcessDelete = () => {
+    if (!asset) return;
+    fetchAPI(
+      `${APP_API_URL}/delete_asset`,
+      'POST',
+      {
+        asset_uid: asset.uid,
+        file_key: asset.file_path,
+        file_name: asset.file_name,
+      },
+      true
+    ).then((res) => {
+      if (res.success) {
+        toast.success('Deleted successfully!');
+        handleUpdateTemplateAssets();
+        removeOpenedAsset(asset.uid);
+      }
+    });
+  };
+
+  // const handlePurchase = async () => {
+  //   const tx = await purchaseAsset();
+  //   console.log(tx);
+  // };
+
+  const handleProcessDuplicate = () => {
+    toast.loading('Duplicating Image...Please wait');
+    if (!asset) return;
+    fetchAPI(`${APP_API_URL}/duplicate_multi_asset`, 'POST', {
+      asset_uid: asset.uid,
+    }).then((res) => {
+      toast.dismiss();
+      if (res.success) {
+        toast.success('Added Template to Projects!');
+
+        navigate('/gallery');
+        handleUpdateTemplateAssets();
+      }
+    });
+  };
+
+  const handleDelete = () => {
+    setConfirmModalTitle(CONFIRM_MODAL_INFO.DELETE.title);
+    setConfirmModalContent(CONFIRM_MODAL_INFO.DELETE.content);
+    setConfirmModalSubmitText(CONFIRM_MODAL_INFO.DELETE.submit);
+    setConfirmModalOpened(true);
+  };
+  const handleDuplicate = () => {
+    setConfirmModalTitle(CONFIRM_MODAL_INFO.DUPLICATE.title);
+    setConfirmModalContent(CONFIRM_MODAL_INFO.DUPLICATE.content);
+    setConfirmModalSubmitText(CONFIRM_MODAL_INFO.DUPLICATE.submit);
+    setConfirmModalOpened(true);
+  };
   useEffect(() => {
     window.addEventListener('click', handleClick);
     return () => {
@@ -118,6 +205,14 @@ const ItemWidget: FC<IItemWidget> = ({
   };
   return (
     <div className={styles.card}>
+      <ConfirmModal
+        title={confirmModalTitle}
+        content={confirmModalContent}
+        open={confirmModalOpened}
+        submitText={confirmModalSubmitText}
+        onClose={handleConfirmClose}
+        onConfirm={handleConfirm}
+      />
       {type == true ? (
         selected == true ? (
           <img className={styles.checked} src={CheckedSVG} />
@@ -208,13 +303,21 @@ const ItemWidget: FC<IItemWidget> = ({
                         style={{ position: 'absolute', right: '20px' }}
                       />
                     </div>
-                    <div className={styles.buttons}>
-                      <img src={CopySVG} style={{ marginRight: '10px' }} />
-                      <span>Make a copy</span>
+                    <div className={styles.buttons} onClick={handleDuplicate}>
+                      <img
+                        src={CopySVG}
+                        style={{ marginRight: '10px' }}
+                        id={`${asset.uid}`}
+                      />
+                      <span id={`${asset.uid}`}>Make a copy</span>
                     </div>
-                    <div className={styles.buttons}>
-                      <img src={DeleteSVG} style={{ marginRight: '10px' }} />
-                      <span>Delete</span>
+                    <div className={styles.buttons} onClick={handleDelete}>
+                      <img
+                        src={DeleteSVG}
+                        style={{ marginRight: '10px' }}
+                        id={`${asset.uid}`}
+                      />
+                      <span id={`${asset.uid}`}>Delete</span>
                     </div>
                   </div>
                 </>
