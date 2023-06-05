@@ -10292,6 +10292,9 @@ function create_fragment$M(ctx) {
 			}
 
 			current = true;
+            const node = document.createElement("div");
+            node.className="PinturaUtilPanelTag";
+            document.getElementsByClassName('PinturaUtilPanel')[0].appendChild(node);
 		},
 		p(ctx, [dirty]) {
 			const switch_instance_changes = (dirty & /*componentProps*/ 128)
@@ -25680,7 +25683,7 @@ function create_if_block_1$5(ctx) {
 		c() {
 			div = element("div");
 			if (footer_slot) footer_slot.c();
-			attr(div, "class", "PinturaUtilFooter");
+			attr(div, "class", "PinturaUtilFooter customUtilFooter");
 		},
 		m(target, anchor) {
 			insert(target, div, anchor);
@@ -28550,6 +28553,7 @@ function create_footer_slot$5(ctx) {
 		c() {
 			div = element("div");
 			if (if_block) if_block.c();
+            console.log("f1");
 			attr(div, "slot", "footer");
 			attr(div, "style", /*footerStyle*/ ctx[24]);
 		},
@@ -30872,6 +30876,7 @@ function create_footer_slot$4(ctx) {
 		c() {
 			div = element("div");
 			create_component(scrollable.$$.fragment);
+            console.log("f2");
 			attr(div, "slot", "footer");
 			attr(div, "style", /*footerStyle*/ ctx[11]);
 		},
@@ -31668,6 +31673,7 @@ function create_footer_slot$3(ctx) {
 			create_component(scrollable.$$.fragment);
 			t = space();
 			create_component(tabpanels.$$.fragment);
+            console.log('f');
 			attr(div, "slot", "footer");
 			attr(div, "style", /*footerStyle*/ ctx[7]);
 		},
@@ -40313,7 +40319,9 @@ function create_footer_slot$2(ctx) {
 		c() {
 			div = element("div");
 			if (if_block) if_block.c();
+            console.log('f');
 			attr(div, "slot", "footer");
+            attr(div, "class", "customFooter");
 			attr(div, "style", /*footerStyle*/ ctx[46]);
 		},
 		m(target, anchor) {
@@ -44715,6 +44723,7 @@ function create_footer_slot$1(ctx) {
 			create_component(shapestyleeditor.$$.fragment);
 			t = space();
 			create_component(scrollable.$$.fragment);
+            console.log('f');
 			attr(div, "slot", "footer");
 			attr(div, "style", /*footerStyle*/ ctx[6]);
 		},
@@ -45419,6 +45428,7 @@ function create_footer_slot(ctx) {
 			attr(legend, "class", "implicit");
 			attr(div0, "class", "PinturaFieldsetInner");
 			attr(div1, "class", "PinturaFormInner");
+            console.log('f');
 			attr(form, "slot", "footer");
 			attr(form, "style", /*footerStyle*/ ctx[4]);
 		},

@@ -69,7 +69,7 @@ export default function TemplatePage() {
     //   handleUpdateDisplayedAssets();
     //   handleUpdateTemplateAssets();
     // }
-    if (templateAssets.length == 0) handleUpdateTemplateAssets();
+    handleUpdateTemplateAssets();
   }, [authToken]);
 
   function sleep(ms: number) {
@@ -81,7 +81,7 @@ export default function TemplatePage() {
     setTemplateImages([]);
     const image: AssetInfoType[] = [];
     for (const item of images) {
-      await sleep(200);
+      // await sleep(200);
       if (i < 15) {
         image.push(item);
         //setTemplateImages((p) => [...p, item]);
@@ -297,12 +297,8 @@ export default function TemplatePage() {
                   onChangeFilter={onChangeFilterPanel}
                 ></FilterPanel>
               </div>
-              <br></br>
-              {templateLoading || templateAssets.length != 0 ? (
-                <PropagateLoader color="#ffffff55" />
-              ) : (
-                <>No matched Templates</>
-              )}
+              <br />
+              <PropagateLoader color="#ffffff55" />
             </div>
           )}
         </div>

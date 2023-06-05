@@ -51,15 +51,14 @@ export default function GalleryPage() {
     const intervalId = setInterval(() => {
       window.location.reload();
     }, 300000);
-
+    handleUpdateDisplayedAssets();
     return () => {
       clearInterval(intervalId);
     };
   }, []);
 
   useEffect(() => {
-    if (userAssets.length == 0 || userAssets.length != userImages.length)
-      handleUpdateDisplayedAssets();
+    handleUpdateDisplayedAssets();
   }, [authToken]);
 
   const handleCreate = () => {
@@ -82,7 +81,7 @@ export default function GalleryPage() {
       const image: AssetInfoType[] = [];
       const tmp: Selection[] = [];
       for (const item of userAssets) {
-        await sleep(200);
+        // await sleep(200);
         tmp.push({ isSelected: false, position: { pX: 0, pY: 0 } });
         if (i < 15) {
           image.push(item);

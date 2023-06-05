@@ -13,6 +13,7 @@ class PinturaEditor extends React.Component {
     componentDidMount() {
         if (!this.elementRef.current) return;
         const props = { ...this.props };
+        console.log(props);
         this.editor = appendEditor(this.elementRef.current, props);
         sub(this, props);
     }
