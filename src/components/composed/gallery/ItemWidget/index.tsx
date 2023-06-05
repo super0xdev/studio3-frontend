@@ -167,7 +167,6 @@ const ItemWidget: FC<IItemWidget> = ({
       !showMenu?.contains(event.target as Node) &&
       asset.uid != event.target?.id
     ) {
-      console.log('-----------false');
       setVisible(false);
       setMenuType(0);
     }
