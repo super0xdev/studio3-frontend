@@ -206,7 +206,6 @@ export default function TemplatePage() {
     return () => setTemplateImages([]);
   }, [templateAssets]);
 
-  let flag = true;
   return (
     <PageContainer
       heading={<GalleryHeading title="Templates" />}
@@ -222,12 +221,15 @@ export default function TemplatePage() {
           previewSelectedId && updatePreviewSelectedId(previewSelectedId)
         }
       />
-      {
-        <div className={styles.search}>
-          <input className={styles.input} ref={searchRef} />
-          <Button className={styles.button} onClick={search}>
-            Search
-          </Button>
+      {}
+      <div className={styles.gallery}>
+        <div className={styles.filterPanel}>
+          <FilterPanel
+            dTab={f_tab}
+            dTags={f_tag}
+            dCollection={f_collection}
+            onChangeFilter={onChangeFilterPanel}
+          ></FilterPanel>
           <Button
             className={isTagsActved ? styles.active_button : styles.button}
             // onClick={() => setIsTagsActved((p) => !p)}
@@ -235,16 +237,7 @@ export default function TemplatePage() {
           >
             Filters
           </Button>
-          {isVerified == true ? (
-            <Button className={styles.button} onClick={addNewTag}>
-              Add a new Tag
-            </Button>
-          ) : (
-            <></>
-          )}
         </div>
-      }
-      <div className={styles.gallery}>
         <AnimateHeight duration={500} height={isTagsActved ? 'auto' : 0}>
           <div className={styles.tags}>
             {taglist.map((tag, index) => (
@@ -267,37 +260,25 @@ export default function TemplatePage() {
                 style={{ position: 'relative' }}
                 key={`widget-template-${index}`}
               >
-                <div style={{ position: 'absolute', top: '-80px' }}>
-                  {flag && (
-                    <FilterPanel
-                      dTab={f_tab}
-                      dTags={f_tag}
-                      dCollection={f_collection}
-                      onChangeFilter={onChangeFilterPanel}
-                    ></FilterPanel>
-                  )}
-                </div>
                 <ItemWidget
                   asset={asset}
                   type={false}
                   onClick={() => updatePreviewSelectedId(asset.uid)}
                 />
-                {(flag = false)}
               </div>
             ))
           ) : (
-            <div style={{ position: 'relative' }}>
-              <div
-                style={{ position: 'absolute', top: '-80px', left: '-140px' }}
-              >
-                <FilterPanel
-                  dTab={f_tab}
-                  dTags={f_tag}
-                  dCollection={f_collection}
-                  onChangeFilter={onChangeFilterPanel}
-                ></FilterPanel>
-              </div>
-              <br />
+            <div
+              style={{
+                position: 'relative',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                transform: 'translate(0,-80px)',
+              }}
+            >
+              <h3> Loading ... </h3>
               <PropagateLoader color="#ffffff55" />
             </div>
           )}

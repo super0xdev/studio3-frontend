@@ -1,13 +1,15 @@
 .container {
   box-sizing: border-box;
-  padding: 40px;
+  padding: 40px 0px;
 
   section.heading {
     display: flex;
     width: 100%;
     border-bottom: 1px solid $dark-100;
     padding-bottom: 20px;
-
+    padding-left: 40px;
+    padding-right: 40px;
+    
     .title {
       font-size: 20px;
       text-transform: uppercase;

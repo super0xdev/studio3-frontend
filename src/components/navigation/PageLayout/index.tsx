@@ -25,6 +25,7 @@ const PageLayout: FC<IPageLayout> = ({ children }) => {
               />
             )
         )}
+        <Route key="/upload" path="/upload" element={<Sidebar></Sidebar>} />
       </Routes>
       <div className={styles.inner}>{children}</div>
     </div>
