@@ -4,12 +4,12 @@
 
 @font-face {
   font-family: "Impact";
-  src: url(https://fonts.gstatic.com/l/font?kit=HhyVU5gq9PCuP11_ItCH&skey=5128cd07406988e&v=v19) format('woff2');
+  src: url("../../fonts/impact.ttf"/*https://fonts.gstatic.com/l/font?kit=HhyVU5gq9PCuP11_ItCH&skey=5128cd07406988e&v=v19*/) format('woff2');
 }
 
 @font-face {
   font-family: "Impact-meme";
-  src: url(https://fonts.gstatic.com/l/font?kit=HhyVU5gq9PCuP11_ItCH&skey=5128cd07406988e&v=v19) format('woff2');
+  src: url("../../fonts/meme.ttf"/*https://fonts.gstatic.com/l/font?kit=HhyVU5gq9PCuP11_ItCH&skey=5128cd07406988e&v=v19*/) format('woff2');
 }
 
 .gotoBack{
@@ -20,7 +20,7 @@
   color: #aaa;
   position: absolute;
   left: 50px;
-  top: 40px;
+  top: 25px;
   padding-top: 10px;
   height: 50px;
   width: 100px;

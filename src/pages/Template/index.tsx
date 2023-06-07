@@ -28,6 +28,8 @@ import { AssetInfoType } from '@/global/types';
 import { filterByName, filterByTags } from '@/global/utils';
 import { APP_API_URL } from '@/global/constants';
 
+let isLoaded = false;
+
 export default function TemplatePage() {
   const { isVerified } = useAuth();
   const searchRef = useRef<HTMLInputElement>(null);
@@ -69,6 +71,7 @@ export default function TemplatePage() {
     //   handleUpdateDisplayedAssets();
     //   handleUpdateTemplateAssets();
     // }
+    isLoaded = false;
     handleUpdateTemplateAssets();
   }, [authToken]);
 
@@ -254,7 +257,10 @@ export default function TemplatePage() {
           </div>
         </AnimateHeight>
         <div className={styles.images}>
-          {displayedAssets && displayedAssets.length ? (
+          {!templateLoading &&
+          displayedAssets &&
+          displayedAssets.length &&
+          (isLoaded = true) ? (
             templateImages.map((asset, index) => (
               <div
                 style={{ position: 'relative' }}
@@ -267,6 +273,19 @@ export default function TemplatePage() {
                 />
               </div>
             ))
+          ) : isLoaded && displayedAssets && displayedAssets.length == 0 ? (
+            <div
+              style={{
+                position: 'relative',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                transform: 'translate(0,-50px)',
+              }}
+            >
+              <h3> There is no matched data. </h3>
+            </div>
           ) : (
             <div
               style={{

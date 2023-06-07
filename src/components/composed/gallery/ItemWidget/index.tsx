@@ -179,7 +179,6 @@ const ItemWidget: FC<IItemWidget> = ({
     console.log(asset.uid);
     setMenuType(ind);
     setVisible(true);
-    console.log('ffff');
   };
 
   const handleShowClick = (event: any) => {

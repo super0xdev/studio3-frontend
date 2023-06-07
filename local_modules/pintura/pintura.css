@@ -27,6 +27,7 @@
     padding: 0px !important;
 }
 .PinturaUtilFooter .PinturaControlListOption label svg{
+    margin-top: 5px;
     margin-bottom: 10px !important;
 }
 
@@ -68,11 +69,16 @@
     z-index: 5;
 }
 
+.PinturaNavTools{
+    padding-top: 0px !important;
+    padding-bottom: 10px !important;
+}
+
 .PinturaNavTools>.PinturaNavGroup{
-    padding-left: 100px;
+    padding-left: 150px;
 }
 .PinturaNavTools>.PinturaNavGroupFloat{
-    padding-left: 150px;
+    padding-left: 200px;
 }
 .PinturaShapePresetsPalette{
     margin: auto;

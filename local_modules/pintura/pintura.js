@@ -34413,6 +34413,7 @@ function instance$f($$self, $$props, $$invalidate) {
 	// Cache
 	//
 	const updateShape = (shape, props, parentRect) => {
+        console.log(shape, props, parentRect);
 		let propsToUpdate = beforeUpdateShape({ ...shape }, props, { ...parentRect });
 		shapeUpdateProps(shape, propsToUpdate, parentRect);
 	};
