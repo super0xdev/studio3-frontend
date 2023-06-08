@@ -86,3 +86,7 @@
     z-index: 5 !important;
     position: relative;
 }
+.PinturaShapePresetsPalette
+.PinturaShapePresetsPalette .PinturaButtonLabel{
+    transform: scale(1.2,1.2);
+}

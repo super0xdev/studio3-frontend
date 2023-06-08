@@ -76,7 +76,6 @@ export default function EditorPage() {
     );
 
     const toastLoadingID = toast.loading('Saving...');
-
     fetchAPI(
       `${APP_API_URL}/${
         selectedAsset ? 'overwrite_multi_asset' : 'upload_multi_asset'
