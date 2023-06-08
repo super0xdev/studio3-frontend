@@ -91,9 +91,6 @@ const Sidebar = () => {
           )}
         </Tabs>
       </section>
-      <section className={styles.bottomSection}>
-        <AccountIndicator />
-      </section>
     </div>
   );
 };

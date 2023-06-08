@@ -15,16 +15,19 @@ import {
 import { splitFileName } from '@/global/utils';
 import useFetchAPI from '@/hooks/useFetchAPI';
 import { APP_API_URL } from '@/global/constants';
+import { AssetInfoType } from '@/global/types';
 
 interface IEditModal {
   open: boolean;
   onClose: () => void;
+  uid: AssetInfoType;
 }
 
-const EditModal: FC<IEditModal> = ({ open, onClose }) => {
+const EditModal: FC<IEditModal> = ({ open, onClose, uid }) => {
   const { signMessage } = useWallet();
   const fetchAPI = useFetchAPI();
-  const selectedAsset = usePreviewSelectedAsset();
+  let selectedAsset = usePreviewSelectedAsset();
+  if (uid != null) selectedAsset = uid;
   const updateDisplayedAssets = useUpdateDisplayedAssets();
   const fileNameInfo = useMemo(
     () => selectedAsset && splitFileName(selectedAsset.file_name),

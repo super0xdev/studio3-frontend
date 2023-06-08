@@ -119,3 +119,124 @@ body {
     }
   }
 }
+
+.card {
+  
+  position: relative;
+  .check {
+    position: absolute;
+    display: none;
+    left: -5px;
+    top: -5px;
+    z-index: 20;
+    cursor: pointer;
+  }
+
+  .checked {
+    position: absolute;
+    display: block;
+    left: -5px;
+    top: -5px;
+    z-index: 20;
+    cursor:pointer;
+  }
+  
+  &:hover {
+    .check {
+      display: block;
+    }
+  }
+
+  .option {
+    position: absolute;
+    display: none;
+    right: -5px;
+    top: -5px;
+    z-index: 20;
+    cursor:pointer;
+  }
+
+  &:hover {
+    .option {
+      display: block;
+    }
+  }
+}
+
+.contextmenu {
+  position: absolute;
+  z-index: 5;
+  background: #252627;
+  border-radius: 10px;
+  width: 280px;
+  left: 265px;
+  top: 30px;
+}
+
+.option1 {
+  position: absolute;
+  display: block;
+  right: -5px;
+  top: -5px;
+  z-index: 20;
+  cursor:pointer;
+}
+
+.info {
+  color: rgb(160, 160, 160) !important;
+  font-size: 15px;
+}
+
+.border {
+  border-bottom: solid;
+  border-width: thin;
+  border-color: gray;
+}
+
+.buttons {
+  display: flex;
+  align-items: center;
+  cursor:pointer;
+}
+
+.download {
+  width: 100%;
+  color:black;
+  background-color: white;
+  border-radius: 5px;
+  padding-left:15px;
+  padding-right:15px;
+  padding-top:10px;
+  padding-bottom: 10px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.mint{
+  padding:15px;
+}
+
+.list {
+  min-width: 80%;
+  div {
+    margin-bottom: 6px;
+    font-size: 14px;
+  }
+
+  input,
+  textarea {
+    width: 100%;
+    padding: 8px;
+    border-radius: 6px;
+  }
+  input:focus, textarea:focus{
+    outline:none;
+  }
+}
+
+.input {
+  background-color: #292A2C;
+  color: white;
+  font-size: 14px;
+  border: 0.5px solid rgba(255, 255, 255, 0.06);
+}

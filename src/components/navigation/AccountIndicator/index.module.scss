@@ -1,6 +1,9 @@
 .account {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
-  width: 100%;
+  width: 170px;
+
+  background-color: gray;
+  gap: 10px  ;
 }

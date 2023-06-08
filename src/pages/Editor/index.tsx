@@ -1,5 +1,6 @@
 import React, { useMemo, useState, useRef } from 'react';
 import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 import { PinturaEditor } from '@pqina/react-pintura';
 import {
   PinturaDefaultImageWriterResult,
@@ -9,11 +10,13 @@ import {
   PinturaNode,
   createMarkupEditorShapeStyleControls,
   createDefaultFontFamilyOptions,
+  createMarkupEditorToolbar,
   // insertNodeAfter,
 } from '@pqina/pintura';
 
 import styles from './index.module.scss';
 
+import { EDITOR_ICON_CONFIG } from '@/config/editor';
 import { EDITOR_CONFIG } from '@/config/editor';
 import { APP_API_URL, APP_ASSET_URL } from '@/global/constants';
 import {
@@ -27,6 +30,7 @@ import { blobToBase64, loadJSON, strToBuffer } from '@/global/utils';
 // import WatermarkImage from '@/assets/images/watermark.png';
 
 export default function EditorPage() {
+  const navigate = useNavigate();
   const editorRef = useRef<PinturaEditor>(null);
   const fetchAPI = useFetchAPI();
   const selectedAsset = usePreviewSelectedAsset();
@@ -72,7 +76,6 @@ export default function EditorPage() {
     );
 
     const toastLoadingID = toast.loading('Saving...');
-
     fetchAPI(
       `${APP_API_URL}/${
         selectedAsset ? 'overwrite_multi_asset' : 'upload_multi_asset'
@@ -85,7 +88,7 @@ export default function EditorPage() {
 
       if (res.success) {
         toast.success('Saved successfully!');
-        updateDisplayedAssets();
+        //updateDisplayedAssets();
       }
     });
   };
@@ -230,102 +233,142 @@ export default function EditorPage() {
 
     return newControls;
   };
-
+  const goBackHome = () => {
+    navigate('/gallery');
+  };
   return (
-    <PageContainer noHeading variant={styles.editor}>
-      {editorEnabled ? (
-        <PinturaEditor
-          ref={editorRef}
-          onProcess={handleProcess}
-          {...{ ...EDITOR_CONFIG }}
-          src={editorFileSrc}
-          onClose={handleEditorHide}
-          onDestroy={handleEditorHide}
-          annotateActiveTool="text"
-          annotateEnableButtonFlipVertical
-          imageState={loadJSON(
-            `${APP_ASSET_URL}${selectedAsset?.meta_file_path}`
-          )}
-          enablePasteImage
-          enableMoveTool
-          stickerEnableButtonFlipVertical
-          // modifies the controls shown when clicking on a shape
-          willRenderToolbar={(toolbar: any /* env: any, redraw: any */) => {
-            // call redraw to trigger a redraw of the editor state
-            // attachSelectPhoto(toolbar);
-            // console.log({ toolbar });
-            console.log(toolbar);
-            console.log(toolbar[2][3]);
-            // TODO: this is where we can modify the "Done" button and add our own buttons
+    <div>
+      <div className={styles.gotoBack} onClick={goBackHome}>
+        {' '}
+        <svg
+          width="12"
+          height="20"
+          viewBox="0 0 12 20"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M10.7071 19.2929C10.3166 19.6834 9.68342 19.6834 9.29289 19.2929L0.707106 10.7071C0.316582 10.3166 0.316583 9.68342 0.707107 9.29289L9.29289 0.707106C9.68342 0.316582 10.3166 0.316582 10.7071 0.707107L11.0679 1.06789C11.4584 1.45842 11.4584 2.09158 11.0679 2.48211L4.25711 9.29289C3.86658 9.68342 3.86658 10.3166 4.25711 10.7071L11.0679 17.5179C11.4584 17.9084 11.4584 18.5416 11.0679 18.9321L10.7071 19.2929Z"
+            fill="white"
+          />
+        </svg>
+        &nbsp;&nbsp;&nbsp; Home{' '}
+      </div>
+      <PageContainer noHeading variant={styles.editor}>
+        {editorEnabled ? (
+          <PinturaEditor
+            ref={editorRef}
+            onProcess={handleProcess}
+            {...{ ...EDITOR_CONFIG }}
+            src={editorFileSrc}
+            onClose={handleEditorHide}
+            onDestroy={handleEditorHide}
+            annotateActiveTool="text"
+            annotateEnableButtonFlipVertical
+            imageState={loadJSON(
+              `${APP_ASSET_URL}${selectedAsset?.meta_file_path}`
+            )}
+            util={'annotate'}
+            utils={['annotate']}
+            enablePasteImage
+            enableMoveTool
+            stickerEnableButtonFlipVertical
+            markupEditorToolbar={createMarkupEditorToolbar([
+              ['move', { disabled: false, icon: EDITOR_ICON_CONFIG.move }],
+              ['text', { disabled: false, icon: EDITOR_ICON_CONFIG.text }],
+              [
+                'sharpie',
+                { disabled: false, icon: EDITOR_ICON_CONFIG.sharpie },
+              ],
+              ['eraser', { disabled: false, icon: EDITOR_ICON_CONFIG.eraser }],
+              ['line', { disabled: false, icon: EDITOR_ICON_CONFIG.line }],
+              ['arrow', { disabled: false, icon: EDITOR_ICON_CONFIG.arrow }],
+              ['rectangle', { disabled: false, icon: EDITOR_ICON_CONFIG.rect }],
+              [
+                'ellipse',
+                { disabled: false, icon: EDITOR_ICON_CONFIG.ellipse },
+              ],
+              ['preset', { disabled: false, icon: EDITOR_ICON_CONFIG.preset }],
+            ])}
+            // modifies the controls shown when clicking on a shape
+            willRenderToolbar={(toolbar: any /* env: any, redraw: any */) => {
+              // call redraw to trigger a redraw of the editor state
+              // attachSelectPhoto(toolbar);
+              // console.log({ toolbar });
+              console.log(toolbar);
+              console.log(toolbar[2][3]);
+              // TODO: this is where we can modify the "Done" button and add our own buttons
 
-            return [...toolbar];
-          }}
-          willRenderShapeControls={(
-            controls: PinturaNode[],
-            selectedShapeId: string
-          ) => {
-            const customControls = addCustomShapeControls(
-              controls,
-              selectedShapeId
-            );
+              return [...toolbar];
+            }}
+            willRenderShapeControls={(
+              controls: PinturaNode[],
+              selectedShapeId: string
+            ) => {
+              const customControls = addCustomShapeControls(
+                controls,
+                selectedShapeId
+              );
 
-            return customControls ?? [];
-          }}
-          // modifies the `Stickers` options under `Annotate`
-          willRenderShapePresetToolbar={(nodes: any, addPreset: any) => {
-            const stickers = [
-              '🚀',
-              '😄',
-              '👍',
-              '👎',
-              '💰',
-              '😍',
-              '💵',
-              '🤡',
-              '🎉',
-              '🤑',
-              '❤️',
-              '💔',
-            ];
+              return customControls ?? [];
+            }}
+            // modifies the `Stickers` options under `Annotate`
+            willRenderShapePresetToolbar={(nodes: any, addPreset: any) => {
+              const stickers = [
+                '🚀',
+                '😄',
+                '👍',
+                '👎',
+                '💰',
+                '😍',
+                '💵',
+                '🤡',
+                '🎉',
+                '🤑',
+                '❤️',
+                '💔',
+              ];
 
-            stickers.forEach((sticker) => {
-              const button = createNode('Button', `${sticker}-button`, {
-                label: sticker,
-                onclick: () => addPreset(sticker),
+              stickers.forEach((sticker) => {
+                const button = createNode('Button', `${sticker}-button`, {
+                  label: sticker,
+                  onclick: () => addPreset(sticker),
+                });
+
+                appendNode(button, nodes);
               });
 
-              appendNode(button, nodes);
-            });
-
-            // return the new node tree
-            return nodes;
-          }}
-          markupEditorShapeStyleControls={createMarkupEditorShapeStyleControls({
-            fontFamilyOptions: [
-              // Add our custom fonts
-              ['Impact', 'Impact'],
-              ['Impact-meme', 'Meme'],
-              ['Arial', 'Arial'],
-              ['Helvetica', 'Helvetica'],
-              ['Montserrat', 'Montserrat'],
-              ['Comic Sans MS', 'Comic Sans MS'],
-              // Add the default options
-              ...createDefaultFontFamilyOptions(),
-            ],
-            // Set absolute font size values
-            fontSizeOptions: [
-              4, 8, 16, 18, 20, 24, 30, 36, 48, 64, 72, 96, 144,
-            ],
-
-            // Set absolute line height values
-            lineHeightOptions: [
-              4, 8, 16, 18, 20, 24, 30, 36, 48, 64, 72, 96, 144,
-            ],
-          })}
-        />
-      ) : (
-        <EditorOpenPanel onChange={handleAssetChange} />
-      )}
-    </PageContainer>
+              // return the new node tree
+              return nodes;
+            }}
+            markupEditorShapeStyleControls={createMarkupEditorShapeStyleControls(
+              {
+                fontFamilyOptions: [
+                  // Add our custom fonts
+                  ['Impact', 'Impact'],
+                  ['Impact-meme', 'Meme'],
+                  ['Arial', 'Arial'],
+                  ['Helvetica', 'Helvetica'],
+                  ['Montserrat', 'Montserrat'],
+                  ['Comic Sans MS', 'Comic Sans MS'],
+                  // Add the default options
+                  ...createDefaultFontFamilyOptions(),
+                ],
+                // Set absolute font size values
+                fontSizeOptions: [
+                  4, 8, 16, 18, 20, 24, 30, 36, 48, 64, 72, 96, 144,
+                ],
+                // Set absolute line height values
+                lineHeightOptions: [
+                  4, 8, 16, 18, 20, 24, 30, 36, 48, 64, 72, 96, 144,
+                ],
+              }
+            )}
+          />
+        ) : (
+          <EditorOpenPanel onChange={handleAssetChange} />
+        )}
+      </PageContainer>
+    </div>
   );
 }

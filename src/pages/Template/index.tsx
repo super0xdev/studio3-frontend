@@ -28,6 +28,8 @@ import { AssetInfoType } from '@/global/types';
 import { filterByName, filterByTags } from '@/global/utils';
 import { APP_API_URL } from '@/global/constants';
 
+let isLoaded = false;
+
 export default function TemplatePage() {
   const { isVerified } = useAuth();
   const searchRef = useRef<HTMLInputElement>(null);
@@ -69,7 +71,8 @@ export default function TemplatePage() {
     //   handleUpdateDisplayedAssets();
     //   handleUpdateTemplateAssets();
     // }
-    if (templateAssets.length == 0) handleUpdateTemplateAssets();
+    isLoaded = false;
+    handleUpdateTemplateAssets();
   }, [authToken]);
 
   function sleep(ms: number) {
@@ -81,7 +84,7 @@ export default function TemplatePage() {
     setTemplateImages([]);
     const image: AssetInfoType[] = [];
     for (const item of images) {
-      await sleep(200);
+      // await sleep(200);
       if (i < 15) {
         image.push(item);
         //setTemplateImages((p) => [...p, item]);
@@ -206,7 +209,6 @@ export default function TemplatePage() {
     return () => setTemplateImages([]);
   }, [templateAssets]);
 
-  let flag = true;
   return (
     <PageContainer
       heading={<GalleryHeading title="Templates" />}
@@ -222,12 +224,15 @@ export default function TemplatePage() {
           previewSelectedId && updatePreviewSelectedId(previewSelectedId)
         }
       />
-      {
-        <div className={styles.search}>
-          <input className={styles.input} ref={searchRef} />
-          <Button className={styles.button} onClick={search}>
-            Search
-          </Button>
+      {}
+      <div className={styles.gallery}>
+        <div className={styles.filterPanel}>
+          <FilterPanel
+            dTab={f_tab}
+            dTags={f_tag}
+            dCollection={f_collection}
+            onChangeFilter={onChangeFilterPanel}
+          ></FilterPanel>
           <Button
             className={isTagsActved ? styles.active_button : styles.button}
             // onClick={() => setIsTagsActved((p) => !p)}
@@ -235,16 +240,7 @@ export default function TemplatePage() {
           >
             Filters
           </Button>
-          {isVerified == true ? (
-            <Button className={styles.button} onClick={addNewTag}>
-              Add a new Tag
-            </Button>
-          ) : (
-            <></>
-          )}
         </div>
-      }
-      <div className={styles.gallery}>
         <AnimateHeight duration={500} height={isTagsActved ? 'auto' : 0}>
           <div className={styles.tags}>
             {taglist.map((tag, index) => (
@@ -261,48 +257,48 @@ export default function TemplatePage() {
           </div>
         </AnimateHeight>
         <div className={styles.images}>
-          {displayedAssets && displayedAssets.length ? (
+          {!templateLoading &&
+          displayedAssets &&
+          displayedAssets.length &&
+          (isLoaded = true) ? (
             templateImages.map((asset, index) => (
               <div
                 style={{ position: 'relative' }}
                 key={`widget-template-${index}`}
               >
-                <div style={{ position: 'absolute', top: '-80px' }}>
-                  {flag && (
-                    <FilterPanel
-                      dTab={f_tab}
-                      dTags={f_tag}
-                      dCollection={f_collection}
-                      onChangeFilter={onChangeFilterPanel}
-                    ></FilterPanel>
-                  )}
-                </div>
                 <ItemWidget
                   asset={asset}
-                  selected={previewSelectedId === asset.uid}
+                  type={false}
                   onClick={() => updatePreviewSelectedId(asset.uid)}
                 />
-                {(flag = false)}
               </div>
             ))
+          ) : isLoaded && displayedAssets && displayedAssets.length == 0 ? (
+            <div
+              style={{
+                position: 'relative',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                transform: 'translate(0,-50px)',
+              }}
+            >
+              <h3> There is no matched data. </h3>
+            </div>
           ) : (
-            <div style={{ position: 'relative' }}>
-              <div
-                style={{ position: 'absolute', top: '-80px', left: '-140px' }}
-              >
-                <FilterPanel
-                  dTab={f_tab}
-                  dTags={f_tag}
-                  dCollection={f_collection}
-                  onChangeFilter={onChangeFilterPanel}
-                ></FilterPanel>
-              </div>
-              <br></br>
-              {templateLoading || templateAssets.length != 0 ? (
-                <PropagateLoader color="#ffffff55" />
-              ) : (
-                <>No matched Templates</>
-              )}
+            <div
+              style={{
+                position: 'relative',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                transform: 'translate(0,-80px)',
+              }}
+            >
+              <h3> Loading ... </h3>
+              <PropagateLoader color="#ffffff55" />
             </div>
           )}
         </div>

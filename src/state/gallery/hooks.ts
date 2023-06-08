@@ -18,6 +18,16 @@ import useFetchAPI from '@/hooks/useFetchAPI';
 
 // === displayedAssets ===
 
+interface Point {
+  pX: number;
+  pY: number;
+}
+
+interface Selection {
+  isSelected: boolean;
+  position: Point;
+}
+
 export const useDisplayedAssets = () =>
   useAppSelector((state) => state.gallery.displayedAssets) as AssetInfoType[];
 
@@ -81,6 +91,14 @@ export const usePreviewSelectedAsset = () => {
   return allAssets.filter((asset) => asset.uid === previewSelectedId)[0];
 };
 
+export const countSelected = (selectionArray: Selection[]) => {
+  return selectionArray.reduce((count, selection) => {
+    if (selection.isSelected) {
+      count++;
+    }
+    return count;
+  }, 0);
+};
 // === isLoading ===
 
 export const useIsLoading = () =>

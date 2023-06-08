@@ -3,6 +3,9 @@ import LoginSharpIcon from '@mui/icons-material/LoginSharp';
 import AccountCircleSharpIcon from '@mui/icons-material/AccountCircleSharp';
 import { useWallet } from '@solana/wallet-adapter-react';
 
+import PhantomSVG from '../../../Icons/phantom.svg';
+import ExpandSVG from '../../../Icons/expand.svg';
+
 import styles from './index.module.scss';
 
 import Button from '@/components/based/Button';
@@ -33,8 +36,9 @@ const AccountIndicator = () => {
         className={styles.account}
         onClick={() => updateWalletModal(true)}
       >
-        {content ? <AccountCircleSharpIcon /> : <LoginSharpIcon />}
-        {content ?? 'Login'}
+        <img src={PhantomSVG} />
+        <div>{content ?? 'Login'}</div>
+        <img src={ExpandSVG} />
       </Button>
     </>
   );
