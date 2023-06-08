@@ -354,10 +354,6 @@ const ItemPreviewDrawer: FC<IItemPreviewDrawer> = ({ open, onClose }) => {
       <IconButton size="small" className={styles.close} onClick={onClose}>
         <CloseSharpIcon />
       </IconButton>
-      <EditModal
-        open={editModalOpend}
-        onClose={() => setEditModalOpened(false)}
-      />
       <ConfirmModal
         title={confirmModalTitle}
         content={confirmModalContent}

@@ -23,7 +23,9 @@ import ExportSVG from '../../../../Icons/context-export.svg';
 import MintSVG from '../../../../Icons/context-mint.svg';
 import DeleteSVG from '../../../../Icons/context-delete.svg';
 import BackSVG from '../../../../Icons/context-arrow_back.svg';
+import renameSVG from '../../../../Icons/info.svg';
 import ConfirmModal from '../ConfirmModal';
+import EditModal from '../EditModal';
 
 import styles from './index.module.scss';
 
@@ -66,7 +68,7 @@ const ItemWidget: FC<IItemWidget> = ({
   const { publicKey } = useWallet();
   const { url: processedImg } = useProcessThumbnail(asset);
   const appendOpenedAsset = useAppendOpenedAsset();
-
+  const [editModalOpend, setEditModalOpened] = useState(false);
   const [visible, setVisible] = useState(false);
   const [menuType, setMenuType] = useState(0);
   const [value, setValue] = useState('with');
@@ -211,6 +213,11 @@ const ItemWidget: FC<IItemWidget> = ({
         onClose={handleConfirmClose}
         onConfirm={handleConfirm}
       />
+      <EditModal
+        open={editModalOpend}
+        uid={asset}
+        onClose={() => setEditModalOpened(false)}
+      />
       {type == true ? (
         selected == true ? (
           <img className={styles.checked} src={CheckedSVG} />
@@ -308,6 +315,17 @@ const ItemWidget: FC<IItemWidget> = ({
                         id={`${asset.uid}`}
                       />
                       <span id={`${asset.uid}`}>Make a copy</span>
+                    </div>
+                    <div
+                      className={styles.buttons}
+                      onClick={() => setEditModalOpened(true)}
+                    >
+                      <img
+                        src={renameSVG}
+                        style={{ marginRight: '10px' }}
+                        id={`${asset.uid}`}
+                      />
+                      <span id={`${asset.uid}`}>Rename</span>
                     </div>
                     <div className={styles.buttons} onClick={handleDelete}>
                       <img

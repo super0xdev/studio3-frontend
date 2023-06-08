@@ -89,7 +89,7 @@ export default function EditorPage() {
 
       if (res.success) {
         toast.success('Saved successfully!');
-        updateDisplayedAssets();
+        //updateDisplayedAssets();
       }
     });
   };
