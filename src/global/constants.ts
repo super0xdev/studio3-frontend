@@ -15,8 +15,8 @@ export const WHITE_LIST = [
   '5HoATg69fVLTFm7ypSWZTfHNyhQAgPZmYKsh2e5jvtqv',
 ];
 
-export const APP_API_URL = 'http://127.0.0.1:8081';
-// export const APP_API_URL = 'https://api.studio-3.xyz';
+// export const APP_API_URL = 'http://127.0.0.1:8081';
+export const APP_API_URL = 'https://api.studio-3.xyz';
 
 export const APP_ASSET_URL =
   'https://d3-studio-assets.s3.us-east-2.amazonaws.com/';
