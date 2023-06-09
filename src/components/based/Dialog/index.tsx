@@ -10,6 +10,7 @@ import styles from './index.module.scss';
 interface IDialog extends DialogProps {
   className?: string;
   title?: string;
+  showClose?: boolean;
 }
 
 const Dialog: FC<IDialog> = ({
@@ -17,6 +18,7 @@ const Dialog: FC<IDialog> = ({
   title = '',
   children,
   onClose,
+  showClose = true,
   ...props
 }) => {
   const classes = clsx(styles.dialog, className);
@@ -25,7 +27,7 @@ const Dialog: FC<IDialog> = ({
     <MUIDialog className={classes} onClose={onClose} {...props}>
       <section className={styles.heading}>
         <div className={styles.title}>{title}</div>
-        {onClose && (
+        {onClose && showClose && (
           <IconButton
             size="small"
             className={styles.close}

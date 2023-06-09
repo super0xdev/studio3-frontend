@@ -129,11 +129,11 @@ export default function UploadPage() {
       await fetchAPI(`${APP_API_URL}/list_tags`, 'POST')
         .then((res) => {
           let i;
-          for (i = 0; i < TEMPLATE_COLLECTION.Tab.length; i++) {
+          for (i = 1; i < TEMPLATE_COLLECTION.Tab.length; i++) {
             t_categories.tab.push(TEMPLATE_COLLECTION['Tab'][i].data);
           }
 
-          for (i = 0; i < TEMPLATE_COLLECTION.Collection.length; i++) {
+          for (i = 1; i < TEMPLATE_COLLECTION.Collection.length; i++) {
             t_categories.collection.push(
               TEMPLATE_COLLECTION['Collection'][i].data
             );

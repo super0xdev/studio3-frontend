@@ -12,7 +12,6 @@ import PageContainer from '@/components/navigation/PageContainer';
 import ItemWidget from '@/components/composed/gallery/ItemWidget';
 import GalleryHeading from '@/components/composed/gallery/GalleryHeading';
 import ItemPreviewDrawer from '@/components/composed/gallery/ItemPreviewDrawerTemplate';
-import ExportModal from '@/components/composed/gallery/ExportModal';
 import FilterPanel from '@/components/composed/gallery/FilterPanel';
 import {
   useIsLoading,
@@ -28,7 +27,7 @@ import { AssetInfoType } from '@/global/types';
 import { filterByName, filterByTags } from '@/global/utils';
 import { APP_API_URL } from '@/global/constants';
 
-let isLoaded = false;
+let isSearched = true;
 
 export default function TemplatePage() {
   const { isVerified } = useAuth();
@@ -42,18 +41,20 @@ export default function TemplatePage() {
   const [isTagsActved, setIsTagsActved] = useState<boolean>(false);
   const [exportModalOpened, setExportModalOpened] = useState<boolean>(false);
   const [templateImages, setTemplateImages] = useState<AssetInfoType[]>([]);
-  const [templateLoading, setTemplateLoading] = useState<boolean>(false);
+  const [templateLoading, setTemplateLoading] = useState<boolean>(true);
   const [tags, setTags] = useState<boolean[]>([false]);
-  const [f_tab, setFTab] = useState<string>('');
-  const [f_tag, setFTag] = useState<string>('');
-  const [f_collection, setFCollection] = useState<string>('');
+  const [f_tab, setFTab] = useState<string>('None');
+  const [f_tag, setFTag] = useState<string>('None');
+  const [f_collection, setFCollection] = useState<string>('None');
   const displayedAssets = useMemo(() => templateImages, [templateImages]);
   const handleUpdateTemplateAssets = useUpdateTemplateAssets();
   const fetchAPI = useFetchAPI();
   useEffect(() => {
     fetchAPI(`${APP_API_URL}/list_tags`, 'POST').then((res) => {
       const tmp: any[] = [];
-      for (let i = 0; i < res.data.length; i++) tmp[i] = res.data[i].tag;
+      tmp[0] = 'None';
+      for (let i = 1; i < res.data.length + 1; i++)
+        tmp[i] = res.data[i - 1].tag;
       setTagList([...tmp]);
     });
 
@@ -71,7 +72,8 @@ export default function TemplatePage() {
     //   handleUpdateDisplayedAssets();
     //   handleUpdateTemplateAssets();
     // }
-    isLoaded = false;
+    isSearched = false;
+    setTemplateLoading(true);
     handleUpdateTemplateAssets();
   }, [authToken]);
 
@@ -81,22 +83,25 @@ export default function TemplatePage() {
 
   const loadImages = async (images: any[]) => {
     let i = 0;
+    isSearched = false;
+    setTemplateLoading(true);
     setTemplateImages([]);
     const image: AssetInfoType[] = [];
     for (const item of images) {
-      // await sleep(200);
+      await sleep(200);
       if (i < 15) {
-        image.push(item);
-        //setTemplateImages((p) => [...p, item]);
+        // image.push(item);
+        setTemplateImages((p) => [...p, item]);
       } else {
-        image.push(...image.slice(15));
-        //setTemplateImages((p) => [...p, ...images.slice(15)]);
+        // image.push(...images.slice(15));
+        setTemplateImages((p) => [...p, ...images.slice(15)]);
         break;
       }
       i++;
     }
-    setTemplateImages(image);
+    // setTemplateImages(image);
     setTemplateLoading(false);
+    isSearched = true;
     //if (images.length == templateImages.length) window.location.reload();
   };
 
@@ -140,7 +145,6 @@ export default function TemplatePage() {
     //const tagName = obj?.innerText;
     //if (!tagName) return;
     const result = await filterByTags(ar, templateAssets, taglist);
-    setTemplateLoading(false);
     loadImages(result);
   }
 
@@ -148,30 +152,34 @@ export default function TemplatePage() {
     if (isTagsActved == true) {
       setTags([]);
       const result = await filterByTags([], templateAssets, taglist);
-      setTemplateLoading(false);
       loadImages(result);
     }
     setIsTagsActved((p) => !p);
     const res = await fetchAPI(`${APP_API_URL}/list_tags`, 'POST');
     const tmp: any[] = [];
-    for (let i = 0; i < res.data.length; i++) tmp[i] = res.data[i].tag;
-    if (taglist.length != tmp.length) setTagList([...tmp]);
+    tmp[0] = 'None';
+    for (let i = 1; i < res.data.length + 1; i++) tmp[i] = res.data[i - 1].tag;
+    if (taglist.length != tmp.length - 1) setTagList([...tmp]);
   }
 
-  const onChangeFilterPanel = (filters: { [key: string]: string }) => {
+  const onChangeFilterPanel = async (filters: { [key: string]: string }) => {
     setFTag(filters['Tags']);
     setFTab(filters['Tab']);
     setFCollection(filters['Collection']);
     const ttag = filters['Tags'],
       ttab = filters['Tab'],
       tcollection = filters['Collection'];
-    const filteredItems = templateAssets.filter(
+    if (ttag == 'None' && ttab == 'None' && tcollection == 'None') {
+      loadImages(templateAssets);
+      return;
+    }
+    const filteredItems = await templateAssets.filter(
       (item) =>
-        (!ttag ||
+        (ttag == 'None' ||
           (item.tags && item.tags.toLowerCase() === ttag.toLowerCase())) &&
-        (!ttab ||
+        (ttab == 'None' ||
           (item.tab && item.tab.toLowerCase() === ttab.toLowerCase())) &&
-        (!tcollection ||
+        (tcollection == 'None' ||
           (item.collection &&
             item.collection.toLowerCase() === tcollection.toLowerCase()))
     );
@@ -183,7 +191,7 @@ export default function TemplatePage() {
   // }
 
   useEffect(() => {
-    if (templateLoading) return;
+    //if (templateLoading) return;
     if (templateImages.length > 0) setTemplateImages([]);
     const loadImages = async () => {
       let i = 0;
@@ -191,20 +199,21 @@ export default function TemplatePage() {
       for (const item of templateAssets) {
         await sleep(200);
         if (i < 15) {
-          image.push(item);
-          //setTemplateImages((p) => [...p, item]);
+          // image.push(item);
+          setTemplateImages((p) => [...p, item]);
         } else {
-          image.push(...templateAssets.slice(15));
-          //setTemplateImages((p) => [...p, ...templateAssets.slice(15)]);
+          // image.push(...templateAssets.slice(15));
+          setTemplateImages((p) => [...p, ...templateAssets.slice(15)]);
           break;
         }
         i++;
       }
-      setTemplateImages(image);
+      // setTemplateImages(image);
     };
     setTemplateLoading(true);
     loadImages();
     setTemplateLoading(false);
+    console.log('---------false');
     // setTemplateImages([...templateAssets]);
     return () => setTemplateImages([]);
   }, [templateAssets]);
@@ -214,10 +223,6 @@ export default function TemplatePage() {
       heading={<GalleryHeading title="Templates" />}
       variant={clsx({ [styles.opened]: !!previewSelectedId })}
     >
-      <ExportModal
-        open={exportModalOpened}
-        onClose={() => setExportModalOpened(false)}
-      />
       <ItemPreviewDrawer
         open={!!previewSelectedId}
         onClose={() =>
@@ -257,10 +262,7 @@ export default function TemplatePage() {
           </div>
         </AnimateHeight>
         <div className={styles.images}>
-          {!templateLoading &&
-          displayedAssets &&
-          displayedAssets.length &&
-          (isLoaded = true) ? (
+          {!templateLoading && displayedAssets && displayedAssets.length ? (
             templateImages.map((asset, index) => (
               <div
                 style={{ position: 'relative' }}
@@ -273,7 +275,8 @@ export default function TemplatePage() {
                 />
               </div>
             ))
-          ) : isLoaded && displayedAssets && displayedAssets.length == 0 ? (
+          ) : (isSearched == true && templateAssets.length == 0) ||
+            (isSearched == true && templateImages.length == 0) ? (
             <div
               style={{
                 position: 'relative',

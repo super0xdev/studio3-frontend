@@ -76,7 +76,7 @@ export const useUpdatePreviewSelectedId = () => {
   return (id: number) => {
     dispatch(
       updatePreviewSelectedId(
-        previewSelectedId === null ? id : previewSelectedId === id ? null : id
+        previewSelectedId === null ? id : previewSelectedId === id ? id : id
       )
     );
   };

@@ -33,11 +33,12 @@ const FilterPanel: FC<FIlterPanelProps> = ({
     await fetchAPI(`${APP_API_URL}/list_tags`, 'POST')
       .then((res) => {
         const tmp: { value: string; data: string }[] = [];
-        for (let i = 0; i < res.data.length; i++) {
-          const tag = res.data[i].tag;
+        tmp.push({ value: 'None', data: 'None' });
+        for (let i = 1; i < res.data.length + 1; i++) {
+          const tag = res.data[i - 1].tag;
           tmp.push({ value: tag, data: tag });
         }
-        if (taglist.length != tmp.length) setTagList([...tmp]);
+        if (taglist.length != tmp.length - 1) setTagList([...tmp]);
       })
       .catch((error) => {
         console.error(error);

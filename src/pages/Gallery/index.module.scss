@@ -90,24 +90,28 @@
       }
 
       .title {
-        font-size: 16px;
-        color: $gray-50;
+        font-size: 20px;
+        color: white;
+        margin-top: 10px;
+        font-weight: 700;
       }
 
       .description {
-        font-size: 13px;
+        font-size: 15px;
         font-weight: 300;
-        color: $gray-50;
+        width: 250px;
+        text-align: center;
+        color: white;
       }
 
       .create {
         margin-top: 30px;
-        background: $gray-200;
+        background: white;
         color: $dark-50 !important;
-        font-size: 20px;
-        padding: 5px 16px;
+        font-size: 13px;
+        padding: 8px 30px;
         font-family: $font-secondary;
-        font-weight: 600;
+        font-weight: 400;
 
         svg {
           margin-right: 5px;
