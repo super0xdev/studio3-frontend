@@ -185,5 +185,6 @@ export const TEMPLATE_COLLECTION = {
       value: 'Wolf Capital',
       data: 'Wolf Capital',
     },
+    { value: 'Your Fav Influencer', data: 'Your Fav Influencer' },
   ],
 } as { [key: string]: SelectOptionType[] };
