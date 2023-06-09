@@ -85,6 +85,9 @@ export const TEMPLATE_COLLECTION = {
       value: 'Aptos Monkeys',
       data: 'Aptos Monkeys',
     },
+    { value: 'Azuki', data: 'Azuki' },
+    { value: 'Bitcoin Bandits', data: 'Bitcoin Bandits' },
+    { value: 'Bitcoin Frogs', data: 'Bitcoin Frogs' },
     {
       value: 'Bonkz',
       data: 'Bonkz',
@@ -93,6 +96,7 @@ export const TEMPLATE_COLLECTION = {
       value: 'Clayno',
       data: 'Clayno',
     },
+    { value: 'Coin Hunter', data: 'Coin Hunter' },
     {
       value: 'Dandies',
       data: 'Dandies',
@@ -137,6 +141,9 @@ export const TEMPLATE_COLLECTION = {
       value: 'Mad Lads',
       data: 'Mad Lads',
     },
+    { value: 'MonkeDAO', data: 'MonkeDAO' },
+    { value: 'Nakamigos', data: 'Nakamigos' },
+    { value: 'Nekozuma', data: 'Nekozuma' },
     {
       value: 'Network',
       data: 'Network',
@@ -173,6 +180,7 @@ export const TEMPLATE_COLLECTION = {
       value: 'Stoned Apes',
       data: 'Stoned Apes',
     },
+    { value: 'Taiyo', data: 'Taiyo' },
     {
       value: 'Wolf Capital',
       data: 'Wolf Capital',
