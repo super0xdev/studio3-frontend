@@ -81,6 +81,7 @@ export default function UploadPage() {
           toast.success('Saved successfully!', {
             duration: 2000,
           });
+          window.location.reload();
         }
       }
     );

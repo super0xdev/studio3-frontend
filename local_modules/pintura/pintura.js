@@ -5647,6 +5647,7 @@ var createImageCore = ({ minSize = { width: 1, height: 1 } } = {}) => {
         if (!accessors.loadState.complete)
             return;
         // reset process state to undefined
+        console.log(accessors.state);
         accessors.processState = undefined;
         const imageWriteHandler = createProcessingHandler('processState', 'process');
         const writerState = {

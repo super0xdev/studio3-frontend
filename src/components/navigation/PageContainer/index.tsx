@@ -1,9 +1,9 @@
 import clsx from 'clsx';
 import React, { FC, ReactNode } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import AccountIndicator from '../AccountIndicator';
 import MoodSVG from '../../../Icons/mood.svg';
-import SearchSVG from '../../../Icons/search.svg';
 
 import styles from './index.module.scss';
 
@@ -17,13 +17,14 @@ interface IPageContainer {
 }
 
 const PageContainer: FC<IPageContainer> = ({
-  title,
-  heading,
+  // title,
+  // heading,
   children,
   variant = '',
   noHeading = false,
-  onCreateMeme,
 }) => {
+  const navigate = useNavigate();
+
   const containerClasses = clsx(styles.container, { [variant]: noHeading });
   const bodyClasses = clsx(styles.body, { [variant]: !noHeading });
 
@@ -38,7 +39,10 @@ const PageContainer: FC<IPageContainer> = ({
               <div className={styles.title}>
                 <input className={styles.search} placeholder="Search" />
                 <div style={{ display: 'flex', flexDirection: 'row' }}>
-                  <button className={styles.meme} onClick={onCreateMeme}>
+                  <button
+                    className={styles.meme}
+                    onClick={() => navigate('/editor')}
+                  >
                     <img src={MoodSVG} />
                     Create Meme
                   </button>

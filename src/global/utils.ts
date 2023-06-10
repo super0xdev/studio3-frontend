@@ -61,6 +61,7 @@ export function loadJSON(filePath: string) {
   // Load json file;
   const json = loadTextFileAjaxSync(filePath, 'application/json;charset=UTF-8');
   // Parse json
+  console.log(json ? JSON.parse(uniToEmoji(json)) : {});
   return json ? JSON.parse(uniToEmoji(json)) : {}; // Here is error
   // return {};
 }

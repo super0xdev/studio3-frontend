@@ -16,13 +16,9 @@ import {
 
 import styles from './index.module.scss';
 
-import { EDITOR_ICON_CONFIG } from '@/config/editor';
-import { EDITOR_CONFIG } from '@/config/editor';
+import { EDITOR_CONFIG, EDITOR_ICON_CONFIG } from '@/config/editor';
 import { APP_API_URL, APP_ASSET_URL } from '@/global/constants';
-import {
-  usePreviewSelectedAsset,
-  useUpdateDisplayedAssets,
-} from '@/state/gallery/hooks';
+import { usePreviewSelectedAsset } from '@/state/gallery/hooks';
 import useFetchAPI from '@/hooks/useFetchAPI';
 import PageContainer from '@/components/navigation/PageContainer';
 import EditorOpenPanel from '@/components/composed/editor/EditorOpenPanel';
@@ -34,7 +30,6 @@ export default function EditorPage() {
   const editorRef = useRef<PinturaEditor>(null);
   const fetchAPI = useFetchAPI();
   const selectedAsset = usePreviewSelectedAsset();
-  const updateDisplayedAssets = useUpdateDisplayedAssets();
   const [editorSrc, setEditorSrc] = useState<string | File | undefined>(
     selectedAsset ? `${APP_ASSET_URL}${selectedAsset.file_path}` : undefined
   );

@@ -1,20 +1,19 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState, useRef, useMemo } from 'react';
-import toast from 'react-hot-toast';
+import React, { useEffect, useState, useMemo } from 'react';
+// import toast from 'react-hot-toast';
 import clsx from 'clsx';
 import AnimateHeight from 'react-animate-height';
 import { PropagateLoader } from 'react-spinners';
 
 import styles from './index.module.scss';
 
-import { useAuth } from '@/context/AuthContext';
+// import { useAuth } from '@/context/AuthContext';
 import PageContainer from '@/components/navigation/PageContainer';
 import ItemWidget from '@/components/composed/gallery/ItemWidget';
 import GalleryHeading from '@/components/composed/gallery/GalleryHeading';
 import ItemPreviewDrawer from '@/components/composed/gallery/ItemPreviewDrawerTemplate';
 import FilterPanel from '@/components/composed/gallery/FilterPanel';
 import {
-  useIsLoading,
   useTemplateAssets,
   useUpdateTemplateAssets,
   usePreviewSelectedId,
@@ -24,22 +23,21 @@ import { useAuthToken } from '@/state/application/hooks';
 import useFetchAPI from '@/hooks/useFetchAPI';
 import Button from '@/components/based/Button';
 import { AssetInfoType } from '@/global/types';
-import { filterByName, filterByTags } from '@/global/utils';
+import { filterByTags } from '@/global/utils';
 import { APP_API_URL } from '@/global/constants';
 
 let isSearched = true;
 
 export default function TemplatePage() {
-  const { isVerified } = useAuth();
-  const searchRef = useRef<HTMLInputElement>(null);
+  //const { isVerified } = useAuth();
+  //const searchRef = useRef<HTMLInputElement>(null);
   const authToken = useAuthToken();
-  const isLoading = useIsLoading();
+  //const isLoading = useIsLoading();
   const previewSelectedId = usePreviewSelectedId();
   const updatePreviewSelectedId = useUpdatePreviewSelectedId();
   const templateAssets = useTemplateAssets();
   const [taglist, setTagList] = useState<string[]>([]);
   const [isTagsActved, setIsTagsActved] = useState<boolean>(false);
-  const [exportModalOpened, setExportModalOpened] = useState<boolean>(false);
   const [templateImages, setTemplateImages] = useState<AssetInfoType[]>([]);
   const [templateLoading, setTemplateLoading] = useState<boolean>(true);
   const [tags, setTags] = useState<boolean[]>([false]);
@@ -86,15 +84,14 @@ export default function TemplatePage() {
     isSearched = false;
     setTemplateLoading(true);
     setTemplateImages([]);
-    const image: AssetInfoType[] = [];
     for (const item of images) {
       await sleep(200);
-      if (i < 15) {
+      if (i < 30) {
         // image.push(item);
         setTemplateImages((p) => [...p, item]);
       } else {
         // image.push(...images.slice(15));
-        setTemplateImages((p) => [...p, ...images.slice(15)]);
+        setTemplateImages((p) => [...p, ...images.slice(30)]);
         break;
       }
       i++;
@@ -105,37 +102,37 @@ export default function TemplatePage() {
     //if (images.length == templateImages.length) window.location.reload();
   };
 
-  function search() {
-    if (!searchRef.current) return;
-    const result = filterByName(searchRef.current.value, templateAssets);
-    setTemplateLoading(false);
-    loadImages(result);
-  }
+  // function search() {
+  //   if (!searchRef.current) return;
+  //   const result = filterByName(searchRef.current.value, templateAssets);
+  //   setTemplateLoading(false);
+  //   loadImages(result);
+  // }
 
-  function addNewTag() {
-    const val = searchRef.current;
-    if (!val) return;
-    if (taglist.indexOf(val.value) != -1) return;
-    if (val.value.length == 0) return;
-    for (let i = 0; i < val.value.length; i++) {
-      if (
-        !(
-          (val.value[i] >= 'a' && val.value[i] <= 'z') ||
-          (val.value[i] >= 'A' && val.value[i] <= 'Z')
-        )
-      )
-        return;
-    }
-    console.log('success');
-    const data = new FormData();
-    data.append('id', String(taglist.length + 1));
-    data.append('tag', val.value);
-    fetchAPI(`${APP_API_URL}/insert_tag`, 'POST', data, false).then((res) => {
-      if (res.success) {
-        toast.success('Added successfully!');
-      }
-    });
-  }
+  // function addNewTag() {
+  //   const val = searchRef.current;
+  //   if (!val) return;
+  //   if (taglist.indexOf(val.value) != -1) return;
+  //   if (val.value.length == 0) return;
+  //   for (let i = 0; i < val.value.length; i++) {
+  //     if (
+  //       !(
+  //         (val.value[i] >= 'a' && val.value[i] <= 'z') ||
+  //         (val.value[i] >= 'A' && val.value[i] <= 'Z')
+  //       )
+  //     )
+  //       return;
+  //   }
+  //   console.log('success');
+  //   const data = new FormData();
+  //   data.append('id', String(taglist.length + 1));
+  //   data.append('tag', val.value);
+  //   fetchAPI(`${APP_API_URL}/insert_tag`, 'POST', data, false).then((res) => {
+  //     if (res.success) {
+  //       toast.success('Added successfully!');
+  //     }
+  //   });
+  // }
 
   async function tagSwitch(obj: any, index: number) {
     const ar = tags;
@@ -195,15 +192,15 @@ export default function TemplatePage() {
     if (templateImages.length > 0) setTemplateImages([]);
     const loadImages = async () => {
       let i = 0;
-      const image: AssetInfoType[] = [];
+      // const image: AssetInfoType[] = [];
       for (const item of templateAssets) {
         await sleep(200);
-        if (i < 15) {
+        if (i < 30) {
           // image.push(item);
           setTemplateImages((p) => [...p, item]);
         } else {
           // image.push(...templateAssets.slice(15));
-          setTemplateImages((p) => [...p, ...templateAssets.slice(15)]);
+          setTemplateImages((p) => [...p, ...templateAssets.slice(30)]);
           break;
         }
         i++;

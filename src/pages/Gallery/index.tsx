@@ -1,10 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState, useMemo } from 'react';
-import clsx from 'clsx';
-import AllInboxSharpIcon from '@mui/icons-material/AllInboxSharp';
-import AddSharpIcon from '@mui/icons-material/AddSharp';
 import { useNavigate } from 'react-router-dom';
-import { PropagateLoader } from 'react-spinners';
 import { toast } from 'react-hot-toast';
 
 import DeleteSVG from '../../Icons/delete.svg';
@@ -17,7 +13,6 @@ import ItemWidget from '@/components/composed/gallery/ItemWidget';
 import GalleryHeading from '@/components/composed/gallery/GalleryHeading';
 import {
   useDisplayedAssets,
-  useIsLoading,
   useUpdateDisplayedAssets,
   useUpdatePreviewSelectedId,
   countSelected,
@@ -40,15 +35,12 @@ interface Selection {
 export default function GalleryPage() {
   const fetchAPI = useFetchAPI();
   const authToken = useAuthToken();
-  const isLoading = useIsLoading();
   const userAssets = useDisplayedAssets();
   const navigate = useNavigate();
   const updatePreviewSelectedId = useUpdatePreviewSelectedId();
-  const [exportModalOpened, setExportModalOpened] = useState<boolean>(false);
   const [userImages, setUserImages] = useState<AssetInfoType[]>([]);
   const [userLoading, setUserLoading] = useState<boolean>(false);
   const displayedAssets = useMemo(() => userImages, [userImages]);
-  const [posBox, setPosBox] = useState<Point>({ pX: -50, pY: -50 });
   const [selectionArray, setSelectionArray] = useState<Selection[]>([]);
   const selectedCount = countSelected(selectionArray);
   const handleUpdateDisplayedAssets = useUpdateDisplayedAssets();
@@ -70,9 +62,9 @@ export default function GalleryPage() {
     navigate('/editor');
   };
 
-  function sleep(ms: number) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
-  }
+  // function sleep(ms: number) {
+  //   return new Promise((resolve) => setTimeout(resolve, ms));
+  // }
 
   // function tagAll() {
   //   setTemplateLoading(false);
@@ -157,10 +149,7 @@ export default function GalleryPage() {
   };
 
   return (
-    <PageContainer
-      heading={<GalleryHeading title="Projects" />}
-      onCreateMeme={handleCreate}
-    >
+    <PageContainer heading={<GalleryHeading title="Projects" />}>
       <div className={styles.gallery}>
         <div className={styles.images}>
           {displayedAssets && displayedAssets.length ? (
