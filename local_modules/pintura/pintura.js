@@ -191,6 +191,8 @@ var canOrientImages = () => new Promise((resolve) => {
 });
 
 var canvasToImageData = (canvas) => {
+    console.log(canvas.width);
+    
     const imageData = canvas
         .getContext('2d')
         .getImageData(0, 0, canvas.width, canvas.height);
@@ -5647,7 +5649,6 @@ var createImageCore = ({ minSize = { width: 1, height: 1 } } = {}) => {
         if (!accessors.loadState.complete)
             return;
         // reset process state to undefined
-        console.log(accessors.state);
         accessors.processState = undefined;
         const imageWriteHandler = createProcessingHandler('processState', 'process');
         const writerState = {
@@ -8781,7 +8782,6 @@ function instance$P($$self, $$props, $$invalidate) {
 
 		// gets texture to use for this image
 		const texture = getImageTexture(data);
-
 		// this makes sure the image renders extra crisp on low res screens
 		let sharpenOffsetX = 0;
 
@@ -8981,7 +8981,6 @@ function instance$P($$self, $$props, $$invalidate) {
 		usedTextures.length = 0;
 		// get top image shortcut
 		const imagesTop = images[0];
-
 		// allow dev to inject more shapes
 		const { blendShapes, blendShapesDirty, annotationShapes, annotationShapesDirty, interfaceShapes, decorationShapes, frameShapes } = willRender({
 			// top image state shortcut
@@ -9170,7 +9169,7 @@ function instance$P($$self, $$props, $$invalidate) {
 			}
 
 			// draw image
-			drawImageHelper({
+            drawImageHelper({
 				...image,
 				// update translation to apply `offset` from top left
 				translation: {
@@ -9189,7 +9188,7 @@ function instance$P($$self, $$props, $$invalidate) {
 		didRender();
 
 		// redraw force flag
-		redrawForce = false;
+		redrawForce = false; 
 	};
 
 	//#endregion
@@ -25052,7 +25051,7 @@ const createToolStyles = (tools) => ({
     }),
     text: createToolStyle('text', {
         color: [...toolColorDefault],
-        fontSize: '30',
+        fontSize: 30,
         fontFamily: 'Impact'
     }),
     ...tools,
@@ -34414,7 +34413,6 @@ function instance$f($$self, $$props, $$invalidate) {
 	// Cache
 	//
 	const updateShape = (shape, props, parentRect) => {
-        console.log(shape, props, parentRect);
 		let propsToUpdate = beforeUpdateShape({ ...shape }, props, { ...parentRect });
 		shapeUpdateProps(shape, propsToUpdate, parentRect);
 	};
@@ -46723,7 +46721,7 @@ var _locale_en_gb = {
     labelButtonUndo: 'Undo',
     labelButtonRedo: 'Redo',
     labelButtonRevert: 'Revert',
-    labelButtonExport: 'Done',
+    labelButtonExport: 'Save',
 
     // zoom
     labelZoomIn: 'Zoom in',

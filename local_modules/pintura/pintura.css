@@ -41,6 +41,7 @@
 
 .PinturaUtilFooter .customFooter>.PinturaControlListScroller>div {
     padding: 0px 8px;
+    padding-top: 80px;
     height: 100%;
     border-width: 1px !important;
     color: #aaa;
@@ -89,4 +90,20 @@
 .PinturaShapePresetsPalette
 .PinturaShapePresetsPalette .PinturaButtonLabel{
     transform: scale(1.2,1.2);
+}
+
+
+/* assets Panel show */
+
+.assetsPanel .PinturaUtilFooter .customFooter>.PinturaControlListScroller>div {
+    margin-right: 340px !important;
+}
+
+.assetsPanel .PinturaUtilMain{
+    padding-left: 420px;
+}
+
+.assetsPanel .PinturaControlPanels{
+    margin-left: 420px !important;
+    width: calc(100% - 420px) !important;
 }

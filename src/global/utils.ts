@@ -57,12 +57,18 @@ function loadTextFileAjaxSync(filePath: string, mimeType: string) {
   }
 }
 
-export function loadJSON(filePath: string) {
+export function loadJSON(filePath: string, isThumb: boolean) {
   // Load json file;
   const json = loadTextFileAjaxSync(filePath, 'application/json;charset=UTF-8');
   // Parse json
-  console.log(json ? JSON.parse(uniToEmoji(json)) : {});
-  return json ? JSON.parse(uniToEmoji(json)) : {}; // Here is error
+  const data = json ? JSON.parse(uniToEmoji(json)) : {};
+  if (isThumb && data) {
+    const rt = data.crop.width / data.crop.height / 1.4;
+    const scale = (283 * rt) / data.crop.width;
+    for (let i = 0; i < data.annotation.length; i++)
+      if (data.annotation[i].fontSize) data.annotation[i].fontSize *= scale;
+  }
+  return data; // Here is error
   // return {};
 }
 

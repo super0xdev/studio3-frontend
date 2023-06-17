@@ -11,7 +11,6 @@ interface IPageLayout {
 }
 
 const PageLayout: FC<IPageLayout> = ({ children }) => {
-  console.log(window.location.href);
   return (
     <div className={styles.layout}>
       <Routes>

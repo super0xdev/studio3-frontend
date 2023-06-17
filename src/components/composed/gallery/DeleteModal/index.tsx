@@ -30,13 +30,13 @@ const DeleteModal: FC<IDeleteModal> = ({
       showClose={false}
     >
       <img src={DeleteSVG} />
-      <div>
+      <div className={styles.description}>
         <div className={styles.title}>
           Are you sure want to delete{' '}
           {type == true ? 'this file' : 'selected files'}
         </div>
         {type == true ? (
-          <div>
+          <div className={styles.filename}>
             <br />
             {filename}
           </div>
@@ -52,7 +52,7 @@ const DeleteModal: FC<IDeleteModal> = ({
             Cancel
           </Button>
           <Button size="medium" className={styles.submit} onClick={onConfirm}>
-            OK{' '}
+            Delete{' '}
           </Button>
         </div>
       </div>

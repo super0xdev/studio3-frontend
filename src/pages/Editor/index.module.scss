@@ -45,3 +45,27 @@
     }
   }
 }
+
+.asset{
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  align-items: center;
+  font-size: 0.75em;
+  color: #aaa;
+  position: absolute;
+  flex-direction: column;
+  left: 8px;
+  top: 86px;
+  height: 64px;
+  width: 64px;
+  z-index: 5;
+  cursor: pointer;
+  border-radius: 32px;
+  svg{
+    transform: scale(0.9,0.9);
+  }
+  &:hover{
+    outline: 1px solid rgba(100,100,100,0.6);
+  }
+}

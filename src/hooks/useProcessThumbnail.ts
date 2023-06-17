@@ -24,7 +24,7 @@ export default function useProcessThumbnail(asset: AssetInfoType | null) {
       imageScrambler: createDefaultImageScrambler(),
       shapePreprocessor: createDefaultShapePreprocessor(),
       imageState: asset.meta_file_path
-        ? loadJSON(`${APP_ASSET_URL}${asset.meta_file_path}`)
+        ? loadJSON(`${APP_ASSET_URL}${asset.meta_file_path}`, true)
         : undefined,
     }).then((res) => {
       setProcessedThumbnail(res);
@@ -42,7 +42,7 @@ export default function useProcessThumbnail(asset: AssetInfoType | null) {
   return {
     url: processedThumbnail
       ? URL.createObjectURL(processedThumbnail?.dest as Blob)
-      : null,
+      : undefined,
     content: processedThumbnail?.dest as Blob,
   };
 }

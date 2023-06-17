@@ -11,17 +11,23 @@ import {
   createMarkupEditorShapeStyleControls,
   createDefaultFontFamilyOptions,
   createMarkupEditorToolbar,
+  createDefaultFontScaleOptions,
   // insertNodeAfter,
 } from '@pqina/pintura';
 
 import styles from './index.module.scss';
 
-import { EDITOR_CONFIG, EDITOR_ICON_CONFIG } from '@/config/editor';
+import { EDITOR_ICON_CONFIG } from '@/config/editor';
+import { EDITOR_CONFIG } from '@/config/editor';
 import { APP_API_URL, APP_ASSET_URL } from '@/global/constants';
-import { usePreviewSelectedAsset } from '@/state/gallery/hooks';
+import {
+  usePreviewSelectedAsset,
+  useUpdateDisplayedAssets,
+} from '@/state/gallery/hooks';
 import useFetchAPI from '@/hooks/useFetchAPI';
 import PageContainer from '@/components/navigation/PageContainer';
 import EditorOpenPanel from '@/components/composed/editor/EditorOpenPanel';
+import AssetPanel from '@/components/composed/editor/AssetPanel';
 import { blobToBase64, loadJSON, strToBuffer } from '@/global/utils';
 // import WatermarkImage from '@/assets/images/watermark.png';
 
@@ -30,10 +36,17 @@ export default function EditorPage() {
   const editorRef = useRef<PinturaEditor>(null);
   const fetchAPI = useFetchAPI();
   const selectedAsset = usePreviewSelectedAsset();
+  const updateDisplayedAssets = useUpdateDisplayedAssets();
   const [editorSrc, setEditorSrc] = useState<string | File | undefined>(
     selectedAsset ? `${APP_ASSET_URL}${selectedAsset.file_path}` : undefined
   );
   const [editorEnabled, setEditorEnabled] = useState(!!editorSrc);
+  const [isAssetShow, setAssetShow] = useState(false);
+
+  console.log(
+    'Loading ---------------------------------------------------------------------------------------- ',
+    isAssetShow
+  );
 
   const handleProcess = async (detail: PinturaDefaultImageWriterResult) => {
     const data = new FormData();
@@ -52,6 +65,7 @@ export default function EditorPage() {
     imageState.annotation = await Promise.all(
       imageState.annotation.map(async (shape: any) => {
         // this is not a text shape so skip
+        console.log(shape);
         if (
           !shape.backgroundImage ||
           !shape.backgroundImage.startsWith('blob:')
@@ -172,7 +186,6 @@ export default function EditorPage() {
     // we cannot edit a shape without an image
     const canBeEdited = !!selectedShape?.backgroundImage;
     const isAtBackOfShapes = selectedShapeIndex <= 0;
-
     // add the custom shape buttons
     if (canBeEdited) {
       controlButtons.unshift(
@@ -231,24 +244,13 @@ export default function EditorPage() {
   const goBackHome = () => {
     navigate('/gallery');
   };
+  const toggleAsset = () => {
+    setAssetShow(!isAssetShow);
+  };
+  console.log(editorFileSrc);
   return (
-    <div>
-      <div className={styles.gotoBack} onClick={goBackHome}>
-        {' '}
-        <svg
-          width="12"
-          height="20"
-          viewBox="0 0 12 20"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M10.7071 19.2929C10.3166 19.6834 9.68342 19.6834 9.29289 19.2929L0.707106 10.7071C0.316582 10.3166 0.316583 9.68342 0.707107 9.29289L9.29289 0.707106C9.68342 0.316582 10.3166 0.316582 10.7071 0.707107L11.0679 1.06789C11.4584 1.45842 11.4584 2.09158 11.0679 2.48211L4.25711 9.29289C3.86658 9.68342 3.86658 10.3166 4.25711 10.7071L11.0679 17.5179C11.4584 17.9084 11.4584 18.5416 11.0679 18.9321L10.7071 19.2929Z"
-            fill="white"
-          />
-        </svg>
-        &nbsp;&nbsp;&nbsp; Home{' '}
-      </div>
+    <div className={isAssetShow ? 'assetsPanel' : ''}>
+      <AssetPanel showPanel={isAssetShow}> </AssetPanel>
       <PageContainer noHeading variant={styles.editor}>
         {editorEnabled ? (
           <PinturaEditor
@@ -258,10 +260,11 @@ export default function EditorPage() {
             src={editorFileSrc}
             onClose={handleEditorHide}
             onDestroy={handleEditorHide}
-            annotateActiveTool="text"
+            annotateActiveTool="move"
             annotateEnableButtonFlipVertical
             imageState={loadJSON(
-              `${APP_ASSET_URL}${selectedAsset?.meta_file_path}`
+              `${APP_ASSET_URL}${selectedAsset?.meta_file_path}`,
+              false
             )}
             util={'annotate'}
             utils={['annotate']}
@@ -290,8 +293,6 @@ export default function EditorPage() {
               // call redraw to trigger a redraw of the editor state
               // attachSelectPhoto(toolbar);
               // console.log({ toolbar });
-              console.log(toolbar);
-              console.log(toolbar[2][3]);
               // TODO: this is where we can modify the "Done" button and add our own buttons
 
               return [...toolbar];
@@ -362,6 +363,52 @@ export default function EditorPage() {
           />
         ) : (
           <EditorOpenPanel onChange={handleAssetChange} />
+        )}
+        <div className={styles.gotoBack} onClick={goBackHome}>
+          {' '}
+          <svg
+            width="12"
+            height="20"
+            viewBox="0 0 12 20"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M10.7071 19.2929C10.3166 19.6834 9.68342 19.6834 9.29289 19.2929L0.707106 10.7071C0.316582 10.3166 0.316583 9.68342 0.707107 9.29289L9.29289 0.707106C9.68342 0.316582 10.3166 0.316582 10.7071 0.707107L11.0679 1.06789C11.4584 1.45842 11.4584 2.09158 11.0679 2.48211L4.25711 9.29289C3.86658 9.68342 3.86658 10.3166 4.25711 10.7071L11.0679 17.5179C11.4584 17.9084 11.4584 18.5416 11.0679 18.9321L10.7071 19.2929Z"
+              fill="white"
+            />
+          </svg>
+          &nbsp;&nbsp;&nbsp; Home{' '}
+        </div>
+        {editorEnabled && (
+          <div className={styles.asset} onClick={toggleAsset}>
+            {' '}
+            <svg
+              width="25"
+              height="24"
+              viewBox="0 0 25 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <mask
+                id="mask0_2036_582"
+                maskUnits="userSpaceOnUse"
+                x="0"
+                y="0"
+                width="25"
+                height="24"
+              >
+                <rect x="0.5" width="24" height="24" fill="#D9D9D9" />
+              </mask>
+              <g mask="url(#mask0_2036_582)">
+                <path
+                  d="M7.5 17C6.95 17 6.47917 16.8042 6.0875 16.4125C5.69583 16.0208 5.5 15.55 5.5 15V4C5.5 3.45 5.69583 2.97917 6.0875 2.5875C6.47917 2.19583 6.95 2 7.5 2H12.5L14.5 4H21.5C22.05 4 22.5208 4.19583 22.9125 4.5875C23.3042 4.97917 23.5 5.45 23.5 6V15C23.5 15.55 23.3042 16.0208 22.9125 16.4125C22.5208 16.8042 22.05 17 21.5 17H7.5ZM7.5 15H21.5V6H13.675L11.675 4H7.5V15ZM20.5 21H3.5C2.95 21 2.47917 20.8042 2.0875 20.4125C1.69583 20.0208 1.5 19.55 1.5 19V6H3.5V19H20.5V21ZM9.5 13H19.5L16.125 8.5L13.5 12L11.875 9.825L9.5 13Z"
+                  fill="white"
+                />
+              </g>
+            </svg>
+            asset
+          </div>
         )}
       </PageContainer>
     </div>

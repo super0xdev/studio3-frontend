@@ -50,16 +50,14 @@ import {
   useAppendOpenedAsset,
   useRemoveOpenedAsset,
 } from '@/state/application/hooks';
+import { useUpdatePreviewSelectedId } from '@/state/gallery/hooks';
 import { APP_API_URL, CONFIRM_MODAL_INFO } from '@/global/constants';
 import { useUpdateTemplateAssets } from '@/state/template/hooks';
-import {
-  useUpdateDisplayedAssets,
-  useUpdatePreviewSelectedId,
-} from '@/state/gallery/hooks';
+import { useUpdateDisplayedAssets } from '@/state/gallery/hooks';
 
 interface IItemWidget {
   title?: string;
-  type: boolean;
+  type: number;
   asset: AssetInfoType;
   selected?: boolean;
   onClick?: () => void;
@@ -181,13 +179,11 @@ const ItemWidget: FC<IItemWidget> = ({
       const list = tmp.split('-');
       list.map((val, ind) => {
         const tt = val.charAt(0).toUpperCase() + val.slice(1);
-        if (ind == 0 && val.toLowerCase() != 'meme') res = tt;
-        if (ind != 0)
-          if (res == '') res = tt;
-          else res = res + '-' + tt;
+        if (ind == 0 && val.toLowerCase() != 'meme') res = res + tt;
+        if (ind != 0) res = res + '-' + tt;
       });
-    } else res = tmp.charAt(0).toUpperCase() + tmp.slice(1);
-    return res;
+      return res;
+    } else return tmp;
   };
 
   const handleConfirmClose = () => {
@@ -365,7 +361,7 @@ const ItemWidget: FC<IItemWidget> = ({
     return () => {
       window.removeEventListener('click', handleClick);
     };
-  });
+  }, []);
   const handleClick = (event: any) => {
     const showMenu = document.getElementById(`showmenu-${asset.uid}`);
     if (
@@ -404,7 +400,11 @@ const ItemWidget: FC<IItemWidget> = ({
     appendOpenedAsset(asset.uid);
   };
   return (
-    <div className={styles.card}>
+    <div
+      className={
+        styles.card + ' ' + (type == 2 ? styles.asset : styles.thumbnail)
+      }
+    >
       {isPending ? toast.loading('Processing') : false}
       <ConfirmModal
         title={confirmModalTitle}
@@ -426,7 +426,7 @@ const ItemWidget: FC<IItemWidget> = ({
         uid={asset}
         onClose={() => setEditModalOpened(false)}
       />
-      {type == true ? (
+      {type == 1 ? (
         selected == true ? (
           <img className={styles.checked} src={CheckedSVG} />
         ) : (
