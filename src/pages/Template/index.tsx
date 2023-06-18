@@ -49,6 +49,7 @@ export default function TemplatePage() {
   const displayedAssets = useMemo(() => templateImages, [templateImages]);
   const handleUpdateTemplateAssets = useUpdateTemplateAssets();
   const fetchAPI = useFetchAPI();
+  const [loadedCount, setLoadedCount] = useState(0);
   useEffect(() => {
     fetchAPI(`${APP_API_URL}/list_tags`, 'POST').then((res) => {
       const tmp: any[] = [];
@@ -67,6 +68,45 @@ export default function TemplatePage() {
     };
   }, []);
 
+  useEffect(() => {
+    const handleScroll = async (e: any) => {
+      if (
+        window.innerHeight + Math.round(window.scrollY) >=
+        document.body.offsetHeight
+      ) {
+        console.log('------bottom', loadedCount);
+        const image: AssetInfoType[] = [];
+        let i = 0;
+        for (; i + loadedCount < templateAssets.length; i++) {
+          //await sleep(200);
+          if (i < 12) {
+            image.push(templateAssets[i + loadedCount]);
+            //await sleep(100);
+            //setTemplateImages((p) => [...p, templateAssets[i + loadedCount]]);
+          } else {
+            break;
+          }
+          // if (i < 15) {
+          // image.push(item);
+          //setTemplateImages((p) => [...p, item]);
+          // } else {
+          //   // image.push(...images.slice(15));
+          //   setTemplateImages((p) => [...p, ...images.slice(15)]);
+          //   break;
+          // }
+        }
+        console.log(loadedCount);
+        setLoadedCount(i + loadedCount);
+        setTemplateImages((p) => [...p, ...image]);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [loadedCount]);
   useEffect(() => {
     // if (userAssets.length == 0 || templateAssets.length == 0) {
     //   handleUpdateDisplayedAssets();
@@ -88,10 +128,15 @@ export default function TemplatePage() {
     setTemplateImages([]);
     const image: AssetInfoType[] = [];
     for (const item of images) {
-      await sleep(200);
+      //await sleep(200);
+      if (i < 12) {
+        image.push(item);
+      } else {
+        break;
+      }
       // if (i < 15) {
       // image.push(item);
-      setTemplateImages((p) => [...p, item]);
+      //setTemplateImages((p) => [...p, item]);
       // } else {
       //   // image.push(...images.slice(15));
       //   setTemplateImages((p) => [...p, ...images.slice(15)]);
@@ -99,7 +144,9 @@ export default function TemplatePage() {
       // }
       i++;
     }
-    // setTemplateImages(image);
+    console.log(i);
+    setLoadedCount(i);
+    setTemplateImages(image);
     setTemplateLoading(false);
     isSearched = true;
     //if (images.length == templateImages.length) window.location.reload();
@@ -192,28 +239,24 @@ export default function TemplatePage() {
 
   useEffect(() => {
     //if (templateLoading) return;
+    if (templateAssets.length == 0) return;
     if (templateImages.length > 0) setTemplateImages([]);
+    let i = 0;
     const loadImages = async () => {
-      let i = 0;
       const image: AssetInfoType[] = [];
       for (const item of templateAssets) {
-        await sleep(200);
-        // if (i < 15) {
-        // image.push(item);
-        setTemplateImages((p) => [...p, item]);
-        // } else {
-        //   // image.push(...templateAssets.slice(15));
-        //   setTemplateImages((p) => [...p, ...templateAssets.slice(15)]);
-        //   break;
-        // }
+        if (i == 12) break;
+        image.push(item);
         i++;
       }
-      // setTemplateImages(image);
+      setTemplateImages(image);
     };
     setTemplateLoading(true);
     loadImages();
     setTemplateLoading(false);
-    console.log('---------false');
+    console.log('---------', templateImages.length);
+    setLoadedCount(i);
+    console.log('---------false', i);
     // setTemplateImages([...templateAssets]);
     return () => setTemplateImages([]);
   }, [templateAssets]);

@@ -15,6 +15,7 @@ import { useAppSelector } from '@/state/store';
 import { AssetInfoType } from '@/global/types';
 import { APP_API_URL } from '@/global/constants';
 import useFetchAPI from '@/hooks/useFetchAPI';
+import { splitFileName } from '@/global/utils';
 
 // === displayedAssets ===
 
@@ -29,6 +30,21 @@ function removeDuplicates(array: any[], key: string) {
   );
 }
 
+const processName = (asset: AssetInfoType) => {
+  const tmp = splitFileName(asset.file_name)[0];
+  let res = '';
+  if (tmp.search('-') != -1) {
+    const list = tmp.split('-');
+    list.map((val, ind) => {
+      const tt = val.charAt(0).toUpperCase() + val.slice(1);
+      if (ind == 0 && val.toLowerCase() != 'meme') res = tt;
+      if (res != '') res = res + '-' + tt;
+      if (ind != 0 && res == '') res = tt;
+    });
+    return res;
+  } else return tmp;
+};
+
 export const useUpdateTemplateAssets = () => {
   const dispatch = useDispatch();
   const fetchAPI = useFetchAPI();
@@ -41,7 +57,7 @@ export const useUpdateTemplateAssets = () => {
       .then((templateAssets) => {
         const assets = [...templateAssets.data];
         const uniqueAssets = removeDuplicates(assets, 'file_name');
-        uniqueAssets.sort((a, b) => (a.file_name > b.file_name ? 1 : -1));
+        uniqueAssets.sort((a, b) => (processName(a) > processName(b) ? 1 : -1));
         dispatch(updateTemplateAssets(uniqueAssets));
         updateIsLoading(false);
       })

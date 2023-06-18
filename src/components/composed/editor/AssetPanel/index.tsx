@@ -38,6 +38,8 @@ const AssetPanel = (props: any) => {
   const [templateImages, setTemplateImages] = useState<AssetInfoType[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const handleUpdateTemplateAssets = useUpdateTemplateAssets();
+  const [loadedCount, setLoadedCount] = useState(0);
+
   function sleep(ms: number) {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
@@ -48,32 +50,79 @@ const AssetPanel = (props: any) => {
     handleUpdateTemplateAssets();
     console.log('loading..... finished');
   }, []);
+
+  useEffect(() => {
+    const handleScroll = async (e: any) => {
+      if (
+        window.innerHeight + Math.round(window.scrollY) >=
+        document.body.offsetHeight
+      ) {
+        console.log('------bottom', loadedCount);
+        const image: AssetInfoType[] = [];
+        let i = 0;
+        for (; i + loadedCount < templateAssets.length; i++) {
+          if (i < 12) {
+            image.push(templateAssets[i + loadedCount]);
+          } else {
+            break;
+          }
+        }
+        console.log(loadedCount);
+        setLoadedCount(i + loadedCount);
+        setTemplateImages((p) => [...p, ...image]);
+      }
+    };
+
+    addEventListener('scroll', handleScroll);
+
+    return () => {
+      removeEventListener('scroll', handleScroll);
+    };
+  }, [loadedCount]);
+
+  const handleScroll = async (event: any) => {
+    console.log('-handle-');
+    const { scrollHeight, scrollTop, clientHeight } = event.target;
+
+    if (Math.abs(scrollHeight - clientHeight - scrollTop) < 1) {
+      console.log('------bottom', loadedCount);
+      if (loadedCount >= templateAssets.length) return;
+      const image: AssetInfoType[] = [];
+      let i = 0;
+      for (; i + loadedCount < templateAssets.length; i++) {
+        if (i < 12) {
+          image.push(templateAssets[i + loadedCount]);
+        } else {
+          break;
+        }
+      }
+      console.log(loadedCount);
+      setLoadedCount(i + loadedCount);
+      setTemplateImages((p) => [...p, ...image]);
+    }
+  };
+
   useEffect(() => {
     //if (templateLoading) return;
-    console.log('loading.A....');
-    setIsLoading(true);
+    if (templateAssets.length == 0) return;
     if (templateImages.length > 0) setTemplateImages([]);
+    let i = 0;
     const loadImages = async () => {
-      let i = 0;
-      let image: AssetInfoType[] = [];
+      const image: AssetInfoType[] = [];
       for (const item of templateAssets) {
-        await sleep(200);
-        // image.push(item);
-        image = [...image, item];
+        if (i == 20) break;
+        image.push(item);
         i++;
-        if (i % 5 == 2) setTemplateImages(image);
       }
-
-      setIsLoading(false);
       setTemplateImages(image);
     };
     loadImages();
-    console.log('---------console.log("loading.....");');
+    console.log('---------', templateImages.length);
+    setLoadedCount(i);
+    console.log('---------false', i);
     // setTemplateImages([...templateAssets]);
     return () => setTemplateImages([]);
   }, [templateAssets]);
-  console.log(templateAssets.length);
-  console.log(templateImages.length);
   return (
     <div className={props.showPanel ? styles.AssetPanel : styles.hidden}>
       <div className={styles.header}> Add image from Assets Library </div>
@@ -87,7 +136,7 @@ const AssetPanel = (props: any) => {
         <div className={styles.icon}>{search}</div>
         <input type="text" className={styles.searchBar} placeholder="Search" />
       </div>
-      <div className={styles.itemViewContainer}>
+      <div className={styles.itemViewContainer} onScroll={handleScroll}>
         <div className={styles.itemView}>
           {templateImages.length > 0 &&
             templateImages.map((asset, index) => (

@@ -179,8 +179,21 @@ const ItemWidget: FC<IItemWidget> = ({
       const list = tmp.split('-');
       list.map((val, ind) => {
         const tt = val.charAt(0).toUpperCase() + val.slice(1);
-        if (ind == 0 && val.toLowerCase() != 'meme') res = res + tt;
-        if (ind != 0) res = res + '-' + tt;
+        // if (ind == 0 && val.toLowerCase() != 'meme') res = tt;
+        // if (ind != 0 && res == '') res = tt;
+        // else if (
+        //   (ind == list.length - 1 && isNaN(parseInt(tt))) ||
+        //   (ind != list.length - 1 && res != '')
+        // )
+        //   res = res + ' ' + tt;
+        if (ind == 0) {
+          if (val.toLowerCase() != 'meme') res = tt;
+        } else if (ind == list.length - 1) {
+          if (isNaN(parseInt(tt))) res = res + ' ' + tt;
+        } else {
+          if (res == '') res = tt;
+          else res = res + ' ' + tt;
+        }
       });
       return res;
     } else return tmp;
