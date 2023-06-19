@@ -4,6 +4,7 @@ import toast from 'react-hot-toast';
 import clsx from 'clsx';
 import AnimateHeight from 'react-animate-height';
 import { PropagateLoader } from 'react-spinners';
+import KeyboardDoubleArrowUpIcon from '@mui/icons-material/KeyboardDoubleArrowUp';
 
 import styles from './index.module.scss';
 
@@ -50,6 +51,7 @@ export default function TemplatePage() {
   const handleUpdateTemplateAssets = useUpdateTemplateAssets();
   const fetchAPI = useFetchAPI();
   const [loadedCount, setLoadedCount] = useState(0);
+  const [showUp, setShowUp] = useState(false);
   useEffect(() => {
     fetchAPI(`${APP_API_URL}/list_tags`, 'POST').then((res) => {
       const tmp: any[] = [];
@@ -74,31 +76,22 @@ export default function TemplatePage() {
         window.innerHeight + Math.round(window.scrollY) >=
         document.body.offsetHeight
       ) {
-        console.log('------bottom', loadedCount);
         const image: AssetInfoType[] = [];
         let i = 0;
         for (; i + loadedCount < templateAssets.length; i++) {
-          //await sleep(200);
-          if (i < 12) {
+          if (i < 20) {
             image.push(templateAssets[i + loadedCount]);
-            //await sleep(100);
-            //setTemplateImages((p) => [...p, templateAssets[i + loadedCount]]);
           } else {
             break;
           }
-          // if (i < 15) {
-          // image.push(item);
-          //setTemplateImages((p) => [...p, item]);
-          // } else {
-          //   // image.push(...images.slice(15));
-          //   setTemplateImages((p) => [...p, ...images.slice(15)]);
-          //   break;
-          // }
         }
         console.log(loadedCount);
         setLoadedCount(i + loadedCount);
         setTemplateImages((p) => [...p, ...image]);
+        setShowUp(true);
       }
+      if (window.scrollY == 0) setShowUp(false);
+      else setShowUp(true);
     };
 
     window.addEventListener('scroll', handleScroll);
@@ -129,7 +122,7 @@ export default function TemplatePage() {
     const image: AssetInfoType[] = [];
     for (const item of images) {
       //await sleep(200);
-      if (i < 12) {
+      if (i < 20) {
         image.push(item);
       } else {
         break;
@@ -245,7 +238,7 @@ export default function TemplatePage() {
     const loadImages = async () => {
       const image: AssetInfoType[] = [];
       for (const item of templateAssets) {
-        if (i == 12) break;
+        if (i == 60) break;
         image.push(item);
         i++;
       }
@@ -348,6 +341,15 @@ export default function TemplatePage() {
             </div>
           )}
         </div>
+        {showUp && (
+          <KeyboardDoubleArrowUpIcon
+            className={styles.arrowup}
+            onClick={() => {
+              window.scrollTo(0, 0);
+              setShowUp(false);
+            }}
+          />
+        )}
       </div>
     </PageContainer>
   );

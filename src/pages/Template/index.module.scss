@@ -145,3 +145,16 @@
     }
   }
 }
+
+.arrowup {
+  position: fixed;
+  right: 50px;
+  bottom: 50px;
+  border-radius: 50%;
+  width: 50px !important;
+  height: 50px !important;
+  padding: 10px;
+  color: white;
+  outline: white 2px solid;
+  cursor: pointer;
+}
