@@ -15,7 +15,7 @@
   color: white;
   z-index: 15;
   border-right: 1px solid rgba(100,100,100,0.5);
-  overflow: hidden;
+
   .header{
     font-weight: 400;
     font-size: 13px;
@@ -41,10 +41,11 @@
     column-gap: 20px;
   }
   .itemViewContainer{
+    padding-left: 20px;
     margin-top: 20px;
     overflow-y: scroll;
     height: calc(100% - 110px);
-    transform: translate(20px,0);
+    transform: translate(-10px,0);
     min-height: 1px;
   }
   .searchBar{
@@ -63,4 +64,19 @@
     width: 100%;
     background-color: rgba(100,100,100,0.1);
   }
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(100,100,100,0.3);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(100,100,100,0.8);
+  border-radius: 10px;
+  border: 1px solid #333;
 }

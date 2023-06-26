@@ -440,289 +440,297 @@ const ItemWidget: FC<IItemWidget> = ({
         onClose={() => setEditModalOpened(false)}
       />
       {type == 1 ? (
-        selected == true ? (
-          <img className={styles.checked} src={CheckedSVG} />
-        ) : (
-          <>
-            <img className={styles.check} src={CheckSVG} />
-            <img
-              className={visible ? styles.option1 : styles.option}
-              src={visible ? OpenedSVG : OptionSVG}
-              id={`showmenu-${asset.uid}`}
-              onClick={(event) => handleShowClick(event)}
-            />
-            <div
-              className={styles.contextmenu}
-              style={{
-                display: visible == true ? 'block' : 'none',
-              }}
-              id={`contextmenu-${asset.uid}`}
-              ref={contextRef}
-            >
-              {menuType == 0 ? (
-                <>
-                  <div
-                    style={{
-                      display: 'flex',
-                      gap: '5px',
-                      flexDirection: 'column',
-                      padding: '15px',
-                    }}
-                  >
-                    <div
-                      style={{
-                        paddingTop: '10px',
-                        fontSize: '24px',
-                        fontStyle: 'bold',
-                      }}
-                    >
-                      {asset.file_name.split('.')[0]}
-                    </div>
-                    <div className={styles.info}>
-                      Date Created:{' '}
-                      {new Date(
-                        asset.creation_timestamp * 1000
-                      ).toLocaleDateString()}
-                    </div>
-                    <div className={styles.info}>
-                      File Size: {Math.floor(asset.file_size_bytes / 1024)}
-                      KB
-                    </div>
-                    <div className={styles.info} style={{}}>
-                      File Type: {asset.file_type}
-                    </div>
-                  </div>
-                  <div className={styles.border}></div>
-                  <div
-                    style={{
-                      display: 'flex',
-                      gap: '15px',
-                      flexDirection: 'column',
-                      padding: '15px',
-                    }}
-                  >
-                    <div className={styles.buttons} onClick={handleEdit}>
-                      <img src={EditSVG} style={{ marginRight: '10px' }} />
-                      <span>Edit</span>
-                    </div>
-                    <div
-                      id={`${asset.uid}`}
-                      className={styles.buttons}
-                      onClick={() => setMenu(1)}
-                    >
-                      <img src={ExportSVG} style={{ marginRight: '10px' }} />
-                      Export
-                      <img
-                        src={ArrowSVG}
-                        style={{ position: 'absolute', right: '20px' }}
-                      />
-                    </div>
-                    <div
-                      className={styles.buttons}
-                      onClick={() => setMenu(2)}
-                      id={`${asset.uid}`}
-                    >
-                      <img src={MintSVG} style={{ marginRight: '10px' }} />
-                      Mint to NFT
-                      <img
-                        src={ArrowSVG}
-                        style={{ position: 'absolute', right: '20px' }}
-                      />
-                    </div>
-                    <div className={styles.buttons} onClick={handleDuplicate}>
-                      <img
-                        src={CopySVG}
-                        style={{ marginRight: '10px' }}
-                        id={`${asset.uid}`}
-                      />
-                      <span id={`${asset.uid}`}>Make a copy</span>
-                    </div>
-                    <div
-                      className={styles.buttons}
-                      onClick={() => setEditModalOpened(true)}
-                    >
-                      <img
-                        src={renameSVG}
-                        style={{ marginRight: '10px' }}
-                        id={`${asset.uid}`}
-                      />
-                      <span id={`${asset.uid}`}>Rename</span>
-                    </div>
-                    <div className={styles.buttons} onClick={handleDelete}>
-                      <img
-                        src={DeleteSVG}
-                        style={{ marginRight: '10px' }}
-                        id={`${asset.uid}`}
-                      />
-                      <span id={`${asset.uid}`}>Delete</span>
-                    </div>
-                  </div>
-                </>
-              ) : (
-                <></>
-              )}
-              {menuType == 1 ? (
+        <>
+          {selected == true ? (
+            <>
+              <img className={styles.checked} src={CheckedSVG} />
+              <img
+                className={styles.option1}
+                src={visible ? OpenedSVG : OptionSVG}
+                id={`showmenu-${asset.uid}`}
+                onClick={(event) => handleShowClick(event)}
+              />
+            </>
+          ) : (
+            <>
+              <img className={styles.check} src={CheckSVG} />
+              <img
+                className={visible ? styles.option1 : styles.option}
+                src={visible ? OpenedSVG : OptionSVG}
+                id={`showmenu-${asset.uid}`}
+                onClick={(event) => handleShowClick(event)}
+              />
+            </>
+          )}
+          <div
+            className={styles.contextmenu}
+            style={{
+              display: visible == true ? 'block' : 'none',
+            }}
+            id={`contextmenu-${asset.uid}`}
+            ref={contextRef}
+          >
+            {menuType == 0 ? (
+              <>
                 <div
                   style={{
+                    display: 'flex',
+                    gap: '5px',
+                    flexDirection: 'column',
                     padding: '15px',
-                    paddingRight: '10px',
                   }}
                 >
                   <div
                     style={{
-                      display: 'flex',
-                      gap: '20px',
-                      marginBottom: '10px',
+                      paddingTop: '10px',
+                      fontSize: '24px',
+                      fontStyle: 'bold',
                     }}
                   >
-                    <img
-                      src={BackSVG}
-                      style={{ cursor: 'pointer' }}
-                      id={`${asset.uid}`}
-                      onClick={() => setMenu(0)}
-                    />
-                    <span style={{ fontSize: '20px' }}>Download</span>
+                    {asset.file_name.split('.')[0]}
                   </div>
-                  <div className={styles.border}></div>
-                  <RadioGroup value={value} onChange={handleChange}>
-                    <FormControlLabel
-                      value="with"
-                      control={
-                        <Radio
-                          sx={{
-                            color: grey[100],
-                            '&.Mui-checked': {
-                              color: grey[100],
-                            },
-                          }}
-                        />
-                      }
-                      label="Download with watermark"
-                    />
-                    <FormControlLabel
-                      value="without"
-                      control={
-                        <Radio
-                          sx={{
-                            color: grey[100],
-                            '&.Mui-checked': {
-                              color: grey[100],
-                            },
-                          }}
-                        />
-                      }
-                      label="Download without watermark"
-                      style={{ width: '300px' }}
-                    />
-                  </RadioGroup>
-                  <div
-                    className={styles.download}
-                    onClick={() =>
-                      handleProcessDownload(value == 'with' ? '2' : '1', {
-                        name: '',
-                      })
-                    }
-                  >
-                    {value == 'without'
-                      ? 'Download'
-                      : 'Pay 0.25 SOL to Download'}
+                  <div className={styles.info}>
+                    Date Created:{' '}
+                    {new Date(
+                      asset.creation_timestamp * 1000
+                    ).toLocaleDateString()}
+                  </div>
+                  <div className={styles.info}>
+                    File Size: {Math.floor(asset.file_size_bytes / 1024)}
+                    KB
+                  </div>
+                  <div className={styles.info} style={{}}>
+                    File Type: {asset.file_type}
                   </div>
                 </div>
-              ) : (
-                <></>
-              )}
-              {menuType == 2 ? (
-                <div className={styles.mint}>
+                <div className={styles.border}></div>
+                <div
+                  style={{
+                    display: 'flex',
+                    gap: '15px',
+                    flexDirection: 'column',
+                    padding: '15px',
+                  }}
+                >
+                  <div className={styles.buttons} onClick={handleEdit}>
+                    <img src={EditSVG} style={{ marginRight: '10px' }} />
+                    <span>Edit</span>
+                  </div>
                   <div
-                    style={{
-                      display: 'flex',
-                      gap: '20px',
-                      marginBottom: '10px',
-                      cursor: 'pointer',
-                    }}
-                    onClick={() => setMenu(0)}
+                    id={`${asset.uid}`}
+                    className={styles.buttons}
+                    onClick={() => setMenu(1)}
+                  >
+                    <img src={ExportSVG} style={{ marginRight: '10px' }} />
+                    Export
+                    <img
+                      src={ArrowSVG}
+                      style={{ position: 'absolute', right: '20px' }}
+                    />
+                  </div>
+                  <div
+                    className={styles.buttons}
+                    onClick={() => setMenu(2)}
                     id={`${asset.uid}`}
                   >
+                    <img src={MintSVG} style={{ marginRight: '10px' }} />
+                    Mint to NFT
                     <img
-                      src={BackSVG}
-                      style={{ cursor: 'pointer' }}
-                      id={`${asset.uid}`}
-                      onClick={() => setMenu(0)}
+                      src={ArrowSVG}
+                      style={{ position: 'absolute', right: '20px' }}
                     />
-                    <span style={{ fontSize: '20px' }}>Mint to NFT</span>
                   </div>
-                  <div className={styles.border}></div>
-                  <div
-                    style={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      gap: '10px',
-                      marginTop: '10px',
-                    }}
-                  >
-                    <div className={styles.list}>
-                      <div>Name</div>
-                      <input
-                        className={styles.input}
-                        ref={nameRef}
-                        defaultValue=""
-                      />
-                    </div>
-                    <div className={styles.list}>
-                      <div>Symbol</div>
-                      <input
-                        className={styles.input}
-                        ref={symbolRef}
-                        defaultValue=""
-                      />
-                    </div>
-                    <div className={styles.list}>
-                      <div>Description</div>
-                      <textarea
-                        className={styles.input}
-                        ref={descriptionRef}
-                        defaultValue=""
-                      />
-                    </div>
-                    <div className={styles.list}>
-                      <div>Royalty (%)</div>
-                      <input
-                        className={styles.input}
-                        ref={royaltyRef}
-                        defaultValue=""
-                      />
-                    </div>
-                    <div className={styles.list}>
-                      <div>Creator</div>
-                      <input
-                        className={styles.input}
-                        ref={creatorRef}
-                        defaultValue={publicKey?.toString()}
-                      />
-                    </div>
+                  <div className={styles.buttons} onClick={handleDuplicate}>
+                    <img
+                      src={CopySVG}
+                      style={{ marginRight: '10px' }}
+                      id={`${asset.uid}`}
+                    />
+                    <span id={`${asset.uid}`}>Make a copy</span>
                   </div>
-                  <br />
                   <div
-                    className={styles.download}
-                    onClick={() =>
-                      handleProcessDownload('3', {
-                        name: nameRef.current?.value,
-                        symbol: symbolRef.current?.value,
-                        description: descriptionRef.current?.value,
-                        royalty: royaltyRef.current?.value,
-                        creator: creatorRef.current?.value,
-                      })
-                    }
+                    className={styles.buttons}
+                    onClick={() => setEditModalOpened(true)}
                   >
-                    Pay 0.5 SOL to Mint NFT
+                    <img
+                      src={renameSVG}
+                      style={{ marginRight: '10px' }}
+                      id={`${asset.uid}`}
+                    />
+                    <span id={`${asset.uid}`}>Rename</span>
+                  </div>
+                  <div className={styles.buttons} onClick={handleDelete}>
+                    <img
+                      src={DeleteSVG}
+                      style={{ marginRight: '10px' }}
+                      id={`${asset.uid}`}
+                    />
+                    <span id={`${asset.uid}`}>Delete</span>
                   </div>
                 </div>
-              ) : (
-                <></>
-              )}
-            </div>
-          </>
-        )
+              </>
+            ) : (
+              <></>
+            )}
+            {menuType == 1 ? (
+              <div
+                style={{
+                  padding: '15px',
+                  paddingRight: '10px',
+                }}
+              >
+                <div
+                  style={{
+                    display: 'flex',
+                    gap: '20px',
+                    marginBottom: '10px',
+                  }}
+                >
+                  <img
+                    src={BackSVG}
+                    style={{ cursor: 'pointer' }}
+                    id={`${asset.uid}`}
+                    onClick={() => setMenu(0)}
+                  />
+                  <span style={{ fontSize: '20px' }}>Download</span>
+                </div>
+                <div className={styles.border}></div>
+                <RadioGroup value={value} onChange={handleChange}>
+                  <FormControlLabel
+                    value="with"
+                    control={
+                      <Radio
+                        sx={{
+                          color: grey[100],
+                          '&.Mui-checked': {
+                            color: grey[100],
+                          },
+                        }}
+                      />
+                    }
+                    label="Download without watermark"
+                  />
+                  <FormControlLabel
+                    value="without"
+                    control={
+                      <Radio
+                        sx={{
+                          color: grey[100],
+                          '&.Mui-checked': {
+                            color: grey[100],
+                          },
+                        }}
+                      />
+                    }
+                    label="Download with watermark"
+                    style={{ width: '300px' }}
+                  />
+                </RadioGroup>
+                <div
+                  className={styles.download}
+                  onClick={() =>
+                    handleProcessDownload(value == 'with' ? '2' : '1', {
+                      name: '',
+                    })
+                  }
+                >
+                  {value == 'without' ? 'Download' : 'Pay 0.25 SOL to Download'}
+                </div>
+              </div>
+            ) : (
+              <></>
+            )}
+            {menuType == 2 ? (
+              <div className={styles.mint}>
+                <div
+                  style={{
+                    display: 'flex',
+                    gap: '20px',
+                    marginBottom: '10px',
+                    cursor: 'pointer',
+                  }}
+                  onClick={() => setMenu(0)}
+                  id={`${asset.uid}`}
+                >
+                  <img
+                    src={BackSVG}
+                    style={{ cursor: 'pointer' }}
+                    id={`${asset.uid}`}
+                    onClick={() => setMenu(0)}
+                  />
+                  <span style={{ fontSize: '20px' }}>Mint to NFT</span>
+                </div>
+                <div className={styles.border}></div>
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '10px',
+                    marginTop: '10px',
+                  }}
+                >
+                  <div className={styles.list}>
+                    <div>Name</div>
+                    <input
+                      className={styles.input}
+                      ref={nameRef}
+                      defaultValue=""
+                    />
+                  </div>
+                  <div className={styles.list}>
+                    <div>Symbol</div>
+                    <input
+                      className={styles.input}
+                      ref={symbolRef}
+                      defaultValue=""
+                    />
+                  </div>
+                  <div className={styles.list}>
+                    <div>Description</div>
+                    <textarea
+                      className={styles.input}
+                      ref={descriptionRef}
+                      defaultValue=""
+                    />
+                  </div>
+                  <div className={styles.list}>
+                    <div>Royalty (%)</div>
+                    <input
+                      className={styles.input}
+                      ref={royaltyRef}
+                      defaultValue=""
+                    />
+                  </div>
+                  <div className={styles.list}>
+                    <div>Creator</div>
+                    <input
+                      className={styles.input}
+                      ref={creatorRef}
+                      defaultValue={publicKey?.toString()}
+                    />
+                  </div>
+                </div>
+                <br />
+                <div
+                  className={styles.download}
+                  onClick={() =>
+                    handleProcessDownload('3', {
+                      name: nameRef.current?.value,
+                      symbol: symbolRef.current?.value,
+                      description: descriptionRef.current?.value,
+                      royalty: royaltyRef.current?.value,
+                      creator: creatorRef.current?.value,
+                    })
+                  }
+                >
+                  Pay 0.5 SOL to Mint NFT
+                </div>
+              </div>
+            ) : (
+              <></>
+            )}
+          </div>
+        </>
       ) : (
         <></>
       )}

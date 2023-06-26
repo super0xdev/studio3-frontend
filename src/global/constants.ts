@@ -165,6 +165,10 @@ export const TEMPLATE_COLLECTION = {
       data: 'Pepe',
     },
     {
+      value: 'Plato',
+      data: 'Plato',
+    },
+    {
       value: 'Sharx',
       data: 'Sharx',
     },

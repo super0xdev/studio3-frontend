@@ -5,6 +5,7 @@ import ItemWidget from '../../gallery/ItemWidget';
 
 import styles from './index.module.scss';
 
+import { filterByName } from '@/global/utils';
 import useFetchAPI from '@/hooks/useFetchAPI';
 import { APP_API_URL } from '@/global/constants';
 import {
@@ -17,7 +18,7 @@ interface IAssetPanel {
   showPanel: boolean;
 }
 
-const search = (
+const searchICON = (
   <svg
     width="18"
     height="18"
@@ -38,6 +39,7 @@ const AssetPanel = (props: any) => {
   const [templateImages, setTemplateImages] = useState<AssetInfoType[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const handleUpdateTemplateAssets = useUpdateTemplateAssets();
+  const searchRef = useRef<HTMLInputElement>(null);
   const [loadedCount, setLoadedCount] = useState(0);
 
   function sleep(ms: number) {
@@ -102,6 +104,30 @@ const AssetPanel = (props: any) => {
     }
   };
 
+  function search() {
+    if (!searchRef.current) return;
+    setTemplateImages([]);
+    console.log(searchRef.current.value);
+    const result = filterByName(searchRef.current.value, templateAssets);
+    loadImages(searchRef.current.value, result);
+  }
+  const loadImages = async (filter: string, buf: AssetInfoType[]) => {
+    let i = 0;
+    let image: AssetInfoType[] = [];
+    for (const item of buf) {
+      await sleep(200);
+      if (filter != searchRef.current?.value) return;
+      // image.push(item);
+      image = [...image, item];
+      i++;
+      if (i % 5 == 2) setTemplateImages(image);
+      if (i > 21) return;
+    }
+
+    setIsLoading(false);
+    setTemplateImages(image);
+  };
+
   useEffect(() => {
     //if (templateLoading) return;
     if (templateAssets.length == 0) return;
@@ -133,8 +159,14 @@ const AssetPanel = (props: any) => {
           padding: '0px 15px',
         }}
       >
-        <div className={styles.icon}>{search}</div>
-        <input type="text" className={styles.searchBar} placeholder="Search" />
+        <div className={styles.icon}>{searchICON}</div>
+        <input
+          type="text"
+          className={styles.searchBar}
+          placeholder="Search"
+          ref={searchRef}
+          onChange={search}
+        />
       </div>
       <div className={styles.itemViewContainer} onScroll={handleScroll}>
         <div className={styles.itemView}>

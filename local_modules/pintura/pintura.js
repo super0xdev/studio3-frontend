@@ -5,6 +5,8 @@
  */
 /* eslint-disable */
 
+let onresizeEvent;
+
 const JFIF_MARKER = 0xffe0;
 const EXIF_MARKER = 0xffe1;
 const SOS_MARKER = 0xffda;
@@ -21026,7 +21028,6 @@ function instance$w($$self, $$props, $$invalidate) {
 		$$invalidate(12, windowWidth = window_1$1.innerWidth);
 		$$invalidate(13, windowHeight = window_1$1.innerHeight);
 	}
-
 	const measure_handler = e => set_store_value(toolRect, $toolRect = e.detail, $toolRect);
 	const select_handler = ({ detail }) => $$invalidate(20, utilSelected = detail);
 	const func = (panel, util) => util.id === panel;
@@ -47490,7 +47491,10 @@ function instance($$self, $$props, $$invalidate) {
 	let scrollOffsetY = undefined;
 
 	// syncs height of doc lock with window
-	const syncHeight = () => doc.style.setProperty("--pintura-document-height", `${window.innerHeight}px`);
+	const syncHeight = () => {
+        console.log('jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj');
+        return doc.style.setProperty("--pintura-document-height", `${window.innerHeight}px`);
+    };
 
 	const toggleDocumentLock = isOpaque => {
 		if (isOpaque) {
@@ -47528,6 +47532,7 @@ function instance($$self, $$props, $$invalidate) {
 	});
 
 	function onwindowresize() {
+        console.log("dsdsdjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj");
 		$$invalidate(3, windowHeight = window_1.innerHeight);
 	}
 

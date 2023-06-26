@@ -40,7 +40,9 @@ export const bufferToStr = (ab: Iterable<number>) => {
 
 function loadTextFileAjaxSync(filePath: string, mimeType: string) {
   try {
-    if (filePath.endsWith('undefined')) return null;
+    console.log(filePath);
+    if (filePath.endsWith('undefined') || filePath.endsWith('null'))
+      return null;
     const xmlhttp = new XMLHttpRequest();
     xmlhttp.open('GET', filePath, false);
     if (mimeType != null) {

@@ -36,6 +36,7 @@ export default function EditorPage() {
   const editorRef = useRef<PinturaEditor>(null);
   const fetchAPI = useFetchAPI();
   const selectedAsset = usePreviewSelectedAsset();
+  console.log(selectedAsset);
   const updateDisplayedAssets = useUpdateDisplayedAssets();
   const [editorSrc, setEditorSrc] = useState<string | File | undefined>(
     selectedAsset ? `${APP_ASSET_URL}${selectedAsset.file_path}` : undefined
@@ -286,7 +287,7 @@ export default function EditorPage() {
                 'ellipse',
                 { disabled: false, icon: EDITOR_ICON_CONFIG.ellipse },
               ],
-              ['preset', { disabled: false, icon: EDITOR_ICON_CONFIG.preset }],
+              //['preset', { disabled: false, icon: EDITOR_ICON_CONFIG.preset }],
             ])}
             // modifies the controls shown when clicking on a shape
             willRenderToolbar={(toolbar: any /* env: any, redraw: any */) => {
@@ -296,17 +297,6 @@ export default function EditorPage() {
               // TODO: this is where we can modify the "Done" button and add our own buttons
 
               return [...toolbar];
-            }}
-            willRenderShapeControls={(
-              controls: PinturaNode[],
-              selectedShapeId: string
-            ) => {
-              const customControls = addCustomShapeControls(
-                controls,
-                selectedShapeId
-              );
-
-              return customControls ?? [];
             }}
             // modifies the `Stickers` options under `Annotate`
             willRenderShapePresetToolbar={(nodes: any, addPreset: any) => {
