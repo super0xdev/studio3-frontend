@@ -287,7 +287,7 @@ export default function EditorPage() {
                 'ellipse',
                 { disabled: false, icon: EDITOR_ICON_CONFIG.ellipse },
               ],
-              //['preset', { disabled: false, icon: EDITOR_ICON_CONFIG.preset }],
+              ['preset', { disabled: false, icon: EDITOR_ICON_CONFIG.preset }],
             ])}
             // modifies the controls shown when clicking on a shape
             willRenderToolbar={(toolbar: any /* env: any, redraw: any */) => {
