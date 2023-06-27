@@ -55,6 +55,7 @@ export default function EditorPage() {
       toast.error('The maximum upload image size is 10 MB!');
       return;
     }
+    console.log(detail.src);
     data.append('image', detail.src as Blob, (detail.src as File).name);
     if (selectedAsset) {
       data.append('asset_uid', selectedAsset.uid.toString());
@@ -66,7 +67,6 @@ export default function EditorPage() {
     imageState.annotation = await Promise.all(
       imageState.annotation.map(async (shape: any) => {
         // this is not a text shape so skip
-        console.log(shape);
         if (
           !shape.backgroundImage ||
           !shape.backgroundImage.startsWith('blob:')
@@ -74,6 +74,7 @@ export default function EditorPage() {
           return shape;
 
         shape.backgroundImage = await blobToBase64(shape.backgroundImage);
+        console.log(shape.backgroundImage);
         return shape;
       })
     );
@@ -251,7 +252,9 @@ export default function EditorPage() {
   console.log(editorFileSrc);
   return (
     <div className={isAssetShow ? 'assetsPanel' : ''}>
-      <AssetPanel showPanel={isAssetShow}> </AssetPanel>
+      <AssetPanel showPanel={isAssetShow} toggleAsset={toggleAsset}>
+        {' '}
+      </AssetPanel>
       <PageContainer noHeading variant={styles.editor}>
         {editorEnabled ? (
           <PinturaEditor
@@ -269,7 +272,6 @@ export default function EditorPage() {
             )}
             util={'annotate'}
             utils={['annotate']}
-            enablePasteImage
             enableMoveTool
             stickerEnableButtonFlipVertical
             markupEditorToolbar={createMarkupEditorToolbar([

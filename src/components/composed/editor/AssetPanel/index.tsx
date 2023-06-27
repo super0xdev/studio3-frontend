@@ -136,7 +136,7 @@ const AssetPanel = (props: any) => {
     const loadImages = async () => {
       const image: AssetInfoType[] = [];
       for (const item of templateAssets) {
-        if (i == 20) break;
+        if (i > 35) break;
         image.push(item);
         i++;
       }
@@ -151,7 +151,30 @@ const AssetPanel = (props: any) => {
   }, [templateAssets]);
   return (
     <div className={props.showPanel ? styles.AssetPanel : styles.hidden}>
-      <div className={styles.header}> Add image from Assets Library </div>
+      <div className={styles.header}>
+        <div>Add image from Assets Library </div>
+        <div className={styles.goBack} onClick={props.toggleAsset}>
+          {' '}
+          <svg
+            width="18"
+            height="14"
+            viewBox="0 0 14 12"
+            fill="white"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M1.4502 6.19287H12.2601"
+              stroke="#ffffff"
+              strokeWidth="2"
+            />
+            <path
+              d="M5.54004 10.7129L1 6.19285L5.54004 1.67285"
+              stroke="#ffffff"
+              strokeWidth="2"
+            />
+          </svg>{' '}
+        </div>
+      </div>
       <div
         style={{
           width: '100%',
