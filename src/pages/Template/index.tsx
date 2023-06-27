@@ -52,7 +52,6 @@ export default function TemplatePage() {
   const fetchAPI = useFetchAPI();
   const [loadedCount, setLoadedCount] = useState(0);
   const [showUp, setShowUp] = useState(false);
-  const [searchedCount, setSearchedCount] = useState(-1);
   useEffect(() => {
     fetchAPI(`${APP_API_URL}/list_tags`, 'POST').then((res) => {
       const tmp: any[] = [];
@@ -73,23 +72,20 @@ export default function TemplatePage() {
 
   useEffect(() => {
     const handleScroll = async (e: any) => {
-      //if(isSe)
-      if (isSearched == true) return;
       if (
         window.innerHeight + Math.round(window.scrollY) >=
         document.body.offsetHeight
       ) {
         const image: AssetInfoType[] = [];
         let i = 0;
-        console.log('----------', searchedCount, loadedCount);
-        const end = searchedCount == -1 ? templateAssets.length : searchedCount;
-        for (; i + loadedCount < end; i++) {
-          if (i < 20) {
+        for (; i + loadedCount < templateAssets.length; i++) {
+          if (i < 35) {
             image.push(templateAssets[i + loadedCount]);
           } else {
             break;
           }
         }
+        console.log(loadedCount);
         setLoadedCount(i + loadedCount);
         setTemplateImages((p) => [...p, ...image]);
         setShowUp(true);
@@ -124,27 +120,26 @@ export default function TemplatePage() {
     setTemplateLoading(true);
     setTemplateImages([]);
     const image: AssetInfoType[] = [];
-    console.log(images);
     for (const item of images) {
-      await sleep(200);
-      // if (i < 60) {
-      //   image.push(item);
-      // } else {
-      //   break;
-      // }
-      if (i < 15) {
-        //image.push(item);
-        setTemplateImages((p) => [...p, item]);
+      //await sleep(200);
+      if (i < 35) {
+        image.push(item);
       } else {
-        // image.push(...images.slice(15));
-        setTemplateImages((p) => [...p, ...images.slice(15)]);
         break;
       }
+      // if (i < 15) {
+      // image.push(item);
+      //setTemplateImages((p) => [...p, item]);
+      // } else {
+      //   // image.push(...images.slice(15));
+      //   setTemplateImages((p) => [...p, ...images.slice(15)]);
+      //   break;
+      // }
       i++;
     }
-    //console.log(i);
-    //setLoadedCount(i);
-    //setTemplateImages(image);
+    console.log(i);
+    setLoadedCount(i);
+    setTemplateImages(image);
     setTemplateLoading(false);
     isSearched = true;
     //if (images.length == templateImages.length) window.location.reload();
@@ -190,19 +185,14 @@ export default function TemplatePage() {
     //const tagName = obj?.innerText;
     //if (!tagName) return;
     const result = await filterByTags(ar, templateAssets, taglist);
-    setSearchedCount(result.length);
     loadImages(result);
   }
 
   async function handleFilters() {
     if (isTagsActved == true) {
       setTags([]);
-      // const result = await filterByTags([], templateAssets, taglist);
-      // loadImages(result);
-      isSearched = false;
-      setSearchedCount(-1);
-      window.location.reload();
-      return;
+      const result = await filterByTags([], templateAssets, taglist);
+      loadImages(result);
     }
     setIsTagsActved((p) => !p);
     const res = await fetchAPI(`${APP_API_URL}/list_tags`, 'POST');
@@ -220,9 +210,7 @@ export default function TemplatePage() {
       ttab = filters['Tab'],
       tcollection = filters['Collection'];
     if (ttag == 'None' && ttab == 'None' && tcollection == 'None') {
-      isSearched = false;
-      setSearchedCount(-1);
-      window.location.reload();
+      loadImages(templateAssets);
       return;
     }
     const filteredItems = await templateAssets.filter(
@@ -235,7 +223,6 @@ export default function TemplatePage() {
           (item.collection &&
             item.collection.toLowerCase() === tcollection.toLowerCase()))
     );
-    setSearchedCount(filteredItems.length);
     loadImages(filteredItems);
   };
   // function tagAll() {

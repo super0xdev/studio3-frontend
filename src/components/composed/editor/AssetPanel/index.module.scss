@@ -21,6 +21,11 @@
     font-size: 13px;
     padding: 17px 5px;
     width: calc(100% - 30px);
+    display: flex;
+    justify-content: space-between;
+    .goBack:hover{
+      padding-right: 2px;
+    }
   }
   .icon{
     position: absolute;

@@ -608,7 +608,7 @@ const ItemWidget: FC<IItemWidget> = ({
                         }}
                       />
                     }
-                    label="Download without watermark"
+                    label="Download with watermark"
                   />
                   <FormControlLabel
                     value="without"
@@ -622,7 +622,7 @@ const ItemWidget: FC<IItemWidget> = ({
                         }}
                       />
                     }
-                    label="Download with watermark"
+                    label="Download without watermark"
                     style={{ width: '300px' }}
                   />
                 </RadioGroup>

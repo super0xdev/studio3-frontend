@@ -746,6 +746,7 @@ const sizeCreateFromRect = (r) => toSize(r.width, r.height);
 const sizeCreateFromArray = (a) => toSize(a[0], a[1]);
 const sizeCreateFromImageNaturalSize = (image) => toSize(image.naturalWidth, image.naturalHeight);
 const sizeCreateFromElement = (element) => {
+    console.log(element);
     if (/img/i.test(element.nodeName)) {
         return sizeCreateFromImageNaturalSize(element);
     }

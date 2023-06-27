@@ -18,12 +18,13 @@ export const emojiToUni = (str: string) => {
 };
 
 export const uniToEmoji = (str: string) => {
-  // return str.replace(/\[e-([0-9a-fA-F]+)\]/g, (match, hex) =>
-  //   String.fromCodePoint(Number.parseInt(hex, 16))
-  // );
-  return str.replace(/\\u[\dA-F]{4}/gi, function (match) {
-    return String.fromCharCode(parseInt(match.replace(/\\u/g, ''), 16));
+  const t = str;
+  return t.replace(/\[e-([0-9a-fA-F]+)\]/g, function (match, hex) {
+    return String.fromCodePoint(Number.parseInt(hex, 16));
   });
+  // return str.replace(/\\u[\dA-F]{4}/gi, function (match) {
+  //   return String.fromCharCode(parseInt(match.replace(/\\u/g, ''), 16));
+  // });
 };
 
 export const strToBuffer = (str: string) => {
@@ -65,11 +66,22 @@ export function loadJSON(filePath: string, isThumb: boolean) {
   // Parse json
   const data = json ? JSON.parse(uniToEmoji(json)) : {};
   if (isThumb && data) {
-    const rt = data.crop.width / data.crop.height / 1.4;
-    const scale = (283 * rt) / data.crop.width;
-    for (let i = 0; i < data.annotation.length; i++)
+    const rt = data.crop.width / data.crop.height / 1.42;
+    const scale = (283 * rt) / data.crop.width / 1;
+    for (let i = 0; i < data.annotation.length; i++) {
       if (data.annotation[i].fontSize) data.annotation[i].fontSize *= scale;
+      if (
+        data.annotation[i].backgroundImage &&
+        data.annotation[i].backgroundImage.indexOf('data') >= 0
+      ) {
+        data.annotation[i].width *= scale;
+        data.annotation[i].height *= scale;
+        data.annotation[i].x *= scale;
+        data.annotation[i].y *= scale;
+      }
+    }
   }
+  console.log(data);
   return data; // Here is error
   // return {};
 }
