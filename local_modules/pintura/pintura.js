@@ -746,7 +746,7 @@ const sizeCreateFromRect = (r) => toSize(r.width, r.height);
 const sizeCreateFromArray = (a) => toSize(a[0], a[1]);
 const sizeCreateFromImageNaturalSize = (image) => toSize(image.naturalWidth, image.naturalHeight);
 const sizeCreateFromElement = (element) => {
-    console.log(element);
+    //console.log(element);
     if (/img/i.test(element.nodeName)) {
         return sizeCreateFromImageNaturalSize(element);
     }
@@ -2451,11 +2451,11 @@ var textToImage = async (text = '', options) => {
 
     // MYC add meme method
     const fontColor = colorArrayToRGB(options.color);
-    console.log(fontColor, options);
+    //console.log(fontColor, options);
     if(textStyles.indexOf("Impact-meme") >= 0)
         textStyles += `-webkit-text-stroke:2px ${fontColor}!important;
             color:white !important;`;
-    console.log('styles:::::: ', `position:absolute;padding-right:${paddingRight}px;padding-left:${paddingLeft}px;${textStyles};${textContentEditableStyles}`);
+    //console.log('styles:::::: ', `position:absolute;padding-right:${paddingRight}px;padding-left:${paddingLeft}px;${textStyles};${textContentEditableStyles}`);
     const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}"><foreignObject x="0" y="0" width="${width}" height="${height}"><div xmlns="http://www.w3.org/1999/xhtml" style="transform-origin:0 0;transform:scale(${pixelRatio})">${fontEmbed ? `<style>${fontEmbed}</style>` : ''}<pre contenteditable="true" spellcheck="false" style="position:absolute;padding-right:${paddingRight}px;padding-left:${paddingLeft}px;${textStyles};${textContentEditableStyles}">${textFinal}</pre></div></foreignObject></svg>`;
     // uncomment for debugging
     // document.body.append(h('div', { innerHTML: svg }));
