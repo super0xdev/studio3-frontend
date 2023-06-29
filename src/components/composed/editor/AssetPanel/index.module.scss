@@ -23,8 +23,15 @@
     width: calc(100% - 30px);
     display: flex;
     justify-content: space-between;
-    .goBack:hover{
-      padding-right: 2px;
+    span{
+      padding-left: 4px;
+      transition: all 0.5s;
+    }
+    span:hover{
+      padding-left: 0px;
+      padding-right: 4px;
+      transition: all 0.5s;
+      opacity: 50%;
     }
   }
   .icon{
