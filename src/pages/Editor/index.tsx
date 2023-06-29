@@ -36,26 +36,19 @@ export default function EditorPage() {
   const editorRef = useRef<PinturaEditor>(null);
   const fetchAPI = useFetchAPI();
   const selectedAsset = usePreviewSelectedAsset();
-  console.log(selectedAsset);
   const updateDisplayedAssets = useUpdateDisplayedAssets();
   const [editorSrc, setEditorSrc] = useState<string | File | undefined>(
     selectedAsset ? `${APP_ASSET_URL}${selectedAsset.file_path}` : undefined
   );
   const [editorEnabled, setEditorEnabled] = useState(!!editorSrc);
   const [isAssetShow, setAssetShow] = useState(false);
-
-  console.log(
-    'Loading ---------------------------------------------------------------------------------------- ',
-    isAssetShow
-  );
-
+  const [isLoaded, setIsLoaded] = useState(false);
   const handleProcess = async (detail: PinturaDefaultImageWriterResult) => {
     const data = new FormData();
     if (detail.dest.size >= 10 * 1024 * 1024) {
       toast.error('The maximum upload image size is 10 MB!');
       return;
     }
-    console.log(detail.src);
     data.append('image', detail.src as Blob, (detail.src as File).name);
     if (selectedAsset) {
       data.append('asset_uid', selectedAsset.uid.toString());
@@ -74,7 +67,6 @@ export default function EditorPage() {
           return shape;
 
         shape.backgroundImage = await blobToBase64(shape.backgroundImage);
-        console.log(shape.backgroundImage);
         return shape;
       })
     );
@@ -247,9 +239,9 @@ export default function EditorPage() {
     navigate('/gallery');
   };
   const toggleAsset = () => {
+    setIsLoaded(true);
     setAssetShow(!isAssetShow);
   };
-  console.log(editorFileSrc);
   return (
     <div className={isAssetShow ? 'assetsPanel' : ''}>
       <AssetPanel showPanel={isAssetShow} toggleAsset={toggleAsset}>
@@ -266,10 +258,14 @@ export default function EditorPage() {
             onDestroy={handleEditorHide}
             annotateActiveTool="move"
             annotateEnableButtonFlipVertical
-            imageState={loadJSON(
-              `${APP_ASSET_URL}${selectedAsset?.meta_file_path}`,
-              false
-            )}
+            imageState={
+              isLoaded
+                ? {}
+                : loadJSON(
+                    `${APP_ASSET_URL}${selectedAsset?.meta_file_path}`,
+                    false
+                  )
+            }
             util={'annotate'}
             utils={['annotate']}
             enableMoveTool

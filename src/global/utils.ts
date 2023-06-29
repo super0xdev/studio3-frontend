@@ -41,7 +41,7 @@ export const bufferToStr = (ab: Iterable<number>) => {
 
 function loadTextFileAjaxSync(filePath: string, mimeType: string) {
   try {
-    console.log(filePath);
+    //console.log(filePath);
     if (filePath.endsWith('undefined') || filePath.endsWith('null'))
       return null;
     const xmlhttp = new XMLHttpRequest();
@@ -81,7 +81,7 @@ export function loadJSON(filePath: string, isThumb: boolean) {
       }
     }
   }
-  console.log(data);
+  //console.log(data);
   return data; // Here is error
   // return {};
 }

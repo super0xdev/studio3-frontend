@@ -48,9 +48,9 @@ const AssetPanel = (props: any) => {
 
   useEffect(() => {
     setIsLoading(true);
-    console.log('loading.....');
+    // console.log('loading.....');
     handleUpdateTemplateAssets();
-    console.log('loading..... finished');
+    // console.log('loading..... finished');
   }, []);
 
   useEffect(() => {
@@ -59,7 +59,7 @@ const AssetPanel = (props: any) => {
         window.innerHeight + Math.round(window.scrollY) >=
         document.body.offsetHeight
       ) {
-        console.log('------bottom', loadedCount);
+        // console.log('------bottom', loadedCount);
         const image: AssetInfoType[] = [];
         let i = 0;
         for (; i + loadedCount < templateAssets.length; i++) {
@@ -69,7 +69,7 @@ const AssetPanel = (props: any) => {
             break;
           }
         }
-        console.log(loadedCount);
+        // console.log(loadedCount);
         setLoadedCount(i + loadedCount);
         setTemplateImages((p) => [...p, ...image]);
       }
@@ -83,11 +83,11 @@ const AssetPanel = (props: any) => {
   }, [loadedCount]);
 
   const handleScroll = async (event: any) => {
-    console.log('-handle-');
+    // console.log('-handle-');
     const { scrollHeight, scrollTop, clientHeight } = event.target;
 
     if (Math.abs(scrollHeight - clientHeight - scrollTop) < 1) {
-      console.log('------bottom', loadedCount);
+      // console.log('------bottom', loadedCount);
       if (loadedCount >= templateAssets.length) return;
       const image: AssetInfoType[] = [];
       let i = 0;
@@ -98,7 +98,7 @@ const AssetPanel = (props: any) => {
           break;
         }
       }
-      console.log(loadedCount);
+      // console.log(loadedCount);
       setLoadedCount(i + loadedCount);
       setTemplateImages((p) => [...p, ...image]);
     }
@@ -107,7 +107,7 @@ const AssetPanel = (props: any) => {
   function search() {
     if (!searchRef.current) return;
     setTemplateImages([]);
-    console.log(searchRef.current.value);
+    // console.log(searchRef.current.value);
     const result = filterByName(searchRef.current.value, templateAssets);
     loadImages(searchRef.current.value, result);
   }
@@ -143,9 +143,7 @@ const AssetPanel = (props: any) => {
       setTemplateImages(image);
     };
     loadImages();
-    console.log('---------', templateImages.length);
     setLoadedCount(i);
-    console.log('---------false', i);
     // setTemplateImages([...templateAssets]);
     return () => setTemplateImages([]);
   }, [templateAssets]);
