@@ -742,7 +742,11 @@ const ItemWidget: FC<IItemWidget> = ({
       >
         <div className={styles.imageWrapper}>
           {processedImg ? (
-            <LazyLoadImage src={processedImg} effect="blur" />
+            <LazyLoadImage
+              src={processedImg}
+              effect="blur"
+              alt={asset.file_name}
+            />
           ) : (
             <CircularProgress />
           )}
