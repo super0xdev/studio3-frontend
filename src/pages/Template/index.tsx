@@ -123,7 +123,8 @@ export default function TemplatePage() {
     for (const item of images) {
       //await sleep(200);
       if (i < 35) {
-        image.push(item);
+        // image.push(item);
+        setTemplateImages((p) => [...p, item]);
       } else {
         break;
       }
@@ -139,7 +140,7 @@ export default function TemplatePage() {
     }
     console.log(i);
     setLoadedCount(i);
-    setTemplateImages(image);
+    // setTemplateImages(image);
     setTemplateLoading(false);
     isSearched = true;
     //if (images.length == templateImages.length) window.location.reload();
